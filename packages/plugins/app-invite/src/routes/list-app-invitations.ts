@@ -154,8 +154,8 @@ export const listAppInvitations = <
 
 				const total = await adapter.countInvitations({ where });
 
-				const invitations =
-					await adapter.listInvitations<ReturnAdditionalFields>({
+				let invitations = await adapter.listInvitations<ReturnAdditionalFields>(
+					{
 						where,
 						limit: ctx.query.limit,
 						offset: ctx.query.offset,
@@ -165,7 +165,28 @@ export const listAppInvitations = <
 									direction: ctx.query.sortDirection || "asc",
 								}
 							: undefined,
+					},
+				);
+
+				const expiredInvitations = invitations.filter(
+					({ expiresAt }) => !!expiresAt && expiresAt < new Date(),
+				);
+				const expiredIds = new Set(expiredInvitations.map(({ id }) => id));
+				if (options.cleanupExpiredInvitations) {
+					await adapter.deleteInvitations([...expiredIds]);
+
+					invitations = invitations.filter(({ id }) => !expiredIds.has(id));
+				} else if (expiredIds.size > 0) {
+					invitations = invitations.map((i) => {
+						if (!expiredIds.has(i.id)) {
+							return i;
+						}
+						return {
+							...i,
+							status: "expired",
+						};
 					});
+				}
 
 				return ctx.json({
 					total,

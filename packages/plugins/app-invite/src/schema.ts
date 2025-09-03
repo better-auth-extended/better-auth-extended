@@ -2,7 +2,7 @@ import { generateId } from "better-auth";
 import { z } from "zod";
 
 export const appInvitationStatus = z
-	.enum(["pending", "accepted", "rejected", "canceled"])
+	.enum(["pending", "accepted", "rejected", "canceled", "expired"])
 	.default("pending");
 export const appInvitationSchema = z.object({
 	id: z.string().default(generateId),

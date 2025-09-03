@@ -87,24 +87,25 @@ export const rejectAppInvitation = <
 				throw new APIError("FORBIDDEN");
 			}
 			const adapter = getAppInviteAdapter(ctx.context, options);
-			const invitation = await adapter.findInvitationById(
-				ctx.body.invitationId,
-				{
-					where: [
-						{
-							field: "status",
-							value: "pending",
-						},
-					],
-				},
-			);
+			let invitation = await adapter.findInvitationById(ctx.body.invitationId, {
+				where: [
+					{
+						field: "status",
+						value: "pending",
+					},
+				],
+			});
 			const type = !invitation?.email ? "public" : "personal";
 			const isExpired = invitation?.expiresAt
 				? invitation?.expiresAt < new Date()
 				: false;
 			if (!invitation || isExpired) {
-				if (isExpired && options.cleanupExpiredInvitations && invitation) {
-					await adapter.deleteInvitation(invitation.id);
+				if (isExpired && invitation) {
+					if (options.cleanupExpiredInvitations) {
+						await adapter.deleteInvitation(invitation.id);
+					} else {
+						await adapter.updateInvitation(invitation.id, "expired");
+					}
 				}
 				throw new APIError("BAD_REQUEST", {
 					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
@@ -125,7 +126,18 @@ export const rejectAppInvitation = <
 				rejectedI = await adapter.updateInvitation(invitation.id, "rejected");
 			}
 
-			await options.hooks?.reject?.after?.(ctx, rejectedI!);
+			rejectedI = rejectedI
+				? {
+						...rejectedI,
+						status: "rejected",
+					}
+				: null;
+
+			if (!rejectedI) {
+				throw ctx.error("INTERNAL_SERVER_ERROR");
+			}
+
+			await options.hooks?.reject?.after?.(ctx, rejectedI);
 
 			return ctx.json({
 				token: null,

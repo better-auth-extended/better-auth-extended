@@ -150,6 +150,24 @@ export const getAppInviteAdapter = (
 			);
 			return invitation;
 		},
+		updateInvitations: async (
+			ids: string[],
+			status: Exclude<AppInvitationStatus, "pending">,
+		) => {
+			return await adapter.updateMany({
+				model: "appInvitation",
+				where: [
+					{
+						field: "id",
+						value: ids,
+						operator: "in",
+					},
+				],
+				update: {
+					status,
+				},
+			});
+		},
 		listInvitations: async <
 			AdditionalFields extends Record<string, any>,
 		>(data?: {
@@ -179,6 +197,18 @@ export const getAppInviteAdapter = (
 					{
 						field: "id",
 						value: id,
+					},
+				],
+			});
+		},
+		deleteInvitations: async (ids: string[]) => {
+			return await adapter.deleteMany({
+				model: "appInvitation",
+				where: [
+					{
+						field: "id",
+						value: ids,
+						operator: "in",
 					},
 				],
 			});

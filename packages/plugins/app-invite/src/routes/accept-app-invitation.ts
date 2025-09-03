@@ -166,8 +166,12 @@ export const acceptAppInvitation = <
 				? invitation?.expiresAt < new Date()
 				: false;
 			if (!invitation || isExpired) {
-				if (isExpired && options.cleanupExpiredInvitations && invitation) {
-					await adapter.deleteInvitation(invitation.id);
+				if (isExpired && invitation) {
+					if (options.cleanupExpiredInvitations) {
+						await adapter.deleteInvitation(invitation.id);
+					} else {
+						await adapter.updateInvitation(invitation.id, "expired");
+					}
 				}
 				throw new APIError("BAD_REQUEST", {
 					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
@@ -297,16 +301,51 @@ export const acceptAppInvitation = <
 			);
 
 			let acceptedI: AppInvitation | null = invitation;
-			if (invitationType === "personal") {
+			if (invitationType === "personal" && invitation.email) {
 				if (options.cleanupPersonalInvitesOnDecision) {
-					await adapter.deleteInvitation(invitation.id);
+					await ctx.context.adapter.deleteMany({
+						model: "appInvitation",
+						where: [
+							{
+								field: "email",
+								value: invitation.email,
+							},
+						],
+					});
 				} else {
+					await ctx.context.adapter.updateMany({
+						model: "appInvitation",
+						where: [
+							{
+								field: "email",
+								value: invitation.email,
+							},
+							{
+								field: "status",
+								value: "pending",
+							},
+						],
+						update: {
+							status: "expired",
+						},
+					});
 					acceptedI = await adapter.updateInvitation(invitation.id, "accepted");
 				}
 			}
 
+			acceptedI = acceptedI
+				? {
+						...acceptedI,
+						status: "accepted",
+					}
+				: null;
+
+			if (!acceptedI) {
+				throw ctx.error("INTERNAL_SERVER_ERROR");
+			}
+
 			await options.hooks?.accept?.after?.(ctx, {
-				invitation: acceptedI!,
+				invitation: acceptedI,
 				user: createdUser,
 			});
 

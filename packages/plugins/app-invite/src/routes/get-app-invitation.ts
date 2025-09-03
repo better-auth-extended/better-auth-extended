@@ -65,8 +65,12 @@ export const getAppInvitation = <
 				? invitation?.expiresAt < new Date()
 				: false;
 			if (!invitation || isExpired) {
-				if (isExpired && options.cleanupExpiredInvitations && invitation) {
-					await adapter.deleteInvitation(invitation.id);
+				if (isExpired && invitation) {
+					if (options.cleanupExpiredInvitations) {
+						await adapter.deleteInvitation(invitation.id);
+					} else {
+						await adapter.updateInvitation(invitation.id, "expired");
+					}
 				}
 				throw new APIError("BAD_REQUEST", {
 					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
