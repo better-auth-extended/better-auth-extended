@@ -12,7 +12,7 @@ import {
 } from "better-auth/client";
 import { bearer } from "better-auth/plugins/bearer";
 // TODO: import { bearerClient } from "better-auth/client/plugins";
-import { getAdapter, getMigrations, getAuthTables } from "better-auth/db";
+import { getMigrations, getAuthTables } from "better-auth/db";
 import { parseSetCookieHeader, setCookieToHeader } from "better-auth/cookies";
 import { getBaseURL } from "@better-auth-extended/internal-utils";
 
@@ -247,6 +247,8 @@ export const getTestInstance = async <
 		console.log("Database successfully reset.");
 	}
 
+	const context = await auth.$context;
+
 	return {
 		auth: auth as unknown as ReturnType<
 			typeof betterAuth<
@@ -258,7 +260,8 @@ export const getTestInstance = async <
 		cookieSetter: setCookieToHeader,
 		customFetchImpl,
 		sessionSetter,
-		db: await getAdapter(auth.options),
+		context,
+		db: context.adapter,
 		signUpWithTestUser,
 		signInWithTestUser,
 		signInWithUser,
