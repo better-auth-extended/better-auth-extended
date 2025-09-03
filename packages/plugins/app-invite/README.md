@@ -257,11 +257,11 @@ Table Name: `appInvitation`
 
 **hooks.cancel.after**: `(ctx: GenericEndpointContext, invitation: AppInvitation) => Promise<void> | void` - A function that runs after an invitation was canceled.
 
-**schema**: The schema for the app-invite plugin. Allows you to infer additional fields for `user` and `appInvitation` table. This option is available in the client plugin aswell.
+**schema**: The schema for the app-invite plugin. Allows you to infer additional fields for the `user` and `appInvitation` tables. This option is available in the client plugin as well.
 
 ~~**allowUserToCreateInvitation**~~: `boolean` | `((user: User, type: "personal" | "public") => Promise<boolean> | boolean)` - A function that determines whether a user can create invite others. By defaults it's `true`. You can set it to `false` to restrict users from creating invitations. (deprecated. use `canCreateInvitation` instead.)
 
-~~**allowUserToCancelInvitation**~~: `(data: { user: User, invitation: AppInvitation }) => Promise<boolean> | boolean` - A functon that determines whether a user can cancel inivtations. By default the user can only cancel invites created by them. You can set it to `false` to restrict users from canceling invitations. (deprecated. use `canCancelInvitation` instead.)
+~~**allowUserToCancelInvitation**~~: `(data: { user: User, invitation: AppInvitation }) => Promise<boolean> | boolean` - A function that determines whether a user can cancel invitations. By default the user can only cancel invites created by them. You can set it to `false` to restrict users from canceling invitations. (deprecated. use `canCancelInvitation` instead.)
 
 ## License
 
