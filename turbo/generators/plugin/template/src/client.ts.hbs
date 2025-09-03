@@ -1,0 +1,11 @@
+import type { BetterAuthClientPlugin } from "better-auth";
+import type { {{camelCase name}} } from "./index";
+
+type {{pascalCase name}} = typeof {{camelCase name}}
+
+export const {{camelCase name}}Client = () => {
+    return {
+        id: "{{name}}",
+        $InferServerPlugin: {} as ReturnType<{{pascalCase name}}>,
+    } satisfies BetterAuthClientPlugin;
+};
