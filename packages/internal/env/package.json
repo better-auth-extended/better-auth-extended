@@ -1,55 +1,55 @@
 {
-	"name": "@better-auth-extended/internal-env",
-	"description": "",
-	"version": "0.0.1",
-	"type": "module",
-	"private": true,
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/jslno/better-auth-extended",
-		"directory": "packages/internal/env"
-	},
-	"license": "MIT",
-	"keywords": [],
-	"publishConfig": {
-		"access": "public"
-	},
-	"scripts": {
-		"build": "unbuild --clean",
-		"dev": "unbuild --watch",
-		"stub": "unbuild --stub",
-		"_test": "vitest",
-		"typecheck": "tsc --noEmit"
-	},
-	"main": "./dist/index.cjs",
-	"module": "./dist/index.mjs",
-	"exports": {
-		".": {
-			"types": "./dist/index.d.ts",
-			"import": "./dist/index.mjs",
-			"require": "./dist/index.cjs"
-		}
-	},
-	"typesVersions": {
-		"*": {
-			"*": [
-				"./dist/index.d.ts"
-			]
-		}
-	},
-	"dependencies": {
-		"@better-auth/utils": "catalog:better-auth"
-	},
-	"devDependencies": {
-		"better-auth": "catalog:better-auth",
-		"typescript": "catalog:",
-		"unbuild": "catalog:",
-		"vitest": "catalog:"
-	},
-	"peerDependencies": {
-		"better-auth": "catalog:better-auth"
-	},
-	"files": [
-		"dist"
-	]
+  "name": "@better-auth-extended/internal-env",
+  "description": "",
+  "version": "0.0.1",
+  "type": "module",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jslno/better-auth-extended",
+    "directory": "packages/internal/env"
+  },
+  "license": "MIT",
+  "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild --clean",
+    "dev": "unbuild --watch",
+    "stub": "unbuild --stub",
+    "_test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "dependencies": {
+    "@better-auth/utils": "catalog:better-auth"
+  },
+  "devDependencies": {
+    "better-auth": "catalog:better-auth",
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "vitest": "catalog:"
+  },
+  "peerDependencies": {
+    "better-auth": "catalog:better-auth"
+  },
+  "files": [
+    "dist"
+  ]
 }

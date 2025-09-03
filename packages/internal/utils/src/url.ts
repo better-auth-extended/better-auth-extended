@@ -6,7 +6,9 @@ function checkHasPath(url: string): boolean {
 		const parsedUrl = new URL(url);
 		return parsedUrl.pathname !== "/";
 	} catch (error) {
-		throw new BetterAuthError(`Invalid base URL: ${url}. Please provide a valid base URL.`);
+		throw new BetterAuthError(
+			`Invalid base URL: ${url}. Please provide a valid base URL.`,
+		);
 	}
 }
 

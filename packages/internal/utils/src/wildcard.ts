@@ -41,7 +41,10 @@ function escapeRegExpString(str: string) {
 /**
  * Transforms one or more glob patterns into a RegExp pattern
  */
-function transform(pattern: string | string[], separator: string | boolean = true): string {
+function transform(
+	pattern: string | string[],
+	separator: string | boolean = true,
+): string {
 	if (Array.isArray(pattern)) {
 		const regExpPatterns = pattern.map((p) => `^${transform(p, separator)}$`);
 		return `(?:${regExpPatterns.join("|")})`;
@@ -210,11 +213,12 @@ export function wildcardMatch(
 	}
 
 	if (
-		// biome-ignore lint/style/noArguments: <explanation>
 		arguments.length === 2 &&
 		!(
 			typeof options === "undefined" ||
-			(typeof options === "object" && options !== null && !Array.isArray(options))
+			(typeof options === "object" &&
+				options !== null &&
+				!Array.isArray(options))
 		)
 	) {
 		throw new TypeError(
@@ -256,9 +260,14 @@ export function wildcardMatch(
  * isMatch('*.json') //=> false
  * ```
  */
-export function matchWildcard(sample: string, options?: string | boolean | WildcardMatchOptions) {
+export function matchWildcard(
+	sample: string,
+	options?: string | boolean | WildcardMatchOptions,
+) {
 	if (typeof sample !== "string") {
-		throw new TypeError(`The first argument must be a string, but ${typeof sample} given`);
+		throw new TypeError(
+			`The first argument must be a string, but ${typeof sample} given`,
+		);
 	}
 
 	if (typeof options === "string" || typeof options === "boolean") {
