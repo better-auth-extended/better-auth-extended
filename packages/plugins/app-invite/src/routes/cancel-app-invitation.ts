@@ -91,7 +91,9 @@ export const cancelAppInvitation = <
 
 			await options.hooks?.cancel?.after?.(ctx, canceledI!);
 
-			return ctx.json(canceledI as (AppInvitation & ReturnAdditionalFields) | null);
+			return ctx.json(
+				canceledI as (AppInvitation & ReturnAdditionalFields) | null,
+			);
 		},
 	);
 };

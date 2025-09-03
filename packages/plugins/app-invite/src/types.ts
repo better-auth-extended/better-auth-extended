@@ -50,7 +50,9 @@ export type AppInviteOptions = {
 	 * ```
 	 * @default true
 	 */
-	canCreateInvitation?: ((ctx: GenericEndpointContext) => Promise<boolean> | boolean) | boolean;
+	canCreateInvitation?:
+		| ((ctx: GenericEndpointContext) => Promise<boolean> | boolean)
+		| boolean;
 	/**
 	 * Define whether a user is allowed to cancel invitations.
 	 *

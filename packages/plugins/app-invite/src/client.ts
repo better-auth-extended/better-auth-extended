@@ -1,5 +1,9 @@
 import type { appInvite } from ".";
-import type { BetterAuthClientPlugin, BetterAuthOptions, BetterAuthPlugin } from "better-auth";
+import type {
+	BetterAuthClientPlugin,
+	BetterAuthOptions,
+	BetterAuthPlugin,
+} from "better-auth";
 import type { AppInvitation } from "./schema";
 import type { FieldAttribute } from "better-auth/db";
 import type { AppInviteOptions } from "./types";
@@ -47,10 +51,10 @@ export const inferAppInviteAdditonalFields = <
 >(
 	schema?: S,
 ) => {
-	type FindById<T extends readonly BetterAuthPlugin[], TargetId extends string> = Extract<
-		T[number],
-		{ id: TargetId }
-	>;
+	type FindById<
+		T extends readonly BetterAuthPlugin[],
+		TargetId extends string,
+	> = Extract<T[number], { id: TargetId }>;
 	type Auth = O extends { options: any } ? O : { options: { plugins: [] } };
 
 	type AppInvitePlugin = FindById<

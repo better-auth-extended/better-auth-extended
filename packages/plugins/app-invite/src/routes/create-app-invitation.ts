@@ -6,7 +6,10 @@ import { getAppInviteAdapter } from "../adapter";
 import { type CreateInvitation, createInvitationSchema } from "../schema";
 import { z } from "zod";
 import type { getAdditionalFields } from "../utils";
-import type { IsExactlyEmptyObject, Merge } from "@better-auth-extended/internal-utils";
+import type {
+	IsExactlyEmptyObject,
+	Merge,
+} from "@better-auth-extended/internal-utils";
 
 export const createAppInvitation = <
 	O extends AppInviteOptions,
@@ -26,12 +29,16 @@ export const createAppInvitation = <
 			use: [sessionMiddleware],
 			body: createInvitationSchema.and(
 				z.object({
-					additionalFields: z.object({ ...additionalFieldsSchema.shape }).optional(),
+					additionalFields: z
+						.object({ ...additionalFieldsSchema.shape })
+						.optional(),
 				}),
 			),
 			metadata: {
 				$Infer: {
-					body: {} as (S extends true ? CreateInvitation : Merge<CreateInvitation>) &
+					body: {} as (S extends true
+						? CreateInvitation
+						: Merge<CreateInvitation>) &
 						(IsExactlyEmptyObject<AdditionalFields> extends true
 							? { additionalFields?: {} }
 							: { additionalFields: AdditionalFields }),
@@ -67,7 +74,10 @@ export const createAppInvitation = <
 			const session = ctx.context.session;
 			const canInvite = options.allowUserToCreateInvitation
 				? typeof options.allowUserToCreateInvitation === "function"
-					? await options.allowUserToCreateInvitation(session.user, ctx.body.type)
+					? await options.allowUserToCreateInvitation(
+							session.user,
+							ctx.body.type,
+						)
 					: options.allowUserToCreateInvitation
 				: ((typeof options.canCreateInvitation === "function"
 						? await options.canCreateInvitation(ctx)
@@ -96,14 +106,17 @@ export const createAppInvitation = <
 							APP_INVITE_ERROR_CODES.USER_IS_ALREADY_A_MEMBER_OF_THIS_APPLICATION,
 					});
 				}
-				const alreadyInvited = await adapter.findInvitationByEmail(ctx.body.email, {
-					where: [
-						{
-							field: "status",
-							value: "pending",
-						},
-					],
-				});
+				const alreadyInvited = await adapter.findInvitationByEmail(
+					ctx.body.email,
+					{
+						where: [
+							{
+								field: "status",
+								value: "pending",
+							},
+						],
+					},
+				);
 				if (alreadyInvited && !ctx.body.resend) {
 					throw new APIError("BAD_REQUEST", {
 						message:

@@ -8,113 +8,120 @@ import { APP_INVITE_ERROR_CODES } from "./error-codes";
 
 const mockFn = vi.fn();
 describe("App Invite", async () => {
-	const { auth, client, signUpWithTestUser, sessionSetter, db, customFetchImpl, signInWithUser } =
-		await getTestInstance({
-			options: {
-				account: {
-					fields: {
-						providerId: "provider_id",
-						accountId: "account_id",
+	const {
+		auth,
+		client,
+		signUpWithTestUser,
+		sessionSetter,
+		db,
+		customFetchImpl,
+		signInWithUser,
+	} = await getTestInstance({
+		options: {
+			account: {
+				fields: {
+					providerId: "provider_id",
+					accountId: "account_id",
+				},
+			},
+			user: {
+				additionalFields: {
+					newField: {
+						type: "string",
+						defaultValue: "default-value",
+					},
+					nonRequiredField: {
+						type: "string",
+						required: false,
 					},
 				},
-				user: {
-					additionalFields: {
+			},
+			emailAndPassword: {
+				enabled: true,
+				autoSignIn: true,
+			},
+			plugins: [
+				appInvite({
+					autoSignIn: true,
+					canCreateInvitation: (ctx) => {
+						return ctx.context.session?.user.email !== "test7@test.com";
+					},
+					sendInvitationEmail: async (data, request) => {
+						mockFn(data);
+					},
+					schema: {
+						appInvitation: {
+							additionalFields: {
+								newInviteField: {
+									type: "string",
+									required: true,
+								},
+								nonRequiredInviteField: {
+									type: "string",
+									required: false,
+								},
+							},
+						},
+						user: {
+							additionalFields: {
+								newField: {
+									type: "string",
+									required: true,
+								},
+								nonRequiredField: {
+									type: "string",
+									required: false,
+								},
+							},
+						},
+					},
+				}),
+			],
+		},
+		clientOptions: {
+			plugins: [
+				appInviteClient({
+					schema: {
+						appInvitation: {
+							additionalFields: {
+								newInviteField: {
+									type: "string",
+									required: true,
+								},
+								nonRequiredInviteField: {
+									type: "string",
+									required: false,
+								},
+							},
+						},
+						user: {
+							additionalFields: {
+								newField: {
+									type: "string",
+									required: true,
+								},
+								nonRequiredField: {
+									type: "string",
+									required: false,
+								},
+							},
+						},
+					},
+				}),
+				inferAdditionalFields({
+					user: {
 						newField: {
 							type: "string",
-							defaultValue: "default-value",
 						},
 						nonRequiredField: {
 							type: "string",
 							required: false,
 						},
 					},
-				},
-				emailAndPassword: {
-					enabled: true,
-					autoSignIn: true,
-				},
-				plugins: [
-					appInvite({
-						autoSignIn: true,
-						canCreateInvitation: (ctx) => {
-							return ctx.context.session?.user.email !== "test7@test.com";
-						},
-						sendInvitationEmail: async (data, request) => {
-							mockFn(data);
-						},
-						schema: {
-							appInvitation: {
-								additionalFields: {
-									newInviteField: {
-										type: "string",
-										required: true,
-									},
-									nonRequiredInviteField: {
-										type: "string",
-										required: false,
-									},
-								},
-							},
-							user: {
-								additionalFields: {
-									newField: {
-										type: "string",
-										required: true,
-									},
-									nonRequiredField: {
-										type: "string",
-										required: false,
-									},
-								},
-							},
-						},
-					}),
-				],
-			},
-			clientOptions: {
-				plugins: [
-					appInviteClient({
-						schema: {
-							appInvitation: {
-								additionalFields: {
-									newInviteField: {
-										type: "string",
-										required: true,
-									},
-									nonRequiredInviteField: {
-										type: "string",
-										required: false,
-									},
-								},
-							},
-							user: {
-								additionalFields: {
-									newField: {
-										type: "string",
-										required: true,
-									},
-									nonRequiredField: {
-										type: "string",
-										required: false,
-									},
-								},
-							},
-						},
-					}),
-					inferAdditionalFields({
-						user: {
-							newField: {
-								type: "string",
-							},
-							nonRequiredField: {
-								type: "string",
-								required: false,
-							},
-						},
-					}),
-				],
-			},
-		});
+				}),
+			],
+		},
+	});
 	const context = await auth.$context;
 	const user = await signUpWithTestUser();
 
@@ -149,7 +156,9 @@ describe("App Invite", async () => {
 			expect(res.data?.token).toBeDefined();
 			expect(res.data?.user.email).toBe("email1@test.com");
 			expect(res.data?.user.name).toBe("Test User");
-			const accounts = await context.internalAdapter.findAccountByUserId(res.data!.user.id);
+			const accounts = await context.internalAdapter.findAccountByUserId(
+				res.data!.user.id,
+			);
 			expect(accounts).toHaveLength(1);
 
 			const session = await client.getSession({
@@ -184,7 +193,9 @@ describe("App Invite", async () => {
 				},
 			});
 			expect(res.token).toBeDefined();
-			const accounts = await context.internalAdapter.findAccountByUserId(res.user.id);
+			const accounts = await context.internalAdapter.findAccountByUserId(
+				res.user.id,
+			);
 			expect(accounts).toHaveLength(1);
 		});
 		it("should not work with invalid invitation", async () => {
@@ -394,7 +405,10 @@ describe("App Invite", async () => {
 		if (isUserSignedUp.error) {
 			throw new Error("Could't create test user");
 		}
-		const anotherUser = await signInWithUser("test5@test.com", "password123456");
+		const anotherUser = await signInWithUser(
+			"test5@test.com",
+			"password123456",
+		);
 
 		const newUser = {
 			email: "test6@test.com",
@@ -432,7 +446,10 @@ describe("App Invite", async () => {
 		if (isUserSignedUp.error) {
 			throw new Error("Could't create test user");
 		}
-		const anotherUser = await signInWithUser("test7@test.com", "password123456");
+		const anotherUser = await signInWithUser(
+			"test7@test.com",
+			"password123456",
+		);
 		const res = await client2.inviteUser({
 			type: "personal",
 			email: "test8@test.com",

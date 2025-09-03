@@ -23,16 +23,19 @@ const createPersonalInvitationSchema = z.object({
 	name: z
 		.string()
 		.meta({
-			description: "The name of the user to invite (Only for personal invitations)",
+			description:
+				"The name of the user to invite (Only for personal invitations)",
 		})
 		.optional(),
 	email: z.string().meta({
-		description: "The email address of the user to invite (Only for personal invitations)",
+		description:
+			"The email address of the user to invite (Only for personal invitations)",
 	}),
 	resend: z
 		.boolean()
 		.meta({
-			description: "Resend the invitation email, if the user is already invited",
+			description:
+				"Resend the invitation email, if the user is already invited",
 		})
 		.optional(),
 });

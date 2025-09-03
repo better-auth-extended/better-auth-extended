@@ -12,7 +12,9 @@ import {
 } from "./routes";
 import { getAdditionalFields } from "./utils";
 
-export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(opts?: O) => {
+export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
+	opts?: O,
+) => {
 	const options = {
 		canCreateInvitation: true,
 		canCancelInvitation(ctx, invite) {
@@ -100,7 +102,8 @@ export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
 			},
 		},
 		$Infer: {
-			AppInvitation: {} as AppInvitation & typeof additionalFields.$ReturnAdditionalFields,
+			AppInvitation: {} as AppInvitation &
+				typeof additionalFields.$ReturnAdditionalFields,
 		},
 		$ERROR_CODES: APP_INVITE_ERROR_CODES,
 	} satisfies BetterAuthPlugin;

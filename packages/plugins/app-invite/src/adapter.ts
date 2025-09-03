@@ -136,9 +136,7 @@ export const getAppInviteAdapter = (
 				...data,
 			});
 		},
-		countInvitations: async (data?: {
-			where?: Where[];
-		}) => {
+		countInvitations: async (data?: { where?: Where[] }) => {
 			return adapter.count({
 				model: "appInvitation",
 				...data,

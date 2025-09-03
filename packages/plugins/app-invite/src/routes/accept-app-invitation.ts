@@ -1,16 +1,27 @@
 import { createAuthEndpoint } from "better-auth/plugins";
 import type { AppInviteOptions } from "../types";
 import { z } from "zod";
-import { type InferFieldsInput, parseUserInput, toZodSchema } from "better-auth/db";
+import {
+	type InferFieldsInput,
+	parseUserInput,
+	toZodSchema,
+} from "better-auth/db";
 import { getAppInviteAdapter } from "../adapter";
 import type { getAdditionalFields } from "../utils";
-import { APIError, createEmailVerificationToken, originCheck } from "better-auth/api";
+import {
+	APIError,
+	createEmailVerificationToken,
+	originCheck,
+} from "better-auth/api";
 import { BASE_ERROR_CODES, APP_INVITE_ERROR_CODES } from "../error-codes";
 import type { User } from "better-auth";
 import type { AppInvitation } from "../schema";
 import { setSessionCookie } from "better-auth/cookies";
 import { isDevelopment } from "@better-auth-extended/internal-env";
-import { matchWildcard, type IsExactlyEmptyObject } from "@better-auth-extended/internal-utils";
+import {
+	matchWildcard,
+	type IsExactlyEmptyObject,
+} from "@better-auth-extended/internal-utils";
 
 export const acceptAppInvitation = <
 	O extends AppInviteOptions,
@@ -38,7 +49,8 @@ export const acceptAppInvitation = <
 					callbackURL: z
 						.string()
 						.meta({
-							description: "The URL to redirect to after accepting the invitation",
+							description:
+								"The URL to redirect to after accepting the invitation",
 						})
 						.optional(),
 				})
@@ -76,7 +88,8 @@ export const acceptAppInvitation = <
 				},
 				openapi: {
 					operationId: "acceptAppInvitation",
-					description: "Accept an app invitation that has been issued by another user",
+					description:
+						"Accept an app invitation that has been issued by another user",
 					requestBody: {
 						content: {
 							"application/json": {
@@ -138,15 +151,20 @@ export const acceptAppInvitation = <
 
 			const adapter = getAppInviteAdapter(ctx.context, options);
 
-			const invitation = await adapter.findInvitationById(ctx.body.invitationId, {
-				where: [
-					{
-						field: "status",
-						value: "pending",
-					},
-				],
-			});
-			const isExpired = invitation?.expiresAt ? invitation?.expiresAt < new Date() : false;
+			const invitation = await adapter.findInvitationById(
+				ctx.body.invitationId,
+				{
+					where: [
+						{
+							field: "status",
+							value: "pending",
+						},
+					],
+				},
+			);
+			const isExpired = invitation?.expiresAt
+				? invitation?.expiresAt < new Date()
+				: false;
 			if (!invitation || isExpired) {
 				if (isExpired && options.cleanupExpiredInvitations && invitation) {
 					await adapter.deleteInvitation(invitation.id);
@@ -158,7 +176,9 @@ export const acceptAppInvitation = <
 
 			const invitationType = invitation.email ? "personal" : "public";
 
-			const inviter = await ctx.context.internalAdapter.findUserById(invitation.inviterId);
+			const inviter = await ctx.context.internalAdapter.findUserById(
+				invitation.inviterId,
+			);
 			if (!inviter) {
 				throw new APIError("BAD_REQUEST", {
 					message:
@@ -172,9 +192,13 @@ export const acceptAppInvitation = <
 				...ctx.body.additionalFields,
 			} as User & Record<string, any>;
 
-			const dbUser = await ctx.context.internalAdapter.findUserByEmail(userData.email);
+			const dbUser = await ctx.context.internalAdapter.findUserByEmail(
+				userData.email,
+			);
 			if (dbUser?.user) {
-				ctx.context.logger.info(`Sign-up attempt for existing email: ${userData.email}`);
+				ctx.context.logger.info(
+					`Sign-up attempt for existing email: ${userData.email}`,
+				);
 				throw new APIError("UNPROCESSABLE_ENTITY", {
 					message: BASE_ERROR_CODES.USER_ALREADY_EXISTS,
 				});
@@ -226,7 +250,10 @@ export const acceptAppInvitation = <
 				});
 			}
 
-			const additionalData = parseUserInput(ctx.context.options, ctx.body.additionalFields);
+			const additionalData = parseUserInput(
+				ctx.context.options,
+				ctx.body.additionalFields,
+			);
 			const hash = await ctx.context.password.hash(ctx.body.password);
 			let createdUser: User;
 			try {
@@ -319,7 +346,9 @@ export const acceptAppInvitation = <
 							createdAt: createdUser.createdAt,
 							updatedAt: createdUser.updatedAt,
 						},
-						invitation: acceptedI as (AppInvitation & ReturnAdditionalFields) | null,
+						invitation: acceptedI as
+							| (AppInvitation & ReturnAdditionalFields)
+							| null,
 					});
 				}
 			}
@@ -336,11 +365,16 @@ export const acceptAppInvitation = <
 						createdAt: createdUser.createdAt,
 						updatedAt: createdUser.updatedAt,
 					},
-					invitation: acceptedI as (AppInvitation & ReturnAdditionalFields) | null,
+					invitation: acceptedI as
+						| (AppInvitation & ReturnAdditionalFields)
+						| null,
 				});
 			}
 
-			const session = await ctx.context.internalAdapter.createSession(createdUser.id, ctx);
+			const session = await ctx.context.internalAdapter.createSession(
+				createdUser.id,
+				ctx,
+			);
 			if (!session) {
 				throw new APIError("BAD_REQUEST", {
 					message: BASE_ERROR_CODES.FAILED_TO_CREATE_SESSION,
@@ -362,7 +396,9 @@ export const acceptAppInvitation = <
 						createdAt: createdUser.createdAt,
 						updatedAt: createdUser.updatedAt,
 					},
-					invitation: acceptedI as (AppInvitation & ReturnAdditionalFields) | null,
+					invitation: acceptedI as
+						| (AppInvitation & ReturnAdditionalFields)
+						| null,
 				});
 			}
 			throw ctx.redirect(ctx.query.callbackURL);

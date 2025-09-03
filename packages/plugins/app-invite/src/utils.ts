@@ -1,4 +1,7 @@
-import { type InferAdditionalFieldsFromPluginOptions, toZodSchema } from "better-auth/db";
+import {
+	type InferAdditionalFieldsFromPluginOptions,
+	toZodSchema,
+} from "better-auth/db";
 import type { AppInviteOptions } from "./types";
 import type { AuthContext, BetterAuthPlugin } from "better-auth";
 
@@ -9,11 +12,15 @@ export const getPlugin = <P extends BetterAuthPlugin = BetterAuthPlugin>(
 	return context.options.plugins?.find((p) => p.id === id) as P | undefined;
 };
 
-export const getAdditionalFields = <O extends AppInviteOptions, AllPartial extends boolean = false>(
+export const getAdditionalFields = <
+	O extends AppInviteOptions,
+	AllPartial extends boolean = false,
+>(
 	options: O,
 	shouldBePartial: AllPartial = false as AllPartial,
 ) => {
-	const additionalFields = options.schema?.appInvitation?.additionalFields || {};
+	const additionalFields =
+		options.schema?.appInvitation?.additionalFields || {};
 	if (shouldBePartial) {
 		for (const key in additionalFields) {
 			additionalFields[key]!.required = false;
@@ -26,7 +33,11 @@ export const getAdditionalFields = <O extends AppInviteOptions, AllPartial exten
 	type AdditionalFields = AllPartial extends true
 		? Partial<InferAdditionalFieldsFromPluginOptions<"appInvitation", O>>
 		: InferAdditionalFieldsFromPluginOptions<"appInvitation", O>;
-	type ReturnAdditionalFields = InferAdditionalFieldsFromPluginOptions<"appInvitation", O, false>;
+	type ReturnAdditionalFields = InferAdditionalFieldsFromPluginOptions<
+		"appInvitation",
+		O,
+		false
+	>;
 
 	return {
 		additionalFieldsSchema,

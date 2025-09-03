@@ -1,6 +1,8 @@
 export const APP_INVITE_ERROR_CODES = {
-	USER_IS_ALREADY_A_MEMBER_OF_THIS_APPLICATION: "User is already a member of this application",
-	USER_WAS_ALREADY_INVITED_TO_THIS_APPLICATION: "User was already invited to this application",
+	USER_IS_ALREADY_A_MEMBER_OF_THIS_APPLICATION:
+		"User is already a member of this application",
+	USER_WAS_ALREADY_INVITED_TO_THIS_APPLICATION:
+		"User was already invited to this application",
 	INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION:
 		"Inviter is no longer a member of this application",
 	APP_INVITATION_NOT_FOUND: "App invitation not found",
@@ -36,5 +38,6 @@ export const BASE_ERROR_CODES = {
 	SESSION_EXPIRED: "Session expired. Re-authenticate to perform this action.",
 	FAILED_TO_UNLINK_LAST_ACCOUNT: "You can't unlink your last account",
 	ACCOUNT_NOT_FOUND: "Account not found",
-	USER_ALREADY_HAS_PASSWORD: "User already has a password. Provide that to delete the account.",
+	USER_ALREADY_HAS_PASSWORD:
+		"User already has a password. Provide that to delete the account.",
 };
