@@ -12,6 +12,12 @@ export default {
 			message:
 				"What is the name of the plugin? (You can skip the `@better-auth-extended/` prefix)",
 		},
+		{
+			type: "input",
+			name: "description",
+			message:
+				"What is the plugin about?",
+		},
 	],
 	actions: [
 		(answers: any) => {
