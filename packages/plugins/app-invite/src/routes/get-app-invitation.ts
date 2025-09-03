@@ -53,7 +53,7 @@ export const getAppInvitation = <
 												type: "string",
 											},
 											domainWhitelist: {
-												type: "string"
+												type: "string",
 											},
 											expiresAt: {
 												type: "string",
@@ -65,12 +65,7 @@ export const getAppInvitation = <
 												type: "string",
 											},
 										},
-										required: [
-											"id",
-											"inviterId",
-											"inviterEmail",
-											"status",
-										],
+										required: ["id", "inviterId", "inviterEmail", "status"],
 									},
 								},
 							},

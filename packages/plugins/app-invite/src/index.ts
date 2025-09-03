@@ -83,7 +83,13 @@ export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
 					},
 					status: {
 						fieldName: options.schema?.appInvitation?.fields?.status,
-						type: ["pending", "accepted", "rejected", "canceled", "expired"] as const,
+						type: [
+							"pending",
+							"accepted",
+							"rejected",
+							"canceled",
+							"expired",
+						] as const,
 						required: true,
 						defaultValue: "pending",
 					},
