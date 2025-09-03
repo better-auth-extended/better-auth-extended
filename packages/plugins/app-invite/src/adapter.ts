@@ -100,6 +100,36 @@ export const getAppInviteAdapter = (
 			});
 			return invitation;
 		},
+		findInvitationsByEmail: async <
+			AdditionalFields extends Record<string, any>,
+		>(
+			email: string,
+			data?: {
+				where?: Where[];
+				sortBy?: {
+					field: string;
+					direction: "asc" | "desc";
+				};
+				limit?: number;
+				offset?: number;
+			},
+		) => {
+			const invitations = await adapter.findMany<
+				AppInvitation & AdditionalFields
+			>({
+				model: "appInvitation",
+				...data,
+				where: [
+					{
+						field: "email",
+						value: email,
+					},
+					...(data?.where ?? []),
+				],
+			});
+
+			return invitations;
+		},
 		updateInvitation: async <AdditionalFields extends Record<string, any>>(
 			id: string,
 			status: Exclude<AppInvitationStatus, "pending">,

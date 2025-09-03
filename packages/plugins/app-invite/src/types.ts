@@ -104,6 +104,14 @@ export type AppInviteOptions = {
 	 */
 	verifyEmailOnAccept?: boolean;
 	/**
+	 * If true, resends an existing invitation.
+	 * 
+	 * By default a new invitation is created.
+	 * 
+	 * @default false
+	 */
+	resendExistingInvite?: boolean;
+	/**
 	 * Rate limit configuration.
 	 *
 	 * @default {

@@ -127,6 +127,55 @@ export const createAppInvitation = <
 
 			await options.hooks?.create?.before?.(ctx);
 
+			if (
+				ctx.body.type === "personal" &&
+				ctx.body.resend &&
+				options.resendExistingInvite
+			) {
+				const [invitation] =
+					await adapter.findInvitationsByEmail<ReturnAdditionalFields>(
+						ctx.body.email,
+						{
+							where: [
+								{
+									field: "inviterId",
+									value: session.user.id,
+								},
+								{
+									field: "status",
+									value: "pending",
+								},
+								{
+									field: "expiresAt",
+									value: null,
+									connector: "OR",
+								},
+								{
+									field: "expiresAt",
+									value: new Date(),
+									operator: "gt",
+								},
+							],
+							limit: 1,
+						},
+					);
+
+				if (invitation.email) {
+					await options.sendInvitationEmail?.(
+						{
+							...invitation,
+							type: "personal",
+							inviter: session.user,
+						},
+						ctx.request,
+					);
+
+					await options.hooks?.create?.after?.(ctx, invitation);
+
+					return invitation;
+				}
+			}
+
 			const invitation = await adapter.createInvitation<ReturnAdditionalFields>(
 				ctx.body,
 				session.user,
