@@ -5,7 +5,11 @@ import {
 	type Session,
 	type User,
 } from "better-auth";
-import { createAuthClient, type ClientOptions, type SuccessContext } from "better-auth/client";
+import {
+	createAuthClient,
+	type ClientOptions,
+	type SuccessContext,
+} from "better-auth/client";
 import { bearer } from "better-auth/plugins/bearer";
 // TODO: import { bearerClient } from "better-auth/client/plugins";
 import { getAdapter, getMigrations, getAuthTables } from "better-auth/db";
@@ -32,7 +36,9 @@ export const getTestInstance = async <
 		shouldRunMigrations?: boolean;
 	},
 ) => {
-	type Options = O extends { auth: { api: any; options: infer T extends BetterAuthOptions } }
+	type Options = O extends {
+		auth: { api: any; options: infer T extends BetterAuthOptions };
+	}
 		? T
 		: O extends { options: infer T extends BetterAuthOptions }
 			? T
@@ -59,7 +65,8 @@ export const getTestInstance = async <
 			? config.auth
 			: betterAuth({
 					baseURL:
-						config?.options?.baseURL || "http://localhost:" + (config?.port || 3000),
+						config?.options?.baseURL ||
+						"http://localhost:" + (config?.port || 3000),
 					...opts,
 					...config?.options,
 					advanced: {
@@ -73,7 +80,10 @@ export const getTestInstance = async <
 	const options: BetterAuthOptions = auth.options;
 	const SESSION_TOKEN_COOKIE_NAME = getSessionTokenCookieName(options);
 
-	const customFetchImpl = async (url: string | URL | Request, init?: RequestInit) => {
+	const customFetchImpl = async (
+		url: string | URL | Request,
+		init?: RequestInit,
+	) => {
 		const req = new Request(url.toString(), init);
 		return auth.handler(req);
 	};
@@ -216,7 +226,9 @@ export const getTestInstance = async <
 	}
 
 	async function resetDatabase(
-		tables: string[] = Object.values(getAuthTables(options)).map((def) => def.modelName),
+		tables: string[] = Object.values(getAuthTables(options)).map(
+			(def) => def.modelName,
+		),
 	) {
 		const ctx = await auth.$context;
 		const adapter = ctx.adapter;
@@ -237,7 +249,9 @@ export const getTestInstance = async <
 
 	return {
 		auth: auth as unknown as ReturnType<
-			typeof betterAuth<Options extends undefined ? typeof opts : Options & typeof opts>
+			typeof betterAuth<
+				Options extends undefined ? typeof opts : Options & typeof opts
+			>
 		>,
 		client: client as unknown as ReturnType<typeof createAuthClient<C>>,
 		testUser,
@@ -254,6 +268,7 @@ export const getTestInstance = async <
 
 const getSessionTokenCookieName = (options: BetterAuthOptions) => {
 	const cookiePrefix = options.advanced?.cookiePrefix ?? "better-auth";
-	const sessionTokenName = options.advanced?.cookies?.session_token?.name ?? "session_token";
+	const sessionTokenName =
+		options.advanced?.cookies?.session_token?.name ?? "session_token";
 	return `${cookiePrefix}.${sessionTokenName}`;
 };
