@@ -1,21 +1,19 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+	"root": true,
+	"$schema": "https://biomejs.dev/schemas/2.2.2/schema.json",
 	"formatter": {
 		"enabled": true,
-		"indentStyle": "tab",
-		"lineWidth": 100,
-		"indentWidth": 4
+		"indentStyle": "tab"
 	},
-	"organizeImports": {
-		"enabled": false
-	},
+	"assist": { "actions": { "source": { "organizeImports": "off" } } },
 	"linter": {
 		"enabled": true,
 		"rules": {
 			"recommended": false,
 			"suspicious": {
 				"noImplicitAnyLet": "warn",
-				"noDuplicateObjectKeys": "warn"
+				"noDuplicateObjectKeys": "warn",
+				"noTsIgnore": "error"
 			},
 			"performance": {
 				"noDelete": "error"
@@ -26,10 +24,46 @@
 			},
 			"correctness": {
 				"noUnusedImports": "warn"
+			},
+			"nursery": {
+				"noMisusedPromises": "error"
 			}
 		}
 	},
+	"overrides": [
+		{
+			"includes": ["**/examples/svelte-kit-example/**"],
+			"linter": {
+				"rules": {
+					"correctness": {
+						"noUnusedImports": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.json"],
+			"formatter": {
+				"indentStyle": "space",
+				"indentWidth": 2
+			}
+		}
+	],
 	"files": {
-		"ignore": ["dist", "package.json", ".turbo", ".next", ".cache"]
+		"includes": [
+			"**",
+			"!**/dist",
+			"!**/build",
+			"!**/.next",
+			"!**/.svelte-kit",
+			"!**/.contentlayer",
+			"!**/.turbo",
+			"!**/.nuxt",
+			"!**/.source",
+			"!**/.expo",
+			"!**/.cache",
+			"!**/dev/cloudflare/drizzle",
+			"!**/playwright-report"
+		]
 	}
 }
