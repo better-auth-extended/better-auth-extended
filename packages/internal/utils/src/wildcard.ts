@@ -210,7 +210,6 @@ export function wildcardMatch(
 	}
 
 	if (
-		// biome-ignore lint/style/noArguments: <explanation>
 		arguments.length === 2 &&
 		!(
 			typeof options === "undefined" ||

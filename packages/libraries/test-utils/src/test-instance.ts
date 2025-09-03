@@ -11,7 +11,6 @@ import { bearer } from "better-auth/plugins/bearer";
 import { getAdapter, getMigrations, getAuthTables } from "better-auth/db";
 import { parseSetCookieHeader, setCookieToHeader } from "better-auth/cookies";
 import { getBaseURL } from "@better-auth-extended/internal-utils";
-import { admin } from "better-auth/plugins";
 
 export const getTestInstance = async <
 	O extends
