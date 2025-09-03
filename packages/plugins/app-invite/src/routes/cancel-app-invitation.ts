@@ -111,7 +111,11 @@ export const cancelAppInvitation = <
 					}
 				: null;
 
-			await options.hooks?.cancel?.after?.(ctx, canceledI!);
+			if (!canceledI) {
+				throw ctx.error("INTERNAL_SERVER_ERROR");
+			}
+
+			await options.hooks?.cancel?.after?.(ctx, canceledI);
 
 			return ctx.json(
 				canceledI as (AppInvitation & ReturnAdditionalFields) | null,
