@@ -15,8 +15,7 @@ export default {
 		{
 			type: "input",
 			name: "description",
-			message:
-				"What is the plugin about?",
+			message: "What is the plugin about?",
 		},
 	],
 	actions: [
