@@ -474,4 +474,254 @@ describe("App Invite", async () => {
 		});
 		expect(res.data?.invitations.length).toBeGreaterThanOrEqual(1);
 	});
+
+	it("should remove expired invitations when cleanupExpiredInvitations is true", async () => {
+		const invitation = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "personal",
+				email: "expired@test.com",
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		await db.update({
+			model: "appInvitation",
+			where: [{ field: "id", value: invitation.id }],
+			update: { expiresAt: new Date(Date.now() - 1000) },
+		});
+
+		const res = await client2.listInvitations({
+			query: {},
+			fetchOptions: {
+				headers: user.headers,
+			},
+		});
+
+		expect(
+			res.data?.invitations.find((inv) => inv.id === invitation.id),
+		).toBeUndefined();
+	});
+
+	it("should keep expired invitations when cleanupExpiredInvitations is false", async () => {
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+			db: _db,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						cleanupExpiredInvitations: false,
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "personal",
+				email: "expired-keep@test.com",
+			},
+		});
+
+		await _db.update({
+			model: "appInvitation",
+			where: [{ field: "id", value: invitation.id }],
+			update: { expiresAt: new Date(Date.now() - 1000) },
+		});
+
+		const res = await _client.listInvitations({
+			query: {},
+			fetchOptions: {
+				headers: user.headers,
+			},
+		});
+
+		const expiredInvitation = res.data?.invitations.find(
+			(inv) => inv.id === invitation.id,
+		);
+		expect(expiredInvitation).toBeDefined();
+		expect(expiredInvitation?.status).toBe("expired");
+
+		const acceptRes = await _client.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			password: "password",
+		});
+
+		expect(acceptRes.error).toBeDefined();
+	});
+
+	it("should delete personal invites on decision when cleanupPersonalInvitesOnDecision is true", async () => {
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+			db: _db,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						cleanupPersonalInvitesOnDecision: true,
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation1 = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "multiple@test.com",
+				resend: true,
+			},
+		});
+
+		const invitation2 = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "multiple@test.com",
+				resend: true,
+			},
+		});
+
+		let res = await _client.listInvitations({
+			query: {},
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		expect(
+			res.data?.invitations.filter((inv) => inv.email === "multiple@test.com"),
+		).toHaveLength(2);
+
+		await _client.acceptInvitation({
+			invitationId: invitation1.id,
+			name: "Test User",
+			password: "password",
+			additionalFields: {
+				newField: "test",
+			},
+		});
+
+		res = await _client.listInvitations({
+			query: {},
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		const remainingInvitations = res.data?.invitations.filter(
+			(inv) => inv.email === "multiple@test.com",
+		);
+		expect(remainingInvitations).toHaveLength(0);
+	});
+
+	it("should keep personal invites on decision when cleanupPersonalInvitesOnDecision is false", async () => {
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+			db: _db,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						cleanupPersonalInvitesOnDecision: false,
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation1 = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "multiple-keep@test.com",
+				resend: true,
+			},
+		});
+
+		const invitation2 = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "multiple-keep@test.com",
+				resend: true,
+			},
+		});
+
+		let res = await _client.listInvitations({
+			query: {},
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		expect(
+			res.data?.invitations.filter(
+				(inv) => inv.email === "multiple-keep@test.com",
+			),
+		).toHaveLength(2);
+
+		await _client.acceptInvitation({
+			invitationId: invitation1.id,
+			name: "Test User",
+			password: "password",
+		});
+
+		res = await _client.listInvitations({
+			query: {},
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		const remainingInvitations = res.data?.invitations.filter(
+			(inv) => inv.email === "multiple-keep@test.com",
+		);
+		expect(
+			remainingInvitations?.find((i) => i.id === invitation1.id)?.status,
+		).toBe("accepted");
+		expect(
+			remainingInvitations?.find((i) => i.id === invitation2.id)?.status,
+		).toBe("expired");
+	});
 });
