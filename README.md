@@ -1,6 +1,6 @@
 # better-auth-extended
 
-A minimal curated set of plugins, tools, and libraries for [Better-Auth][better-auth-repo].
+A curated set of plugins, tools, and libraries for [Better-Auth][better-auth-repo].
 
 ## Libraries
 
