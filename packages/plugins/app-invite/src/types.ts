@@ -28,7 +28,7 @@ export type AppInviteOptions = {
 	/**
 	 * Define whether a user is allowed to cancel invitations.
 	 *
-	 * By default users can only cancel invitations issued by themself.
+	 * By default users can only cancel invitations issued by themselves.
 	 *
 	 * @deprecated use `canCancelInvitation` instead.
 	 */
@@ -85,7 +85,7 @@ export type AppInviteOptions = {
 	 */
 	autoSignIn?: boolean;
 	/**
-	 * Clean up expires invitations when a value is fetched.
+	 * Clean up expired invitations when a value is fetched.
 	 *
 	 * @default true
 	 */
@@ -185,7 +185,7 @@ export type AppInviteOptions = {
 				[key in keyof Omit<AppInvitation, "id">]?: string;
 			};
 			/**
-			 * Add extra invitation colums
+			 * Add extra invitation columns.
 			 */
 			additionalFields?: {
 				[key in string]: FieldAttribute;

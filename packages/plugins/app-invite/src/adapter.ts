@@ -30,7 +30,7 @@ export const getAppInviteAdapter = (
 			const expiresAt =
 				options?.invitationExpiresIn === null
 					? undefined
-					: getDate(options?.invitationExpiresIn || defaultExpiration);
+					: getDate(options?.invitationExpiresIn ?? defaultExpiration);
 
 			const newInvite = await adapter.create<AppInvitationInput, AppInvitation>(
 				{
@@ -45,9 +45,12 @@ export const getAppInviteAdapter = (
 									email: invitation.email,
 								}
 							: {
-									domainWhitelist: Array.isArray(invitation.domainWhitelist)
-										? invitation.domainWhitelist.join(",")
-										: invitation.domainWhitelist,
+									domainWhitelist: (Array.isArray(invitation.domainWhitelist)
+										? invitation.domainWhitelist
+										: invitation.domainWhitelist?.split(",")
+									)
+										?.map((d) => d.trim().toLowerCase())
+										.join(","),
 								}),
 						...invitation.additionalFields,
 					},

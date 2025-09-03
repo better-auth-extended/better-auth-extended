@@ -43,7 +43,7 @@ export const appInviteClient = <
 	} satisfies BetterAuthClientPlugin;
 };
 
-export const inferAppInviteAdditonalFields = <
+export const inferAppInviteAdditionalFields = <
 	O extends {
 		options: BetterAuthOptions;
 	},

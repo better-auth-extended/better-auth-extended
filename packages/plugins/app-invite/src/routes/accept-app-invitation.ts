@@ -108,6 +108,11 @@ export const acceptAppInvitation = <
 											type: "string",
 											description: "The email address of the user",
 										},
+										resend: {
+											type: "boolean",
+											description:
+												"Resend an invitation if the user was alreay invited.",
+										},
 										password: {
 											type: "string",
 											description: "The password of the user",

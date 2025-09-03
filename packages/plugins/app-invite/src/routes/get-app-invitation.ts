@@ -3,7 +3,7 @@ import type { getAdditionalFields } from "../utils";
 import type { AppInviteOptions } from "../types";
 import { z } from "zod";
 import { getAppInviteAdapter } from "../adapter";
-import { APIError } from "better-auth";
+import { APIError } from "better-auth/api";
 import { APP_INVITE_ERROR_CODES } from "../error-codes";
 
 export const getAppInvitation = <
@@ -37,10 +37,39 @@ export const getAppInvitation = <
 										$ref: "#/components/schemas/AppInvitation",
 										type: "object",
 										properties: {
-											// TODO:
+											id: {
+												type: "string",
+											},
+											name: {
+												type: "string",
+											},
+											email: {
+												type: "string",
+											},
+											inviterId: {
+												type: "string",
+											},
+											status: {
+												type: "string",
+											},
+											domainWhitelist: {
+												type: "string"
+											},
+											expiresAt: {
+												type: "string",
+											},
+											inviterEmail: {
+												type: "string",
+											},
+											inviterImage: {
+												type: "string",
+											},
 										},
 										required: [
-											// TODO:
+											"id",
+											"inviterId",
+											"inviterEmail",
+											"status",
 										],
 									},
 								},

@@ -27,7 +27,7 @@ const createPersonalInvitationSchema = z.object({
 				"The name of the user to invite (Only for personal invitations)",
 		})
 		.optional(),
-	email: z.string().meta({
+	email: z.email().meta({
 		description:
 			"The email address of the user to invite (Only for personal invitations)",
 	}),

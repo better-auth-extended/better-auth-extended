@@ -42,12 +42,14 @@ export const listAppInvitations = <
 					.optional(),
 				limit: z.coerce
 					.number()
+					.int()
 					.meta({
 						description: "The numbers of invitations to return",
 					})
 					.optional(),
 				offset: z.coerce
 					.number()
+					.int()
 					.meta({
 						description: "The offset to start from",
 					})

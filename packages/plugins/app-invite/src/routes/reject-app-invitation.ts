@@ -71,7 +71,7 @@ export const rejectAppInvitation = <
 												$ref: "#/components/schemas/AppInvitation",
 											},
 											user: {
-												$ref: "#/components/schemas/User",
+												$ref: "null",
 											},
 										},
 									},

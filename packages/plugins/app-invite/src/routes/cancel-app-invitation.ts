@@ -29,6 +29,21 @@ export const cancelAppInvitation = <
 			metadata: {
 				operationId: "cancelAppInvitation",
 				description: "Cancel an app invitation",
+				requestBody: {
+					content: {
+						"application/json": {
+							schema: {
+								type: "object",
+								properties: {
+									invitationId: {
+										type: "string",
+									},
+								},
+								required: ["invitationId"],
+							},
+						},
+					},
+				},
 				responses: {
 					"200": {
 						description: "Success",
@@ -88,6 +103,13 @@ export const cancelAppInvitation = <
 					"canceled",
 				);
 			}
+
+			canceledI = canceledI
+				? {
+						...canceledI,
+						status: "canceled",
+					}
+				: null;
 
 			await options.hooks?.cancel?.after?.(ctx, canceledI!);
 
