@@ -12,6 +12,7 @@ export const appInvitationSchema = z.object({
 	inviterId: z.string(),
 	expiresAt: z.date().optional(),
 	domainWhitelist: z.string().optional(),
+	createdAt: z.date().default(() => new Date()),
 });
 export type AppInvitation = z.infer<typeof appInvitationSchema>;
 export type AppInvitationInput = z.input<typeof appInvitationSchema>;
