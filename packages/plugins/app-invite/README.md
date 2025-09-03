@@ -109,8 +109,7 @@ the `invite` function takes an object with the following properties:
 - `email`: The email address of the user to invite. Leave empty to create a public invitation.
 - `resend`: A boolean value that determines whether to resend the invitation email,
   if the user is already invited. Defaults to `false`
-- `domainWhitelist`: An optional comma separated list of domains that allows public invitations
-  to be accepted only from approved domains.
+- `domainWhitelist`: An optional comma-separated list of domains that allows public invitations to be accepted only from approved domains (e.g., `example.com,*.example.org`).
 
 ```ts
 await authClient.inviteUser({
@@ -164,7 +163,7 @@ await authClient.getAppInvitation({
 
 ### List Invitations
 
-Allows an user to list all invitations issued by themself.
+Allows a user to list all invitations issued by themselves.
 
 ```ts
 await authClient.listInvitations({
@@ -176,7 +175,7 @@ await authClient.listInvitations({
 
 By default 100 invitations are returned. You can adjust the limit and offset using the following query parameters:
 
-- `searchField`: The field to search on, which can be `email`, `name` or `domainWhitelist`.
+- `searchField`: The field to search on, which can be `email`, `name`, or `domainWhitelist`.
 - `searchOperator`: The operator to use for the search. It can be `contains`, `starts_with`, or `ends_with`.
 - `searchValue`: The value to search for.
 - `limit`: The number of invitations to return.
@@ -184,7 +183,7 @@ By default 100 invitations are returned. You can adjust the limit and offset usi
 - `sortBy`: The field to sort the invitations by.
 - `sortDirection`: The direction to sort the invitations by. Defaults to `asc`.
 - `filterField`: The field to filter the invitations by.
-- `filterOperator`: The operator to use for the filter. It can be `eq`, `ne`, `lt`, `lte`, `gt` or `gte`.
+- `filterOperator`: The operator to use for the filter. It can be `eq`, `ne`, `lt`, `lte`, `gt`, or `gte`.
 - `filterValue`: The value to filter the invitations by.
 
 ```ts
@@ -225,7 +224,7 @@ Table Name: `appInvitation`
 
 **canCreateInvitation**: `((ctx: GenericEndpointContext) => Promise<boolean> | boolean)` | `boolean` - A function that determines whether a user can create an invitation. By default, it's `true`. You can set it to `false` to restrict users from creating invitations.
 
-**canCancelInvitation** `((ctx: GenericEndpointContext, invite: AppInvitation) => Promise<boolean> | boolean)` | `boolean` - A function that determines whether a user can cancel invitations. By default the user can only cancel invites created by themselves. You can set it to `false` to restrict users from canceling invitations.
+**canCancelInvitation** `((ctx: GenericEndpointContext, invite: AppInvitation) => Promise<boolean> | boolean)` | `boolean` - A function that determines whether a user can cancel invitations. By default, the user can only cancel invites they created. You can set it to `false` to restrict users from canceling invitations.
 
 **sendInvitationEmail**: `async (data) => Promise<void>` - A function that sends an invitation email to the user. This is only required for personal invitations.
 
@@ -259,7 +258,7 @@ Table Name: `appInvitation`
 
 **schema**: The schema for the app-invite plugin. Allows you to infer additional fields for the `user` and `appInvitation` tables. This option is available in the client plugin as well.
 
-~~**allowUserToCreateInvitation**~~: `boolean` | `((user: User, type: "personal" | "public") => Promise<boolean> | boolean)` - A function that determines whether a user can create invite others. By defaults it's `true`. You can set it to `false` to restrict users from creating invitations. (deprecated. use `canCreateInvitation` instead.)
+~~**allowUserToCreateInvitation**~~: `boolean` | `((user: User, type: "personal" | "public") => Promise<boolean> | boolean)` - A function that determines whether a user can invite others. By defaults it's `true`. You can set it to `false` to restrict users from creating invitations. (deprecated. use `canCreateInvitation` instead.)
 
 ~~**allowUserToCancelInvitation**~~: `(data: { user: User, invitation: AppInvitation }) => Promise<boolean> | boolean` - A function that determines whether a user can cancel invitations. By default the user can only cancel invites created by them. You can set it to `false` to restrict users from canceling invitations. (deprecated. use `canCancelInvitation` instead.)
 
