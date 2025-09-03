@@ -724,4 +724,652 @@ describe("App Invite", async () => {
 			remainingInvitations?.find((i) => i.id === invitation2.id)?.status,
 		).toBe("expired");
 	});
+
+	it("should verify email when verifyEmailOnAccept is true", async () => {
+		const invitation = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "personal",
+				email: "verify-email@test.com",
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		await client2.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			password: "password",
+			additionalFields: {
+				newField: "test",
+			},
+		});
+
+		const acceptedUser = await context.internalAdapter.findUserByEmail(
+			"verify-email@test.com",
+		);
+		expect(acceptedUser?.user.emailVerified).toBe(true);
+	});
+
+	it("should not verify email when verifyEmailOnAccept is false", async () => {
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+			context,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						verifyEmailOnAccept: false,
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "no-verify-email@test.com",
+			},
+		});
+
+		await _client.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			password: "password",
+		});
+
+		const acceptedUser = await context.internalAdapter.findUserByEmail(
+			"no-verify-email@test.com",
+		);
+		expect(acceptedUser?.user.emailVerified).toBe(false);
+	});
+
+	it("should auto sign in when autoSignIn is true", async () => {
+		const invitation = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "personal",
+				email: "auto-signin@test.com",
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		const res = await client2.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			password: "password",
+			additionalFields: {
+				newField: "test",
+			},
+		});
+
+		expect(res.data?.token).toBeDefined();
+		expect(res.data?.user).toBeDefined();
+	});
+
+	it("should not auto sign in when autoSignIn is false", async () => {
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						autoSignIn: false,
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "no-auto-signin@test.com",
+			},
+		});
+
+		const res = await _client.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			password: "password",
+		});
+
+		expect(res.data?.token).toBeNull();
+		expect(res.data?.user).toBeDefined();
+	});
+
+	it("should resend existing invite when resendExistingInvite is true", async () => {
+		const { auth: _auth, signUpWithTestUser } = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						resendExistingInvite: true,
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation1 = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "resend@test.com",
+				resend: true,
+			},
+		});
+
+		const invitation2 = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "resend@test.com",
+				resend: true,
+			},
+		});
+
+		expect(invitation2.id).toBe(invitation1.id);
+	});
+
+	it("should create new invite when resendExistingInvite is false", async () => {
+		const invitation1 = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "personal",
+				email: "new-invite@test.com",
+				resend: true,
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		const invitation2 = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "personal",
+				email: "new-invite@test.com",
+				resend: true,
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		expect(invitation2.id).not.toBe(invitation1.id);
+	});
+
+	it("should support case-insensitive domain whitelist", async () => {
+		const invitation = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "public",
+				domainWhitelist: "EXAMPLE.COM",
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		const res = await client2.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			email: "test@example.com",
+			password: "password",
+			additionalFields: {
+				newField: "test",
+			},
+		});
+
+		expect(res.data?.user.email).toBe("test@example.com");
+	});
+
+	it("should support wildcard patterns in domain whitelist", async () => {
+		const invitation = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "public",
+				domainWhitelist: "*.example.org",
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		const res = await client2.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			email: "test@sub.example.org",
+			password: "password",
+			additionalFields: {
+				newField: "test",
+			},
+		});
+
+		expect(res.data?.user.email).toBe("test@sub.example.org");
+	});
+
+	it("should require email for public invites when accepting", async () => {
+		const invitation = await auth.api.createAppInvitation({
+			headers: user.headers,
+			body: {
+				type: "public",
+				domainWhitelist: "test.com",
+				additionalFields: {
+					newInviteField: "",
+				},
+			},
+		});
+
+		const res = await client2.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			password: "password",
+			additionalFields: {
+				newField: "test",
+			},
+		});
+
+		expect(res.error).toBeDefined();
+	});
+
+	it("should support create.before hook", async () => {
+		const before = vi.fn();
+		const { auth: _auth, signUpWithTestUser } = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							create: {
+								before,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "new-user@test.com",
+			},
+		});
+
+		expect(before).toHaveBeenCalled();
+	});
+
+	it("should support create.after hook", async () => {
+		const after = vi.fn((_ctx, invitation) => {
+			expect(invitation?.status).toBe("pending");
+		});
+		const { auth: _auth, signUpWithTestUser } = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							create: {
+								after,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "hook-test@test.com",
+			},
+		});
+
+		expect(after).toHaveBeenCalled();
+	});
+
+	it("should support accept.before hook", async () => {
+		const before = vi.fn();
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							accept: {
+								before,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "new-user@test.com",
+			},
+		});
+
+		await _client.acceptInvitation({
+			invitationId: invitation.id,
+			name: "New Name",
+			password: "newpassword",
+		});
+
+		expect(before).toHaveBeenCalled();
+	});
+
+	it("should support accept.after hook", async () => {
+		const after = vi.fn((_ctx, data) => {
+			expect(data?.invitation?.status).toBe("accepted");
+			expect(data?.user?.id).toBeDefined();
+		});
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							accept: {
+								after,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "hook-accept@test.com",
+			},
+		});
+
+		await _client.acceptInvitation({
+			invitationId: invitation.id,
+			name: "Test User",
+			password: "password",
+		});
+
+		expect(after).toHaveBeenCalled();
+	});
+
+	it("should support reject.before hook", async () => {
+		const before = vi.fn();
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							reject: {
+								before,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "hook-reject@test.com",
+			},
+		});
+
+		await _client.rejectInvitation({
+			invitationId: invitation.id,
+		});
+
+		expect(before).toHaveBeenCalled();
+	});
+
+	it("should support reject.after hook", async () => {
+		const after = vi.fn((_ctx, invitation) => {
+			expect(invitation?.status).toBe("rejected");
+		});
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							reject: {
+								after,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "hook-reject-after@test.com",
+			},
+		});
+
+		await _client.rejectInvitation({
+			invitationId: invitation.id,
+		});
+
+		expect(after).toHaveBeenCalled();
+	});
+
+	it("should support cancel.before hook", async () => {
+		const before = vi.fn();
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							cancel: {
+								before,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "hook-cancel@test.com",
+			},
+		});
+
+		await _client.cancelInvitation({
+			invitationId: invitation.id,
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		expect(before).toHaveBeenCalled();
+	});
+
+	it("should support cancel.after hook", async () => {
+		const after = vi.fn((_ctx, invitation) => {
+			expect(invitation?.status).toBe("canceled");
+		});
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						hooks: {
+							cancel: {
+								after,
+							},
+						},
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const invitation = await _auth.api.createAppInvitation({
+			headers: _user.headers,
+			body: {
+				type: "personal",
+				email: "hook-cancel-after@test.com",
+			},
+		});
+
+		await _client.cancelInvitation({
+			invitationId: invitation.id,
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		expect(after).toHaveBeenCalled();
+	});
 });

@@ -3,7 +3,11 @@ import { createAuthEndpoint } from "better-auth/plugins";
 import type { AppInviteOptions } from "../types";
 import { APP_INVITE_ERROR_CODES } from "../error-codes";
 import { getAppInviteAdapter } from "../adapter";
-import { type CreateInvitation, createInvitationSchema } from "../schema";
+import {
+	type AppInvitation,
+	type CreateInvitation,
+	createInvitationSchema,
+} from "../schema";
 import { z } from "zod";
 import type { getAdditionalFields } from "../utils";
 import type {
@@ -132,7 +136,7 @@ export const createAppInvitation = <
 				ctx.body.resend &&
 				options.resendExistingInvite
 			) {
-				const [invitation] =
+				const pendingInvitations =
 					await adapter.findInvitationsByEmail<ReturnAdditionalFields>(
 						ctx.body.email,
 						{
@@ -145,22 +149,30 @@ export const createAppInvitation = <
 									field: "status",
 									value: "pending",
 								},
-								{
-									field: "expiresAt",
-									value: null,
-									connector: "OR",
-								},
-								{
-									field: "expiresAt",
-									value: new Date(),
-									operator: "gt",
-								},
 							],
-							limit: 1,
 						},
 					);
 
-				if (invitation.email) {
+				const invitation = pendingInvitations.reduce(
+					(acc, current) => {
+						if (!acc) {
+							return current;
+						}
+
+						if (!acc.expiresAt) {
+							return acc;
+						}
+
+						if (!current.expiresAt) {
+							return current;
+						}
+
+						return current.expiresAt > acc.expiresAt ? current : acc;
+					},
+					null as (AppInvitation & ReturnAdditionalFields) | null,
+				);
+
+				if (invitation?.email) {
 					await options.sendInvitationEmail?.(
 						{
 							...invitation,
