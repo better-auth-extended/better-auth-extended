@@ -1,6 +1,7 @@
 import { describe, it } from "vitest";
 import { {{camelCase name}} } from "../src/index";
 import { {{camelCase name}}Client } from "../src/client";
+import { getTestInstance } from "@better-auth-extended/test-utils";
 
 describe("{{titleCase name}}", async () => {
     const { auth, client, db, signUpWithTestUser, } = await getTestInstance({
