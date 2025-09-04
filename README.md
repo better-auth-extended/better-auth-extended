@@ -21,7 +21,7 @@ A curated set of plugins, tools, and libraries for [Better-Auth][better-auth-rep
 | Name                     | Description                                                 |                                                                                                                                                               |
 | ------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [app-invite][app-invite] | Invite users to your application and allow them to sign up. | ![NPM Version][app-invite-shield-npm-version] <br/> ![npm bundle size][app-invite-shield-npm-bundle-size] <br/> ![NPM License][app-invite-shield-npm-license] |
-| onboarding               | WIP                                                         |                                                                                                                                                               |
+| onboarding               | Easily add onboarding to your authentication flow.          | WIP (https://github.com/jslno/better-auth-extended/pull/6)                                                                                                    |
 
 ## Contributing
 
