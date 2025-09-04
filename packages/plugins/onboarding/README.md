@@ -243,14 +243,14 @@ const step = createOnboardingStep({
 - **handler**: `<R>(ctx: GenericEndpointContext) => R | Promise<R>` - Function that processes the step.
 - **once**: `boolean` - If `true`, step can only be completed once. (default: `true`)
 - **required**: `boolean` - If `true`, step must be completed before onboarding is done. (default: `false`)
-- **requireHeader**: `boolean` - If `true`, headers are required in context.
+- **requireHeaders**: `boolean` - If `true`, headers are required in context.
 - **requireRequest**: `boolean` - If `true`, request object is required.
 - **cloneRequest**: `boolean` - Clone the request object from router.
 
 ### Example
 
 ```ts
-import { createOnboardingStep } from "@better-auth-kit/onboarding";
+import { createOnboardingStep } from "@better-auth-extended/onboarding";
 import { z } from "zod";
 
 const preferencesStep = createOnboardingStep({
