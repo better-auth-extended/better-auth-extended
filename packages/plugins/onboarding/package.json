@@ -45,13 +45,14 @@
     }
   },
   "devDependencies": {
-    "typescript": "catalog:",
-    "unbuild": "catalog:",
     "@better-auth-extended/test-utils": "workspace:*",
-    "vitest": "catalog:",
+    "@better-fetch/fetch": "catalog:",
     "better-auth": "catalog:better-auth",
     "better-call": "catalog:",
-    "@better-fetch/fetch": "catalog:"
+    "better-sqlite3": "catalog:",
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "vitest": "catalog:"
   },
   "peerDependencies": {
     "better-auth": "catalog:better-auth"
