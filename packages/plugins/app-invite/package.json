@@ -1,0 +1,66 @@
+{
+  "name": "@better-auth-extended/app-invite",
+  "description": "",
+  "version": "0.0.1",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jslno/better-auth-extended",
+    "directory": "packages/plugin/app-invite"
+  },
+  "license": "MIT",
+  "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild --clean",
+    "dev": "unbuild --watch",
+    "stub": "unbuild --stub",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "client": [
+        "./dist/client.d.ts"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@better-auth-extended/test-utils": "workspace:*",
+    "better-auth": "catalog:better-auth",
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "vitest": "catalog:",
+    "better-call": "catalog:"
+  },
+  "peerDependencies": {
+    "better-auth": "catalog:better-auth"
+  },
+  "dependencies": {
+    "@better-auth-extended/internal-env": "workspace:*",
+    "@better-auth-extended/internal-utils": "workspace:*",
+    "zod": "catalog:"
+  },
+  "files": [
+    "dist"
+  ]
+}
