@@ -1,8 +1,10 @@
-<h1 style="display:flex;align-items:center;gap:1rem;">
+<h1>
     <span>better-auth-extended</span>
-    <div style="display:flex;align-items:center;gap:0.5rem;" aria-hidden="true">
+     <div style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem;margin-bottom:0.5rem" aria-hidden="true">
         <img alt="GitHub Issues" src="https://img.shields.io/github/issues/jslno/better-auth-extended?style=flat-square">
         <img alt="GitHub Pull Request" src="https://img.shields.io/github/issues-pr/jslno/better-auth-extended?style=flat-square">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/jslno/better-auth-extended?style=flat-square">
+        <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/jslno/better-auth-extended/ci.yml?branch=main&style=flat-square">
     </div>
 </h1>
 
@@ -52,3 +54,7 @@ Contributions are always welcome. Check out [`CONTRIBUTING.md`](CONTRIBUTING.md)
 [MIT](LICENSE.md)
 
 [better-auth-repo]: https://github.com/better-auth/better-auth
+
+## Disclaimer
+
+better-auth-extended is not officially affiliated with Better-Auth!
