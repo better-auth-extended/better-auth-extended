@@ -32,6 +32,11 @@
       "types": "./dist/client.d.ts",
       "import": "./dist/client.mjs",
       "require": "./dist/client.cjs"
+    },
+    "./presets": {
+      "types": "./dist/presets/index.d.ts",
+      "import": "./dist/presets/index.mjs",
+      "require": "./dist/presets/index.cjs"
     }
   },
   "typesVersions": {
@@ -41,6 +46,9 @@
       ],
       "client": [
         "./dist/client.d.ts"
+      ],
+      "presets": [
+        "./dist/presets/index.d.ts"
       ]
     }
   },
