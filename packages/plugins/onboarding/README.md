@@ -10,4 +10,5 @@
 Easily add onboarding to your authentication flow.
 
 ## License
+
 [MIT](LICENSE.md)
