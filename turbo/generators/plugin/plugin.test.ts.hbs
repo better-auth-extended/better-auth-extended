@@ -3,5 +3,16 @@ import { {{camelCase name}} } from "../src/index";
 import { {{camelCase name}}Client } from "../src/client";
 
 describe("{{titleCase name}}", async () => {
-
+    const { auth, client, db, signUpWithTestUser, } = await getTestInstance({
+        options: {
+            emailAndPassword: {
+                enabled: true,
+                autoSignIn: true,
+            },
+            plugins: [{{camelCase name}}()],
+        },
+        clientOptions: {
+            plugins: [{{camelCase name}}Client()],
+        },
+    });
 });
