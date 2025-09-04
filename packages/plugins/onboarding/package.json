@@ -50,7 +50,8 @@
     "@better-auth-extended/test-utils": "workspace:*",
     "vitest": "catalog:",
     "better-auth": "catalog:better-auth",
-    "better-call": "catalog:"
+    "better-call": "catalog:",
+    "@better-fetch/fetch": "catalog:"
   },
   "peerDependencies": {
     "better-auth": "catalog:better-auth"

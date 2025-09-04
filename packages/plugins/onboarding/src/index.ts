@@ -290,5 +290,3 @@ export const createOnboardingStep = <
 
 export * from "./types";
 export * from "./client";
-
-export type * from "better-call";

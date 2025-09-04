@@ -78,3 +78,5 @@ export type OnboardingStep<
 	 */
 	required?: boolean;
 } & (Required extends true ? { required: true } : { required?: false });
+
+export type * from "@better-fetch/fetch";
