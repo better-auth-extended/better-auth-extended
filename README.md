@@ -1,8 +1,10 @@
-<h1 style="display:flex;align-items:center;gap:1rem;">
+<h1>
     <span>better-auth-extended</span>
-    <div style="display:flex;align-items:center;gap:0.5rem;" aria-hidden="true">
+     <div style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem;margin-bottom:0.5rem" aria-hidden="true">
         <img alt="GitHub Issues" src="https://img.shields.io/github/issues/jslno/better-auth-extended?style=flat-square">
         <img alt="GitHub Pull Request" src="https://img.shields.io/github/issues-pr/jslno/better-auth-extended?style=flat-square">
+        <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/jslno/better-auth-extended?style=flat-square">
+        <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/jslno/better-auth-extended/ci.yml?branch=main&style=flat-square">
     </div>
 </h1>
 
@@ -10,45 +12,40 @@ A curated set of plugins, tools, and libraries for [Better-Auth][better-auth-rep
 
 ## Libraries
 
-<ul>
-    <li>
-        <div style="display:flex;align-items:center;gap:1rem;">
-            <a href="packages/libraries/test-utils">test-utils</a>
-            <div style="display:flex;align-items:center;gap:0.5rem;" aria-hidden="true">
-                <img alt="NPM Version" src="https://img.shields.io/npm/v/@better-auth-extended/test-utils?style=flat-square">
-                <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/test-utils?style=flat-square">
-                <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/test-utils?style=flat-square">
-            </div>
-        </div>
-    </li>
-</ul>
+| Name                     | Description                                                          |                                                                                                                                                               |
+| ------------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [test-utils][test-utils] | A collection of utilities to help you test your Better-Auth plugins. | ![NPM Version][test-utils-shield-npm-version] <br/> ![npm bundle size][test-utils-shield-npm-bundle-size] <br/> ![NPM License][test-utils-shield-npm-license] |
 
 ## Plugins
 
-<ul>
-    <li>
-        <div style="display:flex;align-items:center;gap:1rem;">
-            <a href="packages/plugins/app-invite">app-invite</a>
-            <div style="display:flex;align-items:center;gap:0.5rem;" aria-hidden="true">
-                <img alt="NPM Version" src="https://img.shields.io/npm/v/@better-auth-extended/app-invite?style=flat-square">
-                <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/app-invite?style=flat-square">
-                <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/app-invite?style=flat-square">
-            </div>
-        </div>
-    </li>
-    <li>
-        <div style="display:flex;align-items:center;gap:1rem;">
-            <span>onboarding (WIP)</span>
-        </div>
-    </li>
-</ul>
+| Name                     | Description                                                 |                                                                                                                                                               |
+| ------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [app-invite][app-invite] | Invite users to your application and allow them to sign up. | ![NPM Version][app-invite-shield-npm-version] <br/> ![npm bundle size][app-invite-shield-npm-bundle-size] <br/> ![NPM License][app-invite-shield-npm-license] |
+| onboarding               | Easily add onboarding to your authentication flow.          | WIP (https://github.com/jslno/better-auth-extended/pull/6)                                                                                                    |
 
 ## Contributing
 
 Contributions are always welcome. Check out [`CONTRIBUTING.md`](CONTRIBUTING.md) for more details.
 
+## References
+
+- Better-Auth &nbsp;&nbsp;([Docs][better-auth-docs] &nbsp;&bull;&nbsp; [Repo][better-auth-repo])
+
+## Disclaimer
+
+better-auth-extended is not officially affiliated with Better-Auth!
+
 ## License
 
 [MIT](LICENSE.md)
 
+[test-utils]: packages/libraries/test-utils
+[test-utils-shield-npm-version]: https://img.shields.io/npm/v/@better-auth-extended/test-utils?style=flat-square
+[test-utils-shield-npm-bundle-size]: https://img.shields.io/bundlephobia/min/@better-auth-extended/test-utils?style=flat-square
+[test-utils-shield-npm-license]: https://img.shields.io/npm/l/@better-auth-extended/test-utils?style=flat-square
+[app-invite]: packages/plugins/app-invite
+[app-invite-shield-npm-version]: https://img.shields.io/npm/v/@better-auth-extended/app-invite?style=flat-square
+[app-invite-shield-npm-bundle-size]: https://img.shields.io/bundlephobia/min/@better-auth-extended/app-invite?style=flat-square
+[app-invite-shield-npm-license]: https://img.shields.io/npm/l/@better-auth-extended/app-invite?style=flat-square
+[better-auth-docs]: https://better-auth.com
 [better-auth-repo]: https://github.com/better-auth/better-auth
