@@ -291,43 +291,41 @@ describe("Onboarding", () => {
 
 		it("should not trigger redirect when autoEnableOnSignUp is an async function returning false", async () => {
 			mockOnboardingRedirect.mockClear();
-			const { signUpWithTestUser } = await getTestInstance(
-				{
-					options: {
-						database: database(":memory:"),
-						emailAndPassword: {
-							enabled: true,
-							autoSignIn: true,
-						},
-						plugins: [
-							onboarding({
-								steps: {
-									newPassword: createOnboardingStep({
-										input: z
-											.object({
-												foo: z.string().optional(),
-											})
-											.nullish(),
-										handler(ctx) {
-											return true;
-										},
-									}),
-								},
-								autoEnableOnSignUp: async () => false,
-								completionStep: "newPassword",
-							}),
-						],
+			const { signUpWithTestUser } = await getTestInstance({
+				options: {
+					database: database(":memory:"),
+					emailAndPassword: {
+						enabled: true,
+						autoSignIn: true,
 					},
-					clientOptions: {
-						plugins: [
-							onboardingClient({
-								onOnboardingRedirect: mockOnboardingRedirect,
-							}),
-						],
-					},
-					shouldRunMigrations: true,
+					plugins: [
+						onboarding({
+							steps: {
+								newPassword: createOnboardingStep({
+									input: z
+										.object({
+											foo: z.string().optional(),
+										})
+										.nullish(),
+									handler(ctx) {
+										return true;
+									},
+								}),
+							},
+							autoEnableOnSignUp: async () => false,
+							completionStep: "newPassword",
+						}),
+					],
 				},
-			);
+				clientOptions: {
+					plugins: [
+						onboardingClient({
+							onOnboardingRedirect: mockOnboardingRedirect,
+						}),
+					],
+				},
+				shouldRunMigrations: true,
+			});
 			await signUpWithTestUser();
 			expect(mockOnboardingRedirect).not.toHaveBeenCalled();
 		});
