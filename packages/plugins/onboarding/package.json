@@ -1,7 +1,7 @@
 {
   "name": "@better-auth-extended/onboarding",
   "description": "Easily add onboarding to your authentication flow.",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "type": "module",
   "repository": {
     "type": "git",
@@ -53,7 +53,10 @@
     "better-call": "catalog:"
   },
   "peerDependencies": {
-    "better-auth": "catalog:"
+    "better-auth": "catalog:better-auth"
+  },
+  "dependencies": {
+    "zod": "catalog:"
   },
   "files": [
     "dist"

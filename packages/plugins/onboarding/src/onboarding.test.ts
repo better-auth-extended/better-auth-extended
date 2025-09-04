@@ -1,5 +1,5 @@
 import { describe } from "vitest";
-import { onboarding } from "../src/index";
+import { createOnboardingStep, onboarding } from "../src/index";
 import { onboardingClient } from "../src/client";
 import { getTestInstance } from "@better-auth-extended/test-utils";
 
@@ -10,7 +10,18 @@ describe("Onboarding", async () => {
 				enabled: true,
 				autoSignIn: true,
 			},
-			plugins: [onboarding()],
+			plugins: [
+				onboarding({
+					steps: {
+						test: createOnboardingStep({
+							handler(ctx) {
+								return true;
+							},
+						}),
+					},
+					completionStep: "test",
+				}),
+			],
 		},
 		clientOptions: {
 			plugins: [onboardingClient()],
