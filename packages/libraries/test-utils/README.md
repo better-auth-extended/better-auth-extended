@@ -7,7 +7,7 @@
     </div>
 </h1>
 
-This library comes with test utilities to assist you in writing vitest code to test your Better-Auth plugins.
+This library comes with test utilities to assist you in writing code to test your Better-Auth plugins.
 
 ## Installation
 
