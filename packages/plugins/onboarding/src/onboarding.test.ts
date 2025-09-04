@@ -9,38 +9,41 @@ import { z } from "zod";
 const mockOnboardingRedirect = vi.fn();
 describe("Onboarding", () => {
 	describe("(success)", async () => {
-		const { auth, client, db, signUpWithTestUser, testUser, resetDatabase } = await getTestInstance({
-			options: {
-				database: database(":memory:"),
-				emailAndPassword: {
-					enabled: true,
-					autoSignIn: true,
+		const { client, db, signUpWithTestUser, testUser, resetDatabase } =
+			await getTestInstance({
+				options: {
+					database: database(":memory:"),
+					emailAndPassword: {
+						enabled: true,
+						autoSignIn: true,
+					},
+					plugins: [
+						onboarding({
+							steps: {
+								newPassword: createOnboardingStep({
+									input: z
+										.object({
+											foo: z.string().optional(),
+										})
+										.nullish(),
+									handler(ctx) {
+										return true;
+									},
+								}),
+							},
+							completionStep: "newPassword",
+						}),
+					],
 				},
-				plugins: [
-					onboarding({
-						steps: {
-							newPassword: createOnboardingStep({
-								input: z
-								.object({
-									foo: z.string().optional(),
-								})
-								.nullish(),
-								handler(ctx) {
-									return true;
-								},
-							}),
-						},
-						completionStep: "newPassword",
-					}),
-				],
-			},
-			clientOptions: {
-				plugins: [onboardingClient({
-					onOnboardingRedirect: mockOnboardingRedirect,
-				})],
-			},
-			shouldRunMigrations: true,
-		});
+				clientOptions: {
+					plugins: [
+						onboardingClient({
+							onOnboardingRedirect: mockOnboardingRedirect,
+						}),
+					],
+				},
+				shouldRunMigrations: true,
+			});
 
 		let headers: Headers;
 		beforeAll(async () => {
@@ -159,7 +162,7 @@ describe("Onboarding", () => {
 	});
 
 	describe("(auto enable on sign-up)", async () => {
-		const { auth, signUpWithTestUser, resetDatabase } = await getTestInstance({
+		const { signUpWithTestUser, resetDatabase } = await getTestInstance({
 			options: {
 				database: database(":memory:"),
 				emailAndPassword: {
@@ -171,10 +174,10 @@ describe("Onboarding", () => {
 						steps: {
 							newPassword: createOnboardingStep({
 								input: z
-								.object({
-									foo: z.string().optional(),
-								})
-								.nullish(),
+									.object({
+										foo: z.string().optional(),
+									})
+									.nullish(),
 								handler(ctx) {
 									return true;
 								},
@@ -185,9 +188,11 @@ describe("Onboarding", () => {
 				],
 			},
 			clientOptions: {
-				plugins: [onboardingClient({
-					onOnboardingRedirect: mockOnboardingRedirect,
-				})],
+				plugins: [
+					onboardingClient({
+						onOnboardingRedirect: mockOnboardingRedirect,
+					}),
+				],
 			},
 			shouldRunMigrations: true,
 		});
@@ -216,10 +221,10 @@ describe("Onboarding", () => {
 							steps: {
 								newPassword: createOnboardingStep({
 									input: z
-									.object({
-										foo: z.string().optional(),
-									})
-									.nullish(),
+										.object({
+											foo: z.string().optional(),
+										})
+										.nullish(),
 									handler(ctx) {
 										return true;
 									},
@@ -231,9 +236,11 @@ describe("Onboarding", () => {
 					],
 				},
 				clientOptions: {
-					plugins: [onboardingClient({
-						onOnboardingRedirect: mockOnboardingRedirect,
-					})],
+					plugins: [
+						onboardingClient({
+							onOnboardingRedirect: mockOnboardingRedirect,
+						}),
+					],
 				},
 				shouldRunMigrations: true,
 			});
@@ -255,10 +262,10 @@ describe("Onboarding", () => {
 							steps: {
 								newPassword: createOnboardingStep({
 									input: z
-									.object({
-										foo: z.string().optional(),
-									})
-									.nullish(),
+										.object({
+											foo: z.string().optional(),
+										})
+										.nullish(),
 									handler(ctx) {
 										return true;
 									},
@@ -270,9 +277,11 @@ describe("Onboarding", () => {
 					],
 				},
 				clientOptions: {
-					plugins: [onboardingClient({
-						onOnboardingRedirect: mockOnboardingRedirect,
-					})],
+					plugins: [
+						onboardingClient({
+							onOnboardingRedirect: mockOnboardingRedirect,
+						}),
+					],
 				},
 				shouldRunMigrations: true,
 			});
@@ -282,39 +291,43 @@ describe("Onboarding", () => {
 
 		it("should not trigger redirect when autoEnableOnSignUp is an async function returning false", async () => {
 			mockOnboardingRedirect.mockClear();
-			const { auth, signUpWithTestUser, resetDatabase } = await getTestInstance({
-				options: {
-					database: database(":memory:"),
-					emailAndPassword: {
-						enabled: true,
-						autoSignIn: true,
+			const { signUpWithTestUser } = await getTestInstance(
+				{
+					options: {
+						database: database(":memory:"),
+						emailAndPassword: {
+							enabled: true,
+							autoSignIn: true,
+						},
+						plugins: [
+							onboarding({
+								steps: {
+									newPassword: createOnboardingStep({
+										input: z
+											.object({
+												foo: z.string().optional(),
+											})
+											.nullish(),
+										handler(ctx) {
+											return true;
+										},
+									}),
+								},
+								autoEnableOnSignUp: async () => false,
+								completionStep: "newPassword",
+							}),
+						],
 					},
-					plugins: [
-						onboarding({
-							steps: {
-								newPassword: createOnboardingStep({
-									input: z
-									.object({
-										foo: z.string().optional(),
-									})
-									.nullish(),
-									handler(ctx) {
-										return true;
-									},
-								}),
-							},
-							autoEnableOnSignUp: async () => false,
-							completionStep: "newPassword",
-						}),
-					],
+					clientOptions: {
+						plugins: [
+							onboardingClient({
+								onOnboardingRedirect: mockOnboardingRedirect,
+							}),
+						],
+					},
+					shouldRunMigrations: true,
 				},
-				clientOptions: {
-					plugins: [onboardingClient({
-						onOnboardingRedirect: mockOnboardingRedirect,
-					})],
-				},
-				shouldRunMigrations: true,
-			});
+			);
 			await signUpWithTestUser();
 			expect(mockOnboardingRedirect).not.toHaveBeenCalled();
 		});
@@ -329,18 +342,20 @@ describe("Onboarding", () => {
 						enabled: true,
 						autoSignIn: true,
 					},
-					plugins: [onboarding({
-						steps: {
-							profile: {
-								handler: async () => true,
-								required: true,
+					plugins: [
+						onboarding({
+							steps: {
+								profile: {
+									handler: async () => true,
+									required: true,
+								},
+								newPassword: {
+									handler: async () => true,
+								},
 							},
-							newPassword: {
-								handler: async () => true,
-							},
-						},
-						completionStep: "newPassword"
-					})],
+							completionStep: "newPassword",
+						}),
+					],
 				},
 				clientOptions: {
 					plugins: [
@@ -407,18 +422,20 @@ describe("Onboarding", () => {
 						enabled: true,
 						autoSignIn: true,
 					},
-					plugins: [onboarding({
-						steps: {
-							profile: {
-								handler: async () => true,
-								required: true,
+					plugins: [
+						onboarding({
+							steps: {
+								profile: {
+									handler: async () => true,
+									required: true,
+								},
+								preferences: {
+									handler: async () => true,
+								},
 							},
-							preferences: {
-								handler: async () => true,
-							},
-						},
-						completionStep: "preferences"
-					})],
+							completionStep: "preferences",
+						}),
+					],
 				},
 				clientOptions: {
 					plugins: [
