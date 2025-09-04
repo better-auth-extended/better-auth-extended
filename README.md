@@ -13,7 +13,7 @@ A curated set of plugins, tools, and libraries for [Better-Auth][better-auth-rep
 <ul>
     <li>
         <div style="display:flex;align-items:center;gap:1rem;">
-            <a href="/packages/libraries/test-utils">test-utils</a>
+            <a href="packages/libraries/test-utils">test-utils</a>
             <div style="display:flex;align-items:center;gap:0.5rem;" aria-hidden="true">
                 <img alt="NPM Version" src="https://img.shields.io/npm/v/@better-auth-extended/test-utils?style=flat-square">
                 <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/test-utils?style=flat-square">
@@ -28,7 +28,7 @@ A curated set of plugins, tools, and libraries for [Better-Auth][better-auth-rep
 <ul>
     <li>
         <div style="display:flex;align-items:center;gap:1rem;">
-            <a href="/packages/libraries/app-invite">app-invite</a>
+            <a href="packages/plugins/app-invite">app-invite</a>
             <div style="display:flex;align-items:center;gap:0.5rem;" aria-hidden="true">
                 <img alt="NPM Version" src="https://img.shields.io/npm/v/@better-auth-extended/app-invite?style=flat-square">
                 <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/app-invite?style=flat-square">
