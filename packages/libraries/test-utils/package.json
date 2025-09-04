@@ -1,11 +1,11 @@
 {
   "name": "@better-auth-extended/test-utils",
-  "description": "",
+  "description": "Test utilities to assist you in writing code to test your Better-Auth plugins.",
   "version": "0.1.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jslno/better-auth-extended",
+    "url": "https://github.com/jslno/better-auth-extended.git",
     "directory": "packages/libraries/test-utils"
   },
   "license": "MIT",

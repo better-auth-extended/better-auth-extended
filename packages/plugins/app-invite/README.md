@@ -1,4 +1,11 @@
-# @better-auth-extended/app-invite
+<h1>
+    @better-auth-extended/app-invite
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem;margin-bottom:0.5rem" aria-hidden="true">
+        <img alt="NPM Version" src="https://img.shields.io/npm/v/@better-auth-extended/app-invite?style=flat-square">
+        <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/app-invite?style=flat-square">
+        <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/app-invite?style=flat-square">
+    </div>
+</h1>
 
 The App Invite plugin enables you to invite users to your application through email invitations. It supports two types of invitations:
 
