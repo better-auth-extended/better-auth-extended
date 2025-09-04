@@ -5,8 +5,3 @@
 ### Minor Changes
 
 - Added test-utils package
-
-### Patch Changes
-
-- Updated dependencies
-  - @better-auth-extended/internal-utils@0.0.2
