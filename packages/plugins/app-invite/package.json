@@ -1,11 +1,11 @@
 {
   "name": "@better-auth-extended/app-invite",
   "description": "",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jslno/better-auth-extended",
+    "url": "https://github.com/jslno/better-auth-extended.git",
     "directory": "packages/plugin/app-invite"
   },
   "license": "MIT",
