@@ -1,7 +1,7 @@
 import { describe, beforeAll, beforeEach, it, vi, expect } from "vitest";
-import { createOnboardingStep, onboarding } from "../src/index";
-import { onboardingClient } from "../src/client";
-import { ONBOARDING_ERROR_CODES } from "../src/error-codes";
+import { createOnboardingStep, onboarding } from "./index";
+import { onboardingClient } from "./client";
+import { ONBOARDING_ERROR_CODES } from "./error-codes";
 import { getTestInstance } from "@better-auth-extended/test-utils";
 import database from "better-sqlite3";
 import { z } from "zod";
