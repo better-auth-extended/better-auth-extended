@@ -41,8 +41,8 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: packages
     attributes:
-      id: packages
       label: What package(s) are affected?
       description: Select all that apply
       options:
