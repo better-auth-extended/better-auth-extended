@@ -13,7 +13,7 @@
     "lint:fix": "biome check . --write",
     "changeset:add": "changeset add",
     "changeset:version": "changeset version",
-    "changeset:publish": "changeset publish",
+    "changeset:publish": "pnpm run build && changeset publish",
     "changeset:status": "changeset status",
     "test": "turbo --filter \"./packages/*/*\" test",
     "typecheck": "turbo --filter \"./packages/*/*\" typecheck",
