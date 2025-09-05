@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        This template is used for reporting a issue with better-auth-extended.
+        This template is used for reporting an issue with better-auth-extended.
 
         Feature requests should be opened in [here](https://github.com/jslno/better-auth-extended/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=)
 
