@@ -1,4 +1,6 @@
+import type { FieldAttribute } from "better-auth/db";
 import type { GenericEndpointContext } from "better-auth/types";
+import type { WaitlistUser } from "./schema";
 
 type RequiredKey<T, K extends keyof T> = Omit<T, K> & Required<Pick<T, K>>;
 
@@ -51,14 +53,28 @@ interface WaitlistOptions_base {
 	 *
 	 * @default false
 	 */
-    disableSignIn?: boolean;
-    /**
+	disableSignIn?: boolean;
+	/**
 	 * Whether to disable sign ups while the waitlist is active.
 	 *
 	 * @default false
 	 */
-    disableSignUp?: boolean;
+	disableSignUp?: boolean;
 	secondaryStorage?: boolean;
+	schema?: {
+		waitlistUser?: {
+			modelName?: string;
+			fields?: {
+				[key in keyof Omit<WaitlistUser, "id">]?: string;
+			};
+			/**
+			 * Add extra waitlist columns.
+			 */
+			additionalFields?: {
+				[key in string]: FieldAttribute;
+			};
+		};
+	};
 }
 
 interface WaitlistOptions_enabled extends WaitlistOptions_base {
