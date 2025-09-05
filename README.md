@@ -26,10 +26,10 @@ A curated set of plugins, tools, and libraries for [Better-Auth][better-auth-rep
 
 ## Plugins
 
-| Name                     | Description                                                 |                                                                                                                                                                                                           |
-| ------------------------ | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                     | Description                                                 |                                                                                                                                                               |
+| ------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [app-invite][app-invite] | Invite users to your application and allow them to sign up. | [![NPM Version][app-invite-shield-npm-version]][app-invite-npm] <br/> [![npm bundle size][app-invite-shield-npm-bundle-size]]() <br/> [![NPM License][app-invite-shield-npm-license]][app-invite-license] |
-| onboarding               | Easily add onboarding to your authentication flow.          | WIP (https://github.com/jslno/better-auth-extended/pull/6)                                                                                                                                                |
+| [onboarding][onboarding] | Easily add onboarding to your authentication flow.          | [![NPM Version][onboarding-shield-npm-version]][onboarding-npm] <br/> [![npm bundle size][onboarding-shield-npm-bundle-size]]() <br/> [![NPM License][onboarding-shield-npm-license]][onboarding-license] |
 
 ## Contributing
 
@@ -59,5 +59,11 @@ better-auth-extended is not officially affiliated with Better-Auth!
 [app-invite-shield-npm-version]: https://img.shields.io/npm/v/@better-auth-extended/app-invite?style=flat-square
 [app-invite-shield-npm-bundle-size]: https://img.shields.io/bundlephobia/min/@better-auth-extended/app-invite?style=flat-square
 [app-invite-shield-npm-license]: https://img.shields.io/npm/l/@better-auth-extended/app-invite?style=flat-square
+[onboarding]: packages/plugins/onboarding
+[onboarding-license]: packages/plugins/onboarding/LICENSE.md
+[onboarding-npm]: https://www.npmjs.com/package/@better-auth-extended/onboarding
+[onboarding-shield-npm-version]: https://img.shields.io/npm/v/@better-auth-extended/onboarding?style=flat-square
+[onboarding-shield-npm-bundle-size]: https://img.shields.io/bundlephobia/min/@better-auth-extended/onboarding?style=flat-square
+[onboarding-shield-npm-license]: https://img.shields.io/npm/l/@better-auth-extended/onboarding?style=flat-square
 [better-auth-docs]: https://better-auth.com
 [better-auth-repo]: https://github.com/better-auth/better-auth
