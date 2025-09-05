@@ -1,0 +1,61 @@
+{
+	"name": "@better-auth-extended/waitlist",
+	"description": "This plugin allows you to add a waitlist to your application.",
+	"version": "0.0.1",
+	"type": "module",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/jslno/better-auth-extended.git",
+		"directory": "packages/plugins/waitlist"
+	},
+	"license": "MIT",
+	"keywords": [],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"build": "unbuild --clean",
+		"dev": "unbuild --watch",
+		"stub": "unbuild --stub",
+		"test": "vitest",
+		"typecheck": "tsc --noEmit"
+	},
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.mjs",
+			"require": "./dist/index.cjs"
+		},
+		"./client": {
+			"types": "./dist/client.d.ts",
+			"import": "./dist/client.mjs",
+			"require": "./dist/client.cjs"
+		}
+	},
+	"typesVersions": {
+		"*": {
+			"*": [
+				"./dist/index.d.ts"
+			],
+			"client": [
+				"./dist/client.d.ts"
+			]
+		}
+	},
+	"devDependencies": {
+		"typescript": "catalog:",
+		"unbuild": "catalog:",
+		"@better-auth-extended/test-utils": "workspace:*",
+		"vitest": "catalog:",
+		"better-auth": "catalog:better-auth",
+		"better-call": "catalog:"
+	},
+	"peerDependencies": {
+		"better-auth": "catalog:better-auth"
+	},
+	"files": [
+		"dist"
+	]
+}
