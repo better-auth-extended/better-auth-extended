@@ -7,7 +7,7 @@ body:
       value: |
         This template is used for suggesting a feature with better-auth-extended.
 
-        Bug reports should be opened in [here](https://github.com/better-auth/better-auth/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
+        Bug reports should be opened in [here](https://github.com/jslno/better-auth-extended/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
 
         Before opening a new issue, please do a [search](https://github.com/jslno/better-auth-extended/issues) of existing issues and :+1: upvote the existing issue instead.
   - type: textarea
