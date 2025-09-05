@@ -1,0 +1,55 @@
+name: Issue
+on:
+  issues:
+    types: [ opened ]
+
+permissions:
+  contents: read
+
+jobs:
+  issue:
+    runs-on: ubuntu-latest
+
+    permissions:
+      issues: write
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Parse Bug Report form
+        if: contains(github.event.issue.labels.*.name, 'bug')
+        id: issue-parser-bug
+        uses: stefanbuck/github-issue-parser@2ea9b35a8c584529ed00891a8f7e41dc46d0441e # v3.2.1
+        with:
+          template-path: .github/ISSUE_TEMPLATE/bug_report.yml
+      
+      - name: Parse Feature Request form
+        if: contains(github.event.issue.labels.*.name, 'enhancement')
+        id: issue-parser-feat
+        uses: stefanbuck/github-issue-parser@2ea9b35a8c584529ed00891a8f7e41dc46d0441e # v3.2.1
+        with:
+          template-path: .github/ISSUE_TEMPLATE/feature_request.yml
+
+      - name: Set labels for bug report based on packages field
+        if: steps.issue-parser-bug.outputs.jsonString != ''
+        uses: redhat-plumbers-in-action/advanced-issue-labeler@0db433d412193574252480b4fc22f2e4319a4ea3 # v3.2.2
+        with:
+          issue-form: ${{ steps.issue-parser-bug.outputs.jsonString }}
+          section: packages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set labels for feature request based on packages field
+        if: steps.issue-parser-feat.outputs.jsonString != ''
+        uses: redhat-plumbers-in-action/advanced-issue-labeler@0db433d412193574252480b4fc22f2e4319a4ea3 # v3.2.2
+        with:
+          issue-form: ${{ steps.issue-parser-feat.outputs.jsonString }}
+          section: packages
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Assign issue
+        uses: actions-ecosystem/action-add-assignees@ce5019e63cc4f35aba27308dc88d19c8f3686747 # v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          assignees: jslno

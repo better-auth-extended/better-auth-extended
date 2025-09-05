@@ -1,0 +1,44 @@
+name: Feature request
+description: Suggest an idea for this project
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        This template is used for suggesting a feature with better-auth-extended.
+
+        Bug reports should be opened in [here](https://github.com/better-auth/better-auth/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml).
+
+        Before opening a new issue, please do a [search](https://github.com/jslno/better-auth-extended/issues) of existing issues and :+1: upvote the existing issue instead.
+  - type: textarea
+    attributes:
+      label: Is your feature request related to a problem? Please describe.
+      description: A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+  - type: dropdown
+    id: packages
+    attributes:
+      label: Which package(s) are affected? (If applicable)
+      description: Select all that apply
+      options:
+        - app-invite
+        - onboarding
+        - test-utils
+        - internal-utils
+        - internal-env
+      multiple: true
+  - type: textarea
+    attributes:
+      label: Describe the solution you'd like
+      description: A clear and concise description of what you want to happen.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Describe alternatives you've considered
+      description: A clear and concise description of any alternative solutions or features you've considered.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: Additional context
+      description: Add any other context or screenshots about the feature request here.
