@@ -1,6 +1,5 @@
 name: Report an Issue
 description: Report unexpected behavior or broken functionality.
-assignees: jslno
 labels: ["bug"]
 body:
   - type: markdown
