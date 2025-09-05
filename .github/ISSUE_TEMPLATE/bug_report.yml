@@ -8,7 +8,7 @@ body:
       value: |
         This template is used for reporting a issue with better-auth-extended.
 
-        Feature requests should be opened in [here](https://github.com/jslno/better-auth-extended/issues/new?assignees=&labels=&projects=&template=feature_request.md&title=)
+        Feature requests should be opened in [here](https://github.com/jslno/better-auth-extended/issues/new?assignees=&labels=enhancement&projects=&template=feature_request.yml&title=)
 
         Before opening a new issue, please do a [search](https://github.com/jslno/better-auth-extended/issues) of existing issues and :+1: upvote the existing issue instead.
   - type: textarea
