@@ -1,5 +1,6 @@
 import type { FieldAttribute } from "better-auth/db";
 import type { Waitlist, waitlistEndEvent, WaitlistUser } from "./schema";
+import type { GenericEndpointContext } from "better-auth";
 
 export type WaitlistEndEvent = (typeof waitlistEndEvent)[number];
 
@@ -35,6 +36,13 @@ export type CreateWaitlist =
 	| CreateWaitlist_rest;
 
 export type WaitlistOptions = {
+	canCreateWaitlist: ((
+		ctx: GenericEndpointContext,
+	) => Promise<boolean> | boolean) | {
+		statement: string;
+		permission: string;
+	};
+	concurrent?: boolean;
 	/**
 	 * Whether to disable sign in while the waitlist is active.
 	 *
@@ -44,10 +52,19 @@ export type WaitlistOptions = {
 	/**
 	 * Whether to disable sign ups while the waitlist is active.
 	 *
-	 * @default false
+	 * @default true
 	 */
 	disableSignUp?: boolean;
 	secondaryStorage?: boolean;
+	hooks?: {
+		waitlist?: {
+			create?: {
+				before?: (ctx: GenericEndpointContext) => Promise<void> | void;
+				after?: (ctx: GenericEndpointContext, waitlist: Waitlist & Record<string, any>) => Promise<void> | void;
+			}
+		},
+		waitlistUser?: {},
+	},
 	schema?: {
 		waitlist?: {
 			modelName?: string;

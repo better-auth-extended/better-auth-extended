@@ -1,10 +1,12 @@
 import type { CreateWaitlist, WaitlistOptions } from "../types";
-import { createAuthEndpoint } from "better-auth/api";
+import { createAuthEndpoint, sessionMiddleware } from "better-auth/api";
 import z from "zod";
-import type { getAdditionalFields } from "../utils";
+import type { AdminPlugin, getAdditionalFields } from "../utils";
 import { waitlistEndEvent } from "../schema";
 import { toZodSchema } from "better-auth/db";
-import type { IsExactlyEmptyObject } from "@better-auth-extended/internal-utils";
+import { getPlugin, type IsExactlyEmptyObject } from "@better-auth-extended/internal-utils";
+import { getWaitlistAdapter } from "../adapter";
+import type { Where } from "better-auth/types";
 
 export const createWaitlist = <
 	O extends WaitlistOptions,
@@ -36,6 +38,7 @@ export const createWaitlist = <
 					})
 					.optional(),
 			}),
+			use: [sessionMiddleware],
 			metadata: {
 				$Infer: {
 					body: {} as CreateWaitlist &
@@ -46,7 +49,86 @@ export const createWaitlist = <
 			},
 		},
 		async (ctx) => {
-			// TODO:
+            const session = ctx.context.session;
+
+            let canAccess = false;
+            if (typeof options.canCreateWaitlist === "function") {
+                canAccess = await options.canCreateWaitlist(ctx);
+            } else {
+                const adminPlugin = getPlugin<AdminPlugin>("admin" satisfies AdminPlugin["id"], ctx.context);
+
+                if (!adminPlugin) {
+                    throw ctx.error("FAILED_DEPENDENCY", {
+                        // TODO: Error codes
+                        message: "",
+                    });
+                }
+
+                canAccess = (await adminPlugin.endpoints.userHasPermission({
+                    body: {
+                        userId: session.user.id,
+                        permissions: {
+                            [options.canCreateWaitlist.statement]: options.canCreateWaitlist.permission,
+                        },
+                    },
+                })).success;
+            };
+			if (!canAccess) {
+				throw ctx.error("FORBIDDEN", {
+					// TODO: Error codes
+					message: "",
+				});
+			}
+
+			const adapter = getWaitlistAdapter(ctx.context, options);
+
+            await options?.hooks?.waitlist?.create?.before?.(ctx);
+
+			if (!options?.concurrent) {
+				const where: Where[] = [
+					{
+						field: "beginsAt",
+						value: ctx.body.beginsAt ?? new Date(),
+						operator: "gte",
+					},
+					{
+						field: "endsAt",
+						value: null,
+						connector: "OR",
+					},
+				];
+
+				if (ctx.body.endsAt) {
+					where.push({
+						field: "endsAt",
+						value: ctx.body.endsAt,
+						operator: "lte",
+						connector: "OR",
+					});
+				}
+
+				const exists =
+					(await ctx.context.adapter.count({
+						model: "waitlist",
+						where,
+					})) > 0;
+
+				if (exists) {
+                    throw ctx.error("BAD_REQUEST", {
+                        // TODO: Error codes
+                        message: ""
+                    })
+				}
+			}
+
+			const waitlist = await adapter.createWaitlist<ReturnAdditionalFields>(
+				ctx.body,
+				ctx.context.session.user,
+			);
+
+            await options?.hooks?.waitlist?.create?.after?.(ctx, waitlist);
+
+			return waitlist;
 		},
 	);
 };

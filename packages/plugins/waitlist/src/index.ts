@@ -12,7 +12,8 @@ import { getAdditionalFields, getAdditionalUserFields } from "./utils";
 
 export const waitlist = <O extends WaitlistOptions>(options: O) => {
 	const opts = {
-		// TODO: add default options
+		concurrent: false,
+		disableSignUp: true,
 		...options,
 	} satisfies WaitlistOptions;
 
