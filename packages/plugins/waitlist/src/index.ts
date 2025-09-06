@@ -1,9 +1,14 @@
 import type { BetterAuthPlugin } from "better-auth";
 import type { WaitlistOptions } from "./types";
-import { schema, type WaitlistUser } from "./schema";
+import { schema, type Waitlist, type WaitlistUser } from "./schema";
 import { mergeSchema } from "better-auth/db";
-import { joinWaitlist } from "./routes/join-waitlist";
-import { getAdditionalFields } from "./utils";
+import {
+	joinWaitlist,
+	acceptWaitlistUser,
+	createWaitlist,
+	rejectWaitlistUser,
+} from "./routes";
+import { getAdditionalFields, getAdditionalUserFields } from "./utils";
 
 export const waitlist = <O extends WaitlistOptions>(options: O) => {
 	const opts = {
@@ -12,21 +17,24 @@ export const waitlist = <O extends WaitlistOptions>(options: O) => {
 	} satisfies WaitlistOptions;
 
 	const mergedSchema = mergeSchema(schema, opts.schema);
+	mergedSchema.waitlist.fields = {
+		...mergedSchema.waitlist.fields,
+		...opts.schema?.waitlistUser?.additionalFields,
+	};
 	mergedSchema.waitlistUser.fields = {
 		...mergedSchema.waitlistUser.fields,
 		...opts.schema?.waitlistUser?.additionalFields,
 	};
 
-	const additionalFields = getAdditionalFields(options as O, false);
+	const additionalWaitlistFields = getAdditionalFields(options as O, false);
+	const additionalUserFields = getAdditionalUserFields(options as O, false);
 
 	const endpoints = {
-		joinWaitlist: joinWaitlist(
-			opts as O,
-			additionalFields as typeof additionalFields,
-		),
+		acceptWaitlistUser: acceptWaitlistUser(opts as O, additionalUserFields),
+		createWaitlist: createWaitlist(opts as O, additionalWaitlistFields),
+		joinWaitlist: joinWaitlist(opts as O, additionalUserFields),
+		rejectWaitlistUser: rejectWaitlistUser(opts as O, additionalUserFields),
 	};
-
-	// TODO: Shim context
 
 	return {
 		id: "waitlist",
@@ -34,8 +42,10 @@ export const waitlist = <O extends WaitlistOptions>(options: O) => {
 		schema: mergedSchema,
 		options: opts,
 		$Infer: {
+			Waitlist: {} as Waitlist &
+				typeof additionalWaitlistFields.$ReturnAdditionalFields,
 			WaitlistUser: {} as WaitlistUser &
-				typeof additionalFields.$ReturnAdditionalFields,
+				typeof additionalUserFields.$ReturnAdditionalFields,
 		},
 	} satisfies BetterAuthPlugin;
 };

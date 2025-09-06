@@ -3,11 +3,11 @@ import type { WaitlistOptions } from "../types";
 import { createAuthEndpoint } from "better-auth/api";
 import z from "zod";
 import { toZodSchema } from "better-auth/db";
-import type { getAdditionalFields } from "../utils";
+import type { getAdditionalUserFields } from "../utils";
 
 export const joinWaitlist = <
 	O extends WaitlistOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
+	A extends ReturnType<typeof getAdditionalUserFields<O>>,
 >(
 	options: O,
 	{ $ReturnAdditionalFields, $AdditionalFields }: A,
@@ -20,6 +20,7 @@ export const joinWaitlist = <
 		{
 			method: "POST",
 			body: z.object({
+				waitlistId: z.string().optional(),
 				name: z.string(),
 				email: z.email(),
 				additionalFields: z
