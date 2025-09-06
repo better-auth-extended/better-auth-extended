@@ -1,18 +1,13 @@
-import {
-	getAdditionalPluginFields,
-	type IsExactlyEmptyObject,
-} from "@better-auth-extended/internal-utils";
+import { type IsExactlyEmptyObject } from "@better-auth-extended/internal-utils";
 import type { WaitlistOptions } from "../types";
 import { createAuthEndpoint } from "better-auth/api";
 import z from "zod";
 import { toZodSchema } from "better-auth/db";
-import { waitlistMiddleware } from "../call";
-
-const x = getAdditionalPluginFields("waitlistUser");
+import type { getAdditionalFields } from "../utils";
 
 export const joinWaitlist = <
 	O extends WaitlistOptions,
-	A extends ReturnType<typeof x<O>>,
+	A extends ReturnType<typeof getAdditionalFields<O>>,
 >(
 	options: O,
 	{ $ReturnAdditionalFields, $AdditionalFields }: A,
@@ -49,7 +44,7 @@ export const joinWaitlist = <
 				},
 			},
 		},
-		async (ctx) => {ctx.context.secondaryStorage.
+		async (ctx) => {
 			// TODO:
 		},
 	);
