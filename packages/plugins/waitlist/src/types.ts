@@ -98,3 +98,5 @@ interface WaitlistOptions_disabled extends WaitlistOptions_base {
 export type WaitlistOptions =
 	| WaitlistOptions_enabled
 	| WaitlistOptions_disabled;
+
+export type * from "better-call";

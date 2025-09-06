@@ -28,7 +28,7 @@ export const joinWaitlist = <
 							? toZodSchema({
 									fields: options.schema?.waitlistUser?.additionalFields,
 									isClientSide: true,
-								})
+								}).shape
 							: {}),
 					})
 					.optional(),

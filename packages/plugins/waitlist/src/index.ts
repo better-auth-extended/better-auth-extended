@@ -41,5 +41,4 @@ export const waitlist = <O extends WaitlistOptions>(options: O) => {
 };
 
 export * from "./client";
-
-export type * from "better-call";
+export * from "./types";
