@@ -33,5 +33,20 @@ export const getWaitlistAdapter = (
 
 			return newWaitlist;
 		},
+		findWaitlistByID: async <AdditionalFields extends Record<string, any>>(
+			id: string,
+		) => {
+			const waitlist = await adapter.findOne<Waitlist & AdditionalFields>({
+				model: "waitlist",
+				where: [
+					{
+						field: "id",
+						value: id,
+					},
+				],
+			});
+
+			return waitlist;
+		},
 	};
 };

@@ -7,6 +7,7 @@ import {
 	acceptWaitlistUser,
 	createWaitlist,
 	rejectWaitlistUser,
+	getWaitlist,
 } from "./routes";
 import { getAdditionalFields, getAdditionalUserFields } from "./utils";
 
@@ -33,6 +34,7 @@ export const waitlist = <O extends WaitlistOptions>(options: O) => {
 	const endpoints = {
 		acceptWaitlistUser: acceptWaitlistUser(opts as O, additionalUserFields),
 		createWaitlist: createWaitlist(opts as O, additionalWaitlistFields),
+		getWaitlist: getWaitlist(opts as O, additionalWaitlistFields),
 		joinWaitlist: joinWaitlist(opts as O, additionalUserFields),
 		rejectWaitlistUser: rejectWaitlistUser(opts as O, additionalUserFields),
 	};

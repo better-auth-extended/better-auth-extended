@@ -1,14 +1,14 @@
 import type { CreateWaitlist, WaitlistOptions } from "../types";
 import { createAuthEndpoint, sessionMiddleware } from "better-auth/api";
 import z from "zod";
-import type { AdminPlugin, getAdditionalFields } from "../utils";
+import {
+	checkPermission,
+	conditionalMiddleware,
+	type getAdditionalFields,
+} from "../utils";
 import { createWaitlistSchema, type CreateWaitlistOutput } from "../schema";
 import { toZodSchema } from "better-auth/db";
-import {
-	getPlugin,
-	tryCatch,
-	type IsExactlyEmptyObject,
-} from "@better-auth-extended/internal-utils";
+import { type IsExactlyEmptyObject } from "@better-auth-extended/internal-utils";
 import { getWaitlistAdapter } from "../adapter";
 import type { Where } from "better-auth/types";
 
@@ -40,7 +40,12 @@ export const createWaitlist = <
 						.optional(),
 				}),
 			),
-			use: [sessionMiddleware],
+			use: [
+				...conditionalMiddleware(
+					!(options.disableSessionMiddleware ?? false),
+					sessionMiddleware,
+				),
+			],
 			metadata: {
 				$Infer: {
 					body: {} as CreateWaitlist &
@@ -51,43 +56,18 @@ export const createWaitlist = <
 			},
 		},
 		async (ctx) => {
-			const session = ctx.context.session;
 			const body = ctx.body as CreateWaitlistOutput & {
 				additonalFields?: Record<string, any>;
 			};
 
-			let canAccess = false;
-			if (typeof options.canCreateWaitlist === "function") {
-				canAccess = await options.canCreateWaitlist(ctx);
-			} else {
-				const adminPlugin = getPlugin<AdminPlugin>(
-					"admin" satisfies AdminPlugin["id"],
-					ctx.context,
-				);
+			const canAccess =
+				typeof options.canCreateWaitlist === "function"
+					? await options.canCreateWaitlist(ctx)
+					: await checkPermission(ctx, {
+							[options.canCreateWaitlist.statement]:
+								options.canCreateWaitlist.permissions,
+						});
 
-				if (!adminPlugin) {
-					throw ctx.error("FAILED_DEPENDENCY", {
-						// TODO: Error codes
-						message: "",
-					});
-				}
-
-				const res = await tryCatch(
-					adminPlugin.endpoints.userHasPermission({
-						...ctx,
-						body: {
-							role: session.user.role,
-							permissions: {
-								[options.canCreateWaitlist.statement]: [
-									options.canCreateWaitlist.permission,
-								],
-							},
-						},
-						returnHeaders: true,
-					}),
-				);
-				canAccess = (await res.data?.response.success) ?? false;
-			}
 			if (!canAccess) {
 				throw ctx.error("FORBIDDEN", {
 					// TODO: Error codes

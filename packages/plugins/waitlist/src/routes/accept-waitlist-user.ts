@@ -1,7 +1,11 @@
 import type { WaitlistOptions } from "../types";
-import { createAuthEndpoint } from "better-auth/api";
+import { createAuthEndpoint, sessionMiddleware } from "better-auth/api";
 import z from "zod";
-import type { getAdditionalUserFields } from "../utils";
+import {
+	checkPermission,
+	conditionalMiddleware,
+	type getAdditionalUserFields,
+} from "../utils";
 
 export const acceptWaitlistUser = <
 	O extends WaitlistOptions,
@@ -21,8 +25,29 @@ export const acceptWaitlistUser = <
 				waitlistId: z.string(),
 				email: z.email(),
 			}),
+			use: [
+				...conditionalMiddleware(
+					!(options.disableSessionMiddleware ?? false),
+					sessionMiddleware,
+				),
+			],
 		},
 		async (ctx) => {
+			const canAccess =
+				typeof options.canAcceptUser === "function"
+					? await options.canAcceptUser(ctx)
+					: await checkPermission(ctx, {
+							[options.canAcceptUser.statement]:
+								options.canAcceptUser.permissions,
+						});
+
+			if (!canAccess) {
+				throw ctx.error("FORBIDDEN", {
+					// TODO: Error codes
+					message: "",
+				});
+			}
+
 			// TODO:
 		},
 	);

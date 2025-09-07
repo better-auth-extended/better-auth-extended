@@ -24,6 +24,15 @@ describe("Waitlist", async () => {
 						canCreateWaitlist(ctx) {
 							return true;
 						},
+						canGetWaitlist(ctx) {
+							return true;
+						},
+						canAcceptUser(ctx) {
+							return true;
+						},
+						canRejectUser(ctx) {
+							return true;
+						},
 					}),
 				],
 			},
@@ -110,6 +119,15 @@ describe("Waitlist", async () => {
 				plugins: [
 					waitlist({
 						canCreateWaitlist(ctx) {
+							return false;
+						},
+						canGetWaitlist(ctx) {
+							return false;
+						},
+						canAcceptUser(ctx) {
+							return false;
+						},
+						canRejectUser(ctx) {
 							return false;
 						},
 					}),
@@ -225,20 +243,97 @@ describe("Waitlist", async () => {
 		expect(result1.data?.endEvent).toBe("trigger");
 		expect(result2.error?.statusText).toBe("BAD_REQUEST");
 	});
+
+	it("should get any waitlist when user has permission", async () => {
+		const createdWaitlist = await client.waitlist.create({
+			endEvent: "trigger",
+			endsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+			fetchOptions: {
+				headers: user.headers,
+			},
+		});
+
+		expect(createdWaitlist.data?.endEvent).toBe("trigger");
+
+		const waitlist = await client.waitlist.getWaitlist({
+			query: {
+				id: createdWaitlist.data!.id,
+			},
+			fetchOptions: {
+				headers: user.headers,
+			},
+		});
+
+		expect(waitlist.data?.endEvent).toBe("trigger");
+	});
+
+	it("should fail to get any waitlist when user doesn't have permission", async () => {
+		const { client: _client, signUpWithTestUser } = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					waitlist({
+						canCreateWaitlist(ctx) {
+							return false;
+						},
+						canGetWaitlist(ctx) {
+							return false;
+						},
+						canAcceptUser(ctx) {
+							return false;
+						},
+						canRejectUser(ctx) {
+							return false;
+						},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [waitlistClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+
+		const createdWaitlist = await db.create<typeof auth.$Infer.Waitlist>({
+			model: "waitlist",
+			data: {
+				endEvent: "trigger",
+				beginsAt: new Date(),
+				endsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+			},
+		});
+
+		expect(createdWaitlist?.endEvent).toBe("trigger");
+
+		const result = await _client.waitlist.getWaitlist({
+			query: {
+				id: createdWaitlist.id,
+			},
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		expect(result.error?.statusText).toBe("FORBIDDEN");
+	});
 });
 
 describe("Waitlist with admin plugin", async () => {
 	const ac = createAccessControl({
 		...defaultStatements,
-		waitlist: ["create"],
+		waitlist: ["create", "read", "accept-user", "reject-user"],
 	});
 	const adminRole = ac.newRole({
-		waitlist: ["create"],
+		waitlist: ["create", "read", "accept-user", "reject-user"],
 		...adminAc.statements,
 	});
 	const userRole = userAc;
 
-	const { auth, context, resetDatabase } = await getTestInstance({
+	const { auth, context, resetDatabase, client, db } = await getTestInstance({
 		options: {
 			emailAndPassword: {
 				enabled: true,
@@ -255,7 +350,19 @@ describe("Waitlist with admin plugin", async () => {
 				waitlist({
 					canCreateWaitlist: {
 						statement: "waitlist",
-						permission: "create",
+						permissions: ["create"],
+					},
+					canGetWaitlist: {
+						statement: "waitlist",
+						permissions: ["read"],
+					},
+					canAcceptUser: {
+						statement: "waitlist",
+						permissions: ["accept-user"],
+					},
+					canRejectUser: {
+						statement: "waitlist",
+						permissions: ["reject-user"],
 					},
 				}),
 			],
@@ -289,7 +396,19 @@ describe("Waitlist with admin plugin", async () => {
 					waitlist({
 						canCreateWaitlist: {
 							statement: "waitlist",
-							permission: "create",
+							permissions: ["create"],
+						},
+						canGetWaitlist: {
+							statement: "waitlist",
+							permissions: ["read"],
+						},
+						canAcceptUser: {
+							statement: "waitlist",
+							permissions: ["accept-user"],
+						},
+						canRejectUser: {
+							statement: "waitlist",
+							permissions: ["reject-user"],
 						},
 					}),
 				],
@@ -365,5 +484,82 @@ describe("Waitlist with admin plugin", async () => {
 		).rejects.toMatchObject({
 			status: "FORBIDDEN",
 		});
+	});
+
+	it("should get any waitlist when user has permission", async () => {
+		const { user, token } = await auth.api.signUpEmail({
+			body: {
+				name: "admin user",
+				email: "admin@example.com",
+				password: "password123456",
+			},
+		});
+
+		await context.internalAdapter.updateUser(user.id, {
+			role: "admin",
+		});
+
+		expect(token).not.toBeNull();
+
+		const createdWaitlist = await client.waitlist.create({
+			endEvent: "trigger",
+			endsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+			fetchOptions: {
+				headers: {
+					authorization: `Bearer ${token}`,
+				},
+			},
+		});
+
+		expect(createdWaitlist.data?.endEvent).toBe("trigger");
+
+		const waitlist = await client.waitlist.getWaitlist({
+			query: {
+				id: createdWaitlist.data!.id,
+			},
+			fetchOptions: {
+				headers: {
+					authorization: `Bearer ${token}`,
+				},
+			},
+		});
+
+		expect(waitlist.data?.endEvent).toBe("trigger");
+	});
+
+	it("should fail to get any waitlist when user doesn't have permission", async () => {
+		const { token } = await auth.api.signUpEmail({
+			body: {
+				name: "test user",
+				email: "test@example.com",
+				password: "password123456",
+			},
+		});
+
+		expect(token).not.toBeNull();
+
+		const createdWaitlist = await db.create<typeof auth.$Infer.Waitlist>({
+			model: "waitlist",
+			data: {
+				endEvent: "trigger",
+				beginsAt: new Date(),
+				endsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+			},
+		});
+
+		expect(createdWaitlist?.endEvent).toBe("trigger");
+
+		const waitlist = await client.waitlist.getWaitlist({
+			query: {
+				id: createdWaitlist.id,
+			},
+			fetchOptions: {
+				headers: {
+					authorization: `Bearer ${token}`,
+				},
+			},
+		});
+
+		expect(waitlist.error?.statusText).toBe("FORBIDDEN");
 	});
 });

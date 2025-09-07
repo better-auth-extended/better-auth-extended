@@ -11,7 +11,25 @@ export type WaitlistOptions = {
 		| ((ctx: GenericEndpointContext) => Promise<boolean> | boolean)
 		| {
 				statement: string;
-				permission: string;
+				permissions: string[];
+		  };
+	canGetWaitlist:
+		| ((ctx: GenericEndpointContext) => Promise<boolean> | boolean)
+		| {
+				statement: string;
+				permissions: string[];
+		  };
+	canAcceptUser:
+		| ((ctx: GenericEndpointContext) => Promise<boolean> | boolean)
+		| {
+				statement: string;
+				permissions: string[];
+		  };
+	canRejectUser:
+		| ((ctx: GenericEndpointContext) => Promise<boolean> | boolean)
+		| {
+				statement: string;
+				permissions: string[];
 		  };
 	concurrent?: boolean;
 	/**
@@ -26,6 +44,7 @@ export type WaitlistOptions = {
 	 * @default true
 	 */
 	disableSignUp?: boolean;
+	disableSessionMiddleware?: boolean;
 	secondaryStorage?: boolean;
 	hooks?: {
 		waitlist?: {
@@ -34,6 +53,13 @@ export type WaitlistOptions = {
 				after?: (
 					ctx: GenericEndpointContext,
 					waitlist: Waitlist & Record<string, any>,
+				) => Promise<void> | void;
+			};
+			get?: {
+				before?: (ctx: GenericEndpointContext) => Promise<void> | void;
+				after?: (
+					ctx: GenericEndpointContext,
+					waitlist: (Waitlist & Record<string, any>) | null,
 				) => Promise<void> | void;
 			};
 		};
