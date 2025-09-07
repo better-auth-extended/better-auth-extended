@@ -1,11 +1,25 @@
 import type { BetterAuthClientPlugin } from "better-auth";
-import type { waitlist } from "./index";
+import { waitlist } from "./index";
+import type { Waitlist, WaitlistUser } from "./schema";
 
-type Waitlist = typeof waitlist;
+type WaitlistPlugin = typeof waitlist;
 
 export const waitlistClient = () => {
 	return {
 		id: "waitlist",
-		$InferServerPlugin: {} as ReturnType<Waitlist>,
+		$InferServerPlugin: {} as ReturnType<WaitlistPlugin>,
+		getActions: () => ({
+			$Infer: {
+				// TODO: Additional fields
+				Waitlist: {} as Waitlist,
+				WaitlistUser: {} as WaitlistUser,
+			},
+		}),
+		pathMethods: {
+			"/waitlist/create": "POST",
+			"/waitlist/join": "POST",
+			"/waitlist/accept-user": "POST",
+			"/waitlist/reject-user": "POST",
+		},
 	} satisfies BetterAuthClientPlugin;
 };

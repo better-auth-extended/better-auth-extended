@@ -2,9 +2,13 @@ import type { CreateWaitlist, WaitlistOptions } from "../types";
 import { createAuthEndpoint, sessionMiddleware } from "better-auth/api";
 import z from "zod";
 import type { AdminPlugin, getAdditionalFields } from "../utils";
-import { waitlistEndEvent } from "../schema";
+import { createWaitlistSchema, type CreateWaitlistOutput } from "../schema";
 import { toZodSchema } from "better-auth/db";
-import { getPlugin, type IsExactlyEmptyObject } from "@better-auth-extended/internal-utils";
+import {
+	getPlugin,
+	tryCatch,
+	type IsExactlyEmptyObject,
+} from "@better-auth-extended/internal-utils";
 import { getWaitlistAdapter } from "../adapter";
 import type { Where } from "better-auth/types";
 
@@ -22,22 +26,20 @@ export const createWaitlist = <
 		"/waitlist/create",
 		{
 			method: "POST",
-			body: z.object({
-				endEvent: z.enum(waitlistEndEvent),
-				maxParticipants: z.number().optional(),
-				beginsAt: z.date().default(() => new Date()),
-				endsAt: z.date().optional(),
-				additionalFields: z
-					.object({
-						...(options.schema?.waitlist?.additionalFields
-							? toZodSchema({
-									fields: options.schema.waitlist.additionalFields,
-									isClientSide: true,
-								}).shape
-							: {}),
-					})
-					.optional(),
-			}),
+			body: createWaitlistSchema.and(
+				z.object({
+					additionalFields: z
+						.object({
+							...(options.schema?.waitlist?.additionalFields
+								? toZodSchema({
+										fields: options.schema.waitlist.additionalFields,
+										isClientSide: true,
+									}).shape
+								: {}),
+						})
+						.optional(),
+				}),
+			),
 			use: [sessionMiddleware],
 			metadata: {
 				$Infer: {
@@ -49,30 +51,43 @@ export const createWaitlist = <
 			},
 		},
 		async (ctx) => {
-            const session = ctx.context.session;
+			const session = ctx.context.session;
+			const body = ctx.body as CreateWaitlistOutput & {
+				additonalFields?: Record<string, any>;
+			};
 
-            let canAccess = false;
-            if (typeof options.canCreateWaitlist === "function") {
-                canAccess = await options.canCreateWaitlist(ctx);
-            } else {
-                const adminPlugin = getPlugin<AdminPlugin>("admin" satisfies AdminPlugin["id"], ctx.context);
+			let canAccess = false;
+			if (typeof options.canCreateWaitlist === "function") {
+				canAccess = await options.canCreateWaitlist(ctx);
+			} else {
+				const adminPlugin = getPlugin<AdminPlugin>(
+					"admin" satisfies AdminPlugin["id"],
+					ctx.context,
+				);
 
-                if (!adminPlugin) {
-                    throw ctx.error("FAILED_DEPENDENCY", {
-                        // TODO: Error codes
-                        message: "",
-                    });
-                }
+				if (!adminPlugin) {
+					throw ctx.error("FAILED_DEPENDENCY", {
+						// TODO: Error codes
+						message: "",
+					});
+				}
 
-                canAccess = (await adminPlugin.endpoints.userHasPermission({
-                    body: {
-                        userId: session.user.id,
-                        permissions: {
-                            [options.canCreateWaitlist.statement]: options.canCreateWaitlist.permission,
-                        },
-                    },
-                })).success;
-            };
+				const res = await tryCatch(
+					adminPlugin.endpoints.userHasPermission({
+						...ctx,
+						body: {
+							role: session.user.role,
+							permissions: {
+								[options.canCreateWaitlist.statement]: [
+									options.canCreateWaitlist.permission,
+								],
+							},
+						},
+						returnHeaders: true,
+					}),
+				);
+				canAccess = await res.data?.response.success ?? false;
+			}
 			if (!canAccess) {
 				throw ctx.error("FORBIDDEN", {
 					// TODO: Error codes
@@ -82,13 +97,13 @@ export const createWaitlist = <
 
 			const adapter = getWaitlistAdapter(ctx.context, options);
 
-            await options?.hooks?.waitlist?.create?.before?.(ctx);
+			await options?.hooks?.waitlist?.create?.before?.(ctx);
 
 			if (!options?.concurrent) {
 				const where: Where[] = [
 					{
 						field: "beginsAt",
-						value: ctx.body.beginsAt ?? new Date(),
+						value: body.beginsAt ?? new Date(),
 						operator: "gte",
 					},
 					{
@@ -98,10 +113,10 @@ export const createWaitlist = <
 					},
 				];
 
-				if (ctx.body.endsAt) {
+				if (body.endsAt) {
 					where.push({
 						field: "endsAt",
-						value: ctx.body.endsAt,
+						value: body.endsAt,
 						operator: "lte",
 						connector: "OR",
 					});
@@ -114,19 +129,19 @@ export const createWaitlist = <
 					})) > 0;
 
 				if (exists) {
-                    throw ctx.error("BAD_REQUEST", {
-                        // TODO: Error codes
-                        message: ""
-                    })
+					throw ctx.error("BAD_REQUEST", {
+						// TODO: Error codes
+						message: "",
+					});
 				}
 			}
 
-			const waitlist = await adapter.createWaitlist<ReturnAdditionalFields>(
-				ctx.body,
-				ctx.context.session.user,
-			);
+			const waitlist = await adapter.createWaitlist<ReturnAdditionalFields>({
+				...body,
+				maxParticipants: body.maxParticipants ?? undefined,
+			});
 
-            await options?.hooks?.waitlist?.create?.after?.(ctx, waitlist);
+			await options?.hooks?.waitlist?.create?.after?.(ctx, waitlist);
 
 			return waitlist;
 		},

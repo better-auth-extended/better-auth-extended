@@ -17,8 +17,7 @@ export const getWaitlistAdapter = (
 
 	return {
 		createWaitlist: async <AdditionalFields extends Record<string, any>>(
-			data: WithAdditionalFields<CreateWaitlist, AdditionalFields>,
-			user: User,
+			data: WithAdditionalFields<Omit<WaitlistInput, "id">, AdditionalFields>,
 		) => {
 			const newWaitlist = await adapter.create<
 				WaitlistInput,

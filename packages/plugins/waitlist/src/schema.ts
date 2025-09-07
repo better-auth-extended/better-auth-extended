@@ -1,9 +1,24 @@
-import { generateId, type AuthPluginSchema } from "better-auth";
+import {
+	generateId,
+	type AuthPluginSchema,
+	type UnionToIntersection,
+} from "better-auth";
 import { z } from "zod";
+import type { WaitlistEndEvent } from "./types";
 
 type Mutable<T> = {
 	-readonly [K in keyof T]: T[K];
 };
+
+type LastOf<T> = UnionToIntersection<
+	T extends any ? (x: T) => void : never
+> extends (x: infer R) => void
+	? R
+	: never;
+
+type UnionToTuple<T, L = LastOf<T>> = [T] extends [never]
+	? []
+	: [...UnionToTuple<Exclude<T, L>>, L];
 
 const _waitlistEndEvent = [
 	"max-signups-reached",
@@ -15,6 +30,42 @@ const _waitlistEndEvent = [
 export const waitlistEndEvent = _waitlistEndEvent as Mutable<
 	typeof _waitlistEndEvent
 >;
+
+const dateSchema = z.coerce.date<string | Date>();
+const createWaitlistBaseConfigSchema = z.object({
+	endEvent: z.enum(waitlistEndEvent),
+	beginsAt: dateSchema.default(() => new Date()),
+	endsAt: dateSchema.optional(),
+	maxParticipants: z.number().nullish(),
+});
+
+const configs = [
+	createWaitlistBaseConfigSchema.extend({
+		endEvent: z.literal("max-signups-reached"),
+		maxParticipants: z.number(),
+	}),
+	createWaitlistBaseConfigSchema.extend({
+		endEvent: z.literal("date-reached"),
+		endsAt: dateSchema,
+	}),
+	createWaitlistBaseConfigSchema.extend({
+		endEvent: z.literal("date-reached-lottery"),
+		endsAt: dateSchema,
+	}),
+	createWaitlistBaseConfigSchema.extend({
+		endEvent: z.literal("trigger"),
+	}),
+] as const satisfies UnionToTuple<WaitlistEndEvent> extends infer Tup
+	? {
+			[I in keyof Tup]: z.ZodObject<{
+				endEvent: z.ZodLiteral<Extract<Tup[I], string>>;
+			}>;
+		}
+	: never
+export const createWaitlistSchema = z.discriminatedUnion("endEvent", configs);
+
+export type CreateWaitlist = z.input<typeof createWaitlistSchema>;
+export type CreateWaitlistOutput = z.infer<typeof createWaitlistSchema>;
 
 export const schema = {
 	waitlist: {
