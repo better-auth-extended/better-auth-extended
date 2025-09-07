@@ -86,7 +86,7 @@ export const createWaitlist = <
 						returnHeaders: true,
 					}),
 				);
-				canAccess = await res.data?.response.success ?? false;
+				canAccess = (await res.data?.response.success) ?? false;
 			}
 			if (!canAccess) {
 				throw ctx.error("FORBIDDEN", {

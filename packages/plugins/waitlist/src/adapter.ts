@@ -1,5 +1,5 @@
-import type { AuthContext, User, Where } from "better-auth";
-import type { Waitlist, CreateWaitlist, WaitlistOptions } from "./types";
+import type { AuthContext } from "better-auth";
+import type { Waitlist, WaitlistOptions } from "./types";
 import type { WaitlistInput } from "./schema";
 
 type WithAdditionalFields<

@@ -295,21 +295,21 @@ describe("Waitlist with admin plugin", async () => {
 				],
 			},
 			clientOptions: {
-				plugins: [
-					waitlistClient(),
-				],
+				plugins: [waitlistClient()],
 			},
 		});
-		
+
 		const user = await signUpWithTestUser();
 
-		await expect(_auth.api.createWaitlist({
-			headers: user.headers,
-			body: {
-				endEvent: "max-signups-reached",
-				maxParticipants: 100,
-			},
-		})).rejects.toMatchObject({
+		await expect(
+			_auth.api.createWaitlist({
+				headers: user.headers,
+				body: {
+					endEvent: "max-signups-reached",
+					maxParticipants: 100,
+				},
+			}),
+		).rejects.toMatchObject({
 			status: "FAILED_DEPENDENCY",
 		});
 	});

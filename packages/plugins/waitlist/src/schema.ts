@@ -61,7 +61,7 @@ const configs = [
 				endEvent: z.ZodLiteral<Extract<Tup[I], string>>;
 			}>;
 		}
-	: never
+	: never;
 export const createWaitlistSchema = z.discriminatedUnion("endEvent", configs);
 
 export type CreateWaitlist = z.input<typeof createWaitlistSchema>;

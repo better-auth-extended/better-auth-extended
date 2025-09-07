@@ -7,12 +7,12 @@ export type WaitlistEndEvent = (typeof waitlistEndEvent)[number];
 export type { Waitlist, CreateWaitlist, WaitlistUser } from "./schema";
 
 export type WaitlistOptions = {
-	canCreateWaitlist: ((
-		ctx: GenericEndpointContext,
-	) => Promise<boolean> | boolean) | {
-		statement: string;
-		permission: string;
-	};
+	canCreateWaitlist:
+		| ((ctx: GenericEndpointContext) => Promise<boolean> | boolean)
+		| {
+				statement: string;
+				permission: string;
+		  };
 	concurrent?: boolean;
 	/**
 	 * Whether to disable sign in while the waitlist is active.
@@ -31,11 +31,14 @@ export type WaitlistOptions = {
 		waitlist?: {
 			create?: {
 				before?: (ctx: GenericEndpointContext) => Promise<void> | void;
-				after?: (ctx: GenericEndpointContext, waitlist: Waitlist & Record<string, any>) => Promise<void> | void;
-			}
-		},
-		waitlistUser?: {},
-	},
+				after?: (
+					ctx: GenericEndpointContext,
+					waitlist: Waitlist & Record<string, any>,
+				) => Promise<void> | void;
+			};
+		};
+		waitlistUser?: {};
+	};
 	schema?: {
 		waitlist?: {
 			modelName?: string;
