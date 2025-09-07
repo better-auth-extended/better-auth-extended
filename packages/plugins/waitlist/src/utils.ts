@@ -10,7 +10,10 @@ export const getAdditionalFields = getAdditionalPluginFields("waitlist");
 export const getAdditionalUserFields =
 	getAdditionalPluginFields("waitlistUser");
 
-export const conditionalMiddleware = <C extends boolean, M extends AuthMiddleware>(
+export const conditionalMiddleware = <
+	C extends boolean,
+	M extends AuthMiddleware,
+>(
 	condition: C,
 	middleware: M,
 ) => {
