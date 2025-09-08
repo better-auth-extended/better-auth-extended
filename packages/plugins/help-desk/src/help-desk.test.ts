@@ -1,4 +1,4 @@
-import { describe, it } from "vitest";
+import { describe } from "vitest";
 import { helpDesk } from "../src/index";
 import { helpDeskClient } from "../src/client";
 import { getTestInstance } from "@better-auth-extended/test-utils";

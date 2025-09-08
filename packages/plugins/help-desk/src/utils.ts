@@ -12,7 +12,10 @@ import type { admin } from "better-auth/plugins";
 export const getAdditionalFields = <O extends HelpDeskOptions>(options: O) => ({
 	ticket: getAdditionalPluginFields("ticket")(options, false),
 	ticketReaction: getAdditionalPluginFields("ticketReaction")(options, false),
-	ticketParticipant: getAdditionalPluginFields("ticketParticipant")(options, false),
+	ticketParticipant: getAdditionalPluginFields("ticketParticipant")(
+		options,
+		false,
+	),
 	ticketLabel: getAdditionalPluginFields("ticketLabel")(options, false),
 	ticketActivity: getAdditionalPluginFields("ticketActivity")(options, false),
 });
