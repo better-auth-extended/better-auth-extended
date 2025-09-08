@@ -1,7 +1,7 @@
 import { auth } from "./auth";
 
 Bun.serve({
-    fetch: auth.handler,
+	fetch: auth.handler,
 	port: 4000,
 });
 
