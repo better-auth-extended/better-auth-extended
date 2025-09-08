@@ -10,8 +10,8 @@ catalogs:
       specifier: ^0.2.6
       version: 0.2.6
     better-auth:
-      specifier: ^1.3.8-beta.10
-      version: 1.3.8-beta.10
+      specifier: ^1.3.8
+      version: 1.3.8
   default:
     '@better-fetch/fetch':
       specifier: ^1.1.18
@@ -61,6 +61,19 @@ importers:
         specifier: 'catalog:'
         version: 5.9.2
 
+  dev/bun:
+    dependencies:
+      better-auth:
+        specifier: ^1.3.8
+        version: 1.3.8
+      typescript:
+        specifier: ^5.7.2
+        version: 5.9.2
+    devDependencies:
+      '@types/bun':
+        specifier: latest
+        version: 1.2.21(@types/react@19.1.12)
+
   packages/internal/env:
     dependencies:
       '@better-auth/utils':
@@ -69,7 +82,7 @@ importers:
     devDependencies:
       better-auth:
         specifier: catalog:better-auth
-        version: 1.3.8-beta.10
+        version: 1.3.8
       typescript:
         specifier: 'catalog:'
         version: 5.9.2
@@ -91,7 +104,7 @@ importers:
     devDependencies:
       better-auth:
         specifier: catalog:better-auth
-        version: 1.3.8-beta.10
+        version: 1.3.8
       typescript:
         specifier: 'catalog:'
         version: 5.9.2
@@ -110,7 +123,7 @@ importers:
     devDependencies:
       better-auth:
         specifier: catalog:better-auth
-        version: 1.3.8-beta.10
+        version: 1.3.8
       typescript:
         specifier: 'catalog:'
         version: 5.9.2
@@ -138,7 +151,7 @@ importers:
         version: link:../../libraries/test-utils
       better-auth:
         specifier: catalog:better-auth
-        version: 1.3.8-beta.10
+        version: 1.3.8
       better-call:
         specifier: 'catalog:'
         version: 1.0.15
@@ -169,7 +182,7 @@ importers:
         version: 7.6.13
       better-auth:
         specifier: catalog:better-auth
-        version: 1.3.8-beta.10
+        version: 1.3.8
       better-call:
         specifier: 'catalog:'
         version: 1.0.15
@@ -739,6 +752,9 @@ packages:
   '@types/better-sqlite3@7.6.13':
     resolution: {integrity: sha512-NMv9ASNARoKksWtsq/SHakpYAYnhBrQgGD8zkLYk/jaK8jUGn08CfEdTRgYhMypUQAfzSP8W6gNLe0q19/t4VA==}
 
+  '@types/bun@1.2.21':
+    resolution: {integrity: sha512-NiDnvEqmbfQ6dmZ3EeUO577s4P5bf4HCTXtI6trMc6f6RzirY5IrF3aIookuSpyslFzrnvv2lmEWv5HyC1X79A==}
+
   '@types/chai@5.2.2':
     resolution: {integrity: sha512-8kB30R7Hwqf40JPiKhVzodJs2Qc1ZJ5zuT3uzw5Hq/dhNCl3G3l83jfpdI1e20BP348+fV7VIL/+FxaXkqBmWg==}
 
@@ -763,6 +779,9 @@ packages:
 
   '@types/node@22.15.18':
     resolution: {integrity: sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg==}
+
+  '@types/react@19.1.12':
+    resolution: {integrity: sha512-cMoR+FoAf/Jyq6+Df2/Z41jISvGZZ2eTlnsaJRptmZ76Caldwy1odD4xTr/gNV9VLj0AWgg/nmkevIyUfIIq5w==}
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
@@ -881,8 +900,8 @@ packages:
     resolution: {integrity: sha512-4Bcg1P8xhUuqcii/S0Z9wiHIrQVPMermM1any+MX5GeGD7faD3/msQUDGLol9wOcz4/jbg/WJnGqoJF6LiBdtg==}
     engines: {node: '>=10.0.0'}
 
-  better-auth@1.3.8-beta.10:
-    resolution: {integrity: sha512-mONR5m/R3V4Edk2C+eGsGwLtr0oh9CvQjmD4nj+CPLIkKFhwTP3KoHCq/jhJ6UgAzWlR3pNq1/3zCg8smEhz/Q==}
+  better-auth@1.3.8:
+    resolution: {integrity: sha512-uRFzHbWkhr8eWNy+BJwyMnrZPOvQjwrcLND3nc6jusRteYA9cjeRGElgCPTWTIyWUfzaQ708Lb5Mdq9Gv41Qpw==}
     peerDependencies:
       react: ^18.0.0 || ^19.0.0
       react-dom: ^18.0.0 || ^19.0.0
@@ -894,6 +913,9 @@ packages:
 
   better-call@1.0.15:
     resolution: {integrity: sha512-u4ZNRB1yBx5j3CltTEbY2ZoFPVcgsuvciAqTEmPvnZpZ483vlZf4LGJ5aVau1yMlrvlyHxOCica3OqXBLhmsUw==}
+
+  better-call@1.0.16:
+    resolution: {integrity: sha512-42dgJ1rOtc0anOoxjXPOWuel/Z/4aeO7EJ2SiXNwvlkySSgjXhNjAjTMWa8DL1nt6EXS3jl3VKC3mPsU/lUgVA==}
 
   better-path-resolve@1.0.0:
     resolution: {integrity: sha512-pbnl5XzGBdrFU/wT4jqmJVPn2B6UHPBOhzMQkY/SPUPB6QtUXtmBHBIwCbXJol93mOpGMnQyP/+BB19q04xj7g==}
@@ -929,6 +951,11 @@ packages:
 
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
+
+  bun-types@1.2.21:
+    resolution: {integrity: sha512-sa2Tj77Ijc/NTLS0/Odjq/qngmEPZfbfnOERi0KRUYhT9R8M4VBioWVmMWE5GrYbKMc+5lVybXygLdibHaqVqw==}
+    peerDependencies:
+      '@types/react': ^19
 
   cac@6.7.14:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
@@ -1102,6 +1129,9 @@ packages:
   csso@5.0.5:
     resolution: {integrity: sha512-0LrrStPOdJj+SPCCrGhzryycLjwcgUSHBtxNA8aIDxf0GLsRh1cKYhB00Gd1lDOS4yGH69+SNn13+TWbVHETFQ==}
     engines: {node: ^10 || ^12.20.0 || ^14.13.0 || >=15.0.0, npm: '>=7.0.0'}
+
+  csstype@3.1.3:
+    resolution: {integrity: sha512-M1uQkMl8rQK/szD0LNhtqxIPLpimGm8sOBwU7lLnCpSbTyY3yeU1Vc7l4KT5zT4s/yOxHH5O7tIuuLOCnLADRw==}
 
   data-uri-to-buffer@6.0.2:
     resolution: {integrity: sha512-7hvf7/GW8e86rW0ptuwS3OcBGDjIi6SZva7hCyWC0yYry2cOPmLIjXAUHI6DK2HsnwJd9ifmt57i8eV2n4YNpw==}
@@ -3093,6 +3123,12 @@ snapshots:
     dependencies:
       '@types/node': 22.15.18
 
+  '@types/bun@1.2.21(@types/react@19.1.12)':
+    dependencies:
+      bun-types: 1.2.21(@types/react@19.1.12)
+    transitivePeerDependencies:
+      - '@types/react'
+
   '@types/chai@5.2.2':
     dependencies:
       '@types/deep-eql': 4.0.2
@@ -3120,6 +3156,10 @@ snapshots:
   '@types/node@22.15.18':
     dependencies:
       undici-types: 6.21.0
+
+  '@types/react@19.1.12':
+    dependencies:
+      csstype: 3.1.3
 
   '@types/resolve@1.20.2': {}
 
@@ -3238,7 +3278,7 @@ snapshots:
 
   basic-ftp@5.0.5: {}
 
-  better-auth@1.3.8-beta.10:
+  better-auth@1.3.8:
     dependencies:
       '@better-auth/utils': 0.2.6
       '@better-fetch/fetch': 1.1.18
@@ -3246,7 +3286,7 @@ snapshots:
       '@noble/hashes': 1.8.0
       '@simplewebauthn/browser': 13.1.2
       '@simplewebauthn/server': 13.1.2
-      better-call: 1.0.15
+      better-call: 1.0.16
       defu: 6.1.4
       jose: 5.10.0
       kysely: 0.28.5
@@ -3254,6 +3294,13 @@ snapshots:
       zod: 4.1.5
 
   better-call@1.0.15:
+    dependencies:
+      '@better-fetch/fetch': 1.1.18
+      rou3: 0.5.1
+      set-cookie-parser: 2.7.1
+      uncrypto: 0.1.3
+
+  better-call@1.0.16:
     dependencies:
       '@better-fetch/fetch': 1.1.18
       rou3: 0.5.1
@@ -3305,6 +3352,11 @@ snapshots:
     dependencies:
       base64-js: 1.5.1
       ieee754: 1.2.1
+
+  bun-types@1.2.21(@types/react@19.1.12):
+    dependencies:
+      '@types/node': 22.15.18
+      '@types/react': 19.1.12
 
   cac@6.7.14: {}
 
@@ -3509,6 +3561,8 @@ snapshots:
   csso@5.0.5:
     dependencies:
       css-tree: 2.2.1
+
+  csstype@3.1.3: {}
 
   data-uri-to-buffer@6.0.2: {}
 
