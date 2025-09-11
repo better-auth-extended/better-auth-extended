@@ -20,6 +20,38 @@ export type HelpDeskOptions = {
 		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
 		| boolean
 		| Permission;
+	canSetAssignee?:
+		| ((
+				ctx: GenericEndpointContext,
+				assigneeId: string,
+		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
+		| boolean
+		| Permission;
+	canLockConversation?:
+		| ((
+				ctx: GenericEndpointContext,
+		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
+		| boolean
+		| Permission;
+	canUpdateTicket?:
+		| ((
+				ctx: GenericEndpointContext,
+		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
+		| boolean
+		| Permission;
+	canChangeTicketStatus?:
+		| ((
+				ctx: GenericEndpointContext,
+				status: { prev: string; next: string },
+		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
+		| boolean
+		| Permission;
+	canDeleteTicket?:
+		| ((
+				ctx: GenericEndpointContext,
+		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
+		| boolean
+		| Permission;
 	/**
 	 * @default ["draft"]
 	 */

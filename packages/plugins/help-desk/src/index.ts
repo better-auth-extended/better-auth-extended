@@ -1,7 +1,12 @@
 import type { BetterAuthPlugin } from "better-auth";
 import type { HelpDeskOptions } from "./types";
 import { getAdditionalFields, getMergedSchema } from "./utils";
-import { createHelpDeskTicket } from "./routes/crud-ticket";
+import {
+	createHelpDeskTicket,
+	deleteHelpDeskTicket,
+	getHelpDeskTicket,
+	updateHelpDeskTicket,
+} from "./routes/crud-ticket";
 import type {
 	Ticket,
 	TicketActivity,
@@ -25,6 +30,9 @@ export const helpDesk = <O extends HelpDeskOptions>(options: O) => {
 
 	const endpoints = {
 		createHelpDeskTicket: createHelpDeskTicket(opts as O, additionalFields),
+		getHelpDeskTicket: getHelpDeskTicket(opts as O, additionalFields),
+		updateHelpDeskTicket: updateHelpDeskTicket(opts as O, additionalFields),
+		deleteHelpDeskTicket: deleteHelpDeskTicket(opts as O),
 	};
 
 	return {

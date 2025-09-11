@@ -59,10 +59,10 @@ export const checkPermission = async (
 		throw ctx.error("UNAUTHORIZED");
 	}
 
-	const adminPlugin = getPlugin<AdminPlugin>(
+	const adminPlugin = getPlugin(
 		"admin" satisfies AdminPlugin["id"],
-		ctx.context,
-	);
+		ctx.context as any,
+	) as unknown as AdminPlugin;
 
 	if (!adminPlugin) {
 		throw ctx.error("FAILED_DEPENDENCY", {

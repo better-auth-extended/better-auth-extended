@@ -15,8 +15,6 @@ export const ticketSchema = z.object({
 	id: z.string().default(generateId),
 	authorId: z.string().nullish(),
 	assigneeId: z.string().nullish(),
-	parentIssueId: z.string().nullish(),
-	subIssueId: z.string().nullish(),
 	title: z.string(),
 	description: z.string().nullish(),
 	status: z.string(),
@@ -86,24 +84,6 @@ export const schema = {
 				required: false,
 				references: {
 					model: "user",
-					field: "id",
-					onDelete: "set null",
-				},
-			},
-			parentIssueId: {
-				type: "string",
-				required: false,
-				references: {
-					model: "ticket",
-					field: "id",
-					onDelete: "set null",
-				},
-			},
-			subIssueId: {
-				type: "string",
-				required: false,
-				references: {
-					model: "ticket",
 					field: "id",
 					onDelete: "set null",
 				},

@@ -49,11 +49,11 @@
     "unbuild": "catalog:",
     "@better-auth-extended/test-utils": "workspace:*",
     "vitest": "catalog:",
-    "better-auth": "catalog:better-auth",
+    "better-auth": "^1.3.10-beta.1",
     "better-call": "catalog:"
   },
   "peerDependencies": {
-    "better-auth": "catalog:better-auth"
+    "better-auth": "^1.3.10-beta.1"
   },
   "dependencies": {
     "@better-auth-extended/internal-utils": "workspace:*",
