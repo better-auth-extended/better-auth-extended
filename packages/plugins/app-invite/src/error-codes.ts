@@ -12,6 +12,7 @@ export const APP_INVITE_ERROR_CODES = {
 		"You are not allowed to invite users to this application",
 	THIS_APP_INVITATION_CANT_BE_REJECTED: "This app invitation can't be rejected",
 	EMAIL_DOMAIN_IS_NOT_IN_WHITELIST: "Email domain is not in whitelist",
+	ADMIN_PLUGIN_IS_NOT_SET_UP: "Admin plugin is not set-up.",
 } as const;
 
 export const BASE_ERROR_CODES = {

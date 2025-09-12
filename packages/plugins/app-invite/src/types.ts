@@ -4,6 +4,11 @@ import type { FieldAttribute } from "better-auth/db";
 
 export type AppInvitationType = "personal" | "public";
 
+type Permission = {
+	statement: string;
+	permissions: string[];
+};
+
 export type AppInviteOptions = {
 	/**
 	 * Define whether a user is allowed to send invitations.
@@ -51,8 +56,11 @@ export type AppInviteOptions = {
 	 * @default true
 	 */
 	canCreateInvitation?:
-		| ((ctx: GenericEndpointContext) => Promise<boolean> | boolean)
-		| boolean;
+		| ((
+				ctx: GenericEndpointContext,
+		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
+		| boolean
+		| Permission;
 	/**
 	 * Define whether a user is allowed to cancel invitations.
 	 *
@@ -62,8 +70,9 @@ export type AppInviteOptions = {
 		| ((
 				ctx: GenericEndpointContext,
 				invite: AppInvitation & Record<string, any>,
-		  ) => Promise<boolean> | boolean)
-		| boolean;
+		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
+		| boolean
+		| Permission;
 	/**
 	 * Send an email with the invitation link to the user.
 	 */

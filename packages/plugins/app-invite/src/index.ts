@@ -1,4 +1,4 @@
-import type { BetterAuthPlugin } from "better-auth";
+import { logger, type BetterAuthPlugin } from "better-auth";
 import type { AppInviteOptions } from "./types";
 import { APP_INVITE_ERROR_CODES } from "./error-codes";
 import type { AppInvitation } from "./schema";
@@ -15,6 +15,17 @@ import { getAdditionalFields } from "./utils";
 export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
 	opts?: O,
 ) => {
+	if (opts?.allowUserToCreateInvitation) {
+		logger.warn(
+			"`allowUserToCreateInvitation` is deprecated. Consider using `canCreateInvitation` instead.",
+		);
+	}
+	if (opts?.allowUserToCancelInvitation) {
+		logger.warn(
+			"`allowUserToCancelInvitation` is deprecated. Consider using `canCancelInvitation` instead.",
+		);
+	}
+
 	const options = {
 		canCreateInvitation: true,
 		canCancelInvitation(ctx, invite) {
@@ -30,10 +41,10 @@ export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
 		...opts,
 	} satisfies AppInviteOptions;
 
-	const additionalFields = getAdditionalFields(options as O, false);
+	const additionalFields = getAdditionalFields(options as O);
 
 	const endpoints = {
-		createAppInvitation: createAppInvitation<O, typeof additionalFields, S>(
+		createAppInvitation: createAppInvitation<O, S>(
 			options as O,
 			additionalFields,
 		),
@@ -109,7 +120,7 @@ export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
 		},
 		$Infer: {
 			AppInvitation: {} as AppInvitation &
-				typeof additionalFields.$ReturnAdditionalFields,
+				typeof additionalFields.appInvitation.$ReturnAdditionalFields,
 		},
 		$ERROR_CODES: APP_INVITE_ERROR_CODES,
 	} satisfies BetterAuthPlugin;

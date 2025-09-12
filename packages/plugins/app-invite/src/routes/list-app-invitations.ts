@@ -3,16 +3,14 @@ import type { AppInviteOptions } from "../types";
 import { createAuthEndpoint, sessionMiddleware } from "better-auth/api";
 import { getAppInviteAdapter } from "../adapter";
 import type { Where } from "better-auth";
-import type { getAdditionalFields } from "../utils";
+import type { AdditionalPluginFields } from "../utils";
 
-export const listAppInvitations = <
-	O extends AppInviteOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
->(
+export const listAppInvitations = <O extends AppInviteOptions>(
 	options: O,
-	{ $ReturnAdditionalFields }: A,
+	additionalFields: AdditionalPluginFields<O>,
 ) => {
-	type ReturnAdditionalFields = typeof $ReturnAdditionalFields;
+	type ReturnAdditionalFields =
+		typeof additionalFields.appInvitation.$ReturnAdditionalFields;
 
 	return createAuthEndpoint(
 		"/list-invitations",

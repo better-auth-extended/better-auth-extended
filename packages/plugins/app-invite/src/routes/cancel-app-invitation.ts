@@ -4,17 +4,15 @@ import { z } from "zod";
 import type { AppInviteOptions } from "../types";
 import { getAppInviteAdapter } from "../adapter";
 import { APP_INVITE_ERROR_CODES } from "../error-codes";
-import type { getAdditionalFields } from "../utils";
 import type { AppInvitation } from "../schema";
+import { checkPermission, type AdditionalPluginFields } from "../utils";
 
-export const cancelAppInvitation = <
-	O extends AppInviteOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
->(
+export const cancelAppInvitation = <O extends AppInviteOptions>(
 	options: O,
-	{ $ReturnAdditionalFields }: A,
+	additionalFields: AdditionalPluginFields<O>,
 ) => {
-	type ReturnAdditionalFields = typeof $ReturnAdditionalFields;
+	type ReturnAdditionalFields =
+		typeof additionalFields.appInvitation.$ReturnAdditionalFields;
 
 	return createAuthEndpoint(
 		"/cancel-invitation",
@@ -77,15 +75,28 @@ export const cancelAppInvitation = <
 					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
 				});
 			}
-			const canCancel = options.allowUserToCancelInvitation
-				? await options.allowUserToCancelInvitation({
-						user: session.user,
-						invitation,
-					})
-				: typeof options.canCancelInvitation === "function"
-					? await options.canCancelInvitation(ctx, invitation)
-					: options.canCancelInvitation;
-			if (!canCancel) {
+			let hasAccess: boolean = false;
+			if (options.allowUserToCancelInvitation) {
+				hasAccess =
+					typeof options.allowUserToCancelInvitation === "function"
+						? await options.allowUserToCancelInvitation({
+								user: session.user,
+								invitation,
+							})
+						: options.allowUserToCancelInvitation;
+			} else if (options.canCancelInvitation) {
+				const canCancel =
+					typeof options.canCancelInvitation === "function"
+						? await options.canCancelInvitation(ctx, invitation)
+						: options.canCancelInvitation;
+				hasAccess =
+					typeof canCancel === "object"
+						? await checkPermission(ctx, {
+								[canCancel.statement]: canCancel.permissions,
+							})
+						: canCancel;
+			}
+			if (!hasAccess) {
 				throw new APIError("FORBIDDEN", {
 					message:
 						APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_APP_INVITATION,

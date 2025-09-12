@@ -9,22 +9,23 @@ import {
 	createInvitationSchema,
 } from "../schema";
 import { z } from "zod";
-import type { getAdditionalFields } from "../utils";
 import type {
 	IsExactlyEmptyObject,
 	Merge,
 } from "@better-auth-extended/internal-utils";
+import { checkPermission, type AdditionalPluginFields } from "../utils";
 
 export const createAppInvitation = <
 	O extends AppInviteOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
 	S extends boolean,
 >(
 	options: O,
-	{ additionalFieldsSchema, $AdditionalFields, $ReturnAdditionalFields }: A,
+	additionalFields: AdditionalPluginFields<O>,
 ) => {
-	type AdditionalFields = typeof $AdditionalFields;
-	type ReturnAdditionalFields = typeof $ReturnAdditionalFields;
+	type AdditionalFields =
+		typeof additionalFields.appInvitation.$AdditionalFields;
+	type ReturnAdditionalFields =
+		typeof additionalFields.appInvitation.$ReturnAdditionalFields;
 
 	return createAuthEndpoint(
 		"/invite-user",
@@ -34,7 +35,9 @@ export const createAppInvitation = <
 			body: createInvitationSchema.and(
 				z.object({
 					additionalFields: z
-						.object({ ...additionalFieldsSchema.shape })
+						.object({
+							...additionalFields.appInvitation.additionalFieldsSchema.shape,
+						})
 						.optional(),
 				}),
 			),
@@ -76,18 +79,28 @@ export const createAppInvitation = <
 			}
 
 			const session = ctx.context.session;
-			const canInvite = options.allowUserToCreateInvitation
-				? typeof options.allowUserToCreateInvitation === "function"
-					? await options.allowUserToCreateInvitation(
-							session.user,
-							ctx.body.type,
-						)
-					: options.allowUserToCreateInvitation
-				: ((typeof options.canCreateInvitation === "function"
+			let hasAccess: boolean = false;
+			if (options.allowUserToCreateInvitation) {
+				hasAccess =
+					typeof options.allowUserToCreateInvitation === "function"
+						? await options.allowUserToCreateInvitation(
+								session.user,
+								ctx.body.type,
+							)
+						: options.allowUserToCreateInvitation;
+			} else if (options.canCreateInvitation) {
+				const canCreate =
+					typeof options.canCreateInvitation === "function"
 						? await options.canCreateInvitation(ctx)
-						: options.canCreateInvitation) ?? true);
-
-			if (!canInvite) {
+						: options.canCreateInvitation;
+				hasAccess =
+					typeof canCreate === "object"
+						? await checkPermission(ctx, {
+								[canCreate.statement]: canCreate.permissions,
+							})
+						: canCreate;
+			}
+			if (!hasAccess) {
 				throw new APIError("FORBIDDEN", {
 					message:
 						APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_APPLICATION,
