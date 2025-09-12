@@ -1,19 +1,17 @@
 import { createAuthEndpoint } from "better-auth/plugins";
-import type { getAdditionalFields } from "../utils";
 import type { AppInviteOptions } from "../types";
 import { z } from "zod";
 import { getAppInviteAdapter } from "../adapter";
 import { APIError } from "better-auth/api";
 import { APP_INVITE_ERROR_CODES } from "../error-codes";
+import type { AdditionalPluginFields } from "../utils";
 
-export const getAppInvitation = <
-	O extends AppInviteOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
->(
+export const getAppInvitation = <O extends AppInviteOptions>(
 	options: O,
-	{ $ReturnAdditionalFields }: A,
+	additionalFields: AdditionalPluginFields<O>,
 ) => {
-	type ReturnAdditionalFields = typeof $ReturnAdditionalFields;
+	type ReturnAdditionalFields =
+		typeof additionalFields.appInvitation.$ReturnAdditionalFields;
 
 	return createAuthEndpoint(
 		"/get-app-invitation",

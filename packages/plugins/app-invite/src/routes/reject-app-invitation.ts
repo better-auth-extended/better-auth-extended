@@ -5,16 +5,14 @@ import { APIError, originCheck } from "better-auth/api";
 import { getAppInviteAdapter } from "../adapter";
 import { APP_INVITE_ERROR_CODES } from "../error-codes";
 import type { AppInvitation } from "../schema";
-import type { getAdditionalFields } from "../utils";
+import type { AdditionalPluginFields } from "../utils";
 
-export const rejectAppInvitation = <
-	O extends AppInviteOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
->(
+export const rejectAppInvitation = <O extends AppInviteOptions>(
 	options: O,
-	{ $ReturnAdditionalFields }: A,
+	additionalFields: AdditionalPluginFields<O>,
 ) => {
-	type ReturnAdditionalFields = typeof $ReturnAdditionalFields;
+	type ReturnAdditionalFields =
+		typeof additionalFields.appInvitation.$ReturnAdditionalFields;
 
 	return createAuthEndpoint(
 		"/reject-invitation",

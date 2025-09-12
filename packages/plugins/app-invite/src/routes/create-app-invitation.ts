@@ -9,22 +9,23 @@ import {
 	createInvitationSchema,
 } from "../schema";
 import { z } from "zod";
-import type { getAdditionalFields } from "../utils";
 import type {
 	IsExactlyEmptyObject,
 	Merge,
 } from "@better-auth-extended/internal-utils";
+import type { AdditionalPluginFields } from "../utils";
 
 export const createAppInvitation = <
 	O extends AppInviteOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
 	S extends boolean,
 >(
 	options: O,
-	{ additionalFieldsSchema, $AdditionalFields, $ReturnAdditionalFields }: A,
+	additionalFields: AdditionalPluginFields<O>,
 ) => {
-	type AdditionalFields = typeof $AdditionalFields;
-	type ReturnAdditionalFields = typeof $ReturnAdditionalFields;
+	type AdditionalFields =
+		typeof additionalFields.appInvitation.$AdditionalFields;
+	type ReturnAdditionalFields =
+		typeof additionalFields.appInvitation.$ReturnAdditionalFields;
 
 	return createAuthEndpoint(
 		"/invite-user",
@@ -34,7 +35,9 @@ export const createAppInvitation = <
 			body: createInvitationSchema.and(
 				z.object({
 					additionalFields: z
-						.object({ ...additionalFieldsSchema.shape })
+						.object({
+							...additionalFields.appInvitation.additionalFieldsSchema.shape,
+						})
 						.optional(),
 				}),
 			),

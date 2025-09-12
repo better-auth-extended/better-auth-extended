@@ -7,7 +7,6 @@ import {
 	toZodSchema,
 } from "better-auth/db";
 import { getAppInviteAdapter } from "../adapter";
-import type { getAdditionalFields } from "../utils";
 import {
 	APIError,
 	createEmailVerificationToken,
@@ -22,13 +21,11 @@ import {
 	matchWildcard,
 	type IsExactlyEmptyObject,
 } from "@better-auth-extended/internal-utils";
+import type { AdditionalPluginFields } from "../utils";
 
-export const acceptAppInvitation = <
-	O extends AppInviteOptions,
-	A extends ReturnType<typeof getAdditionalFields<O>>,
->(
+export const acceptAppInvitation = <O extends AppInviteOptions>(
 	options: O,
-	{ $ReturnAdditionalFields }: A,
+	additionalFields: AdditionalPluginFields<O>,
 ) => {
 	type AdditionalFields = O["schema"] extends {
 		user: {
@@ -38,7 +35,8 @@ export const acceptAppInvitation = <
 		? InferFieldsInput<Field>
 		: {};
 
-	type ReturnAdditionalFields = typeof $ReturnAdditionalFields;
+	type ReturnAdditionalFields =
+		typeof additionalFields.appInvitation.$ReturnAdditionalFields;
 
 	return createAuthEndpoint(
 		"/accept-invitation",

@@ -1,7 +1,22 @@
-import { getPlugin, tryCatch } from "@better-auth-extended/internal-utils";
+import {
+	getAdditionalPluginFields,
+	getPlugin,
+	tryCatch,
+} from "@better-auth-extended/internal-utils";
 import type { admin } from "better-auth/plugins";
 import type { GenericEndpointContext } from "better-auth/types";
 import { APP_INVITE_ERROR_CODES } from "./error-codes";
+import type { AppInviteOptions } from "./types";
+
+export const getAdditionalFields = <O extends AppInviteOptions>(
+	options: O,
+) => ({
+	appInvitation: getAdditionalPluginFields("appInvitation")(options, false),
+});
+
+export type AdditionalPluginFields<O extends AppInviteOptions> = ReturnType<
+	typeof getAdditionalFields<O>
+>;
 
 export type AdminPlugin = ReturnType<typeof admin<any>>;
 
