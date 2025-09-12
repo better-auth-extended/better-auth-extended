@@ -1,7 +1,7 @@
 {
   "name": "@better-auth-extended/app-invite",
   "description": "Invite users to your application and allow them to sign up.",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "repository": {
     "type": "git",
