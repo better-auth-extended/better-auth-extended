@@ -69,7 +69,7 @@ export const rejectAppInvitation = <O extends AppInviteOptions>(
 												$ref: "#/components/schemas/AppInvitation",
 											},
 											user: {
-												$ref: "null",
+												type: "null",
 											},
 										},
 									},
