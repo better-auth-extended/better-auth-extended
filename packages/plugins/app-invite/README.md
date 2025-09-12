@@ -242,6 +242,19 @@ Table Name: `appInvitation`
 
 **canCancelInvitation** `((ctx: GenericEndpointContext, invite: AppInvitation) => Promise<boolean> | boolean | Promise<Permission> | Permission)` | `boolean | Permission` - A function that determines whether a user can cancel invitations. By default, the user can only cancel invites they created. You can set it to `false` to restrict users from canceling invitations.
 
+> _**Note**_
+>
+> Returning `Permission` requires the [admin plugin][--admin-docs] to be configured. If it's not set up, the request will fail.
+>
+> Example:
+>
+> ```ts
+> canCancelInvitation: {
+>   statement: "appInvite",
+>   permissions: ["create"],
+> };
+> ```
+
 **sendInvitationEmail**: `async (data) => Promise<void>` - A function that sends an invitation email to the user. This is only required for personal invitations.
 
 **invitationExpiresIn**: `number` - How long the invitation link is valid for in seconds. By default an invitation expires after 48 hours (2 days). Set it to `null` to prevent invitations from expiring.
@@ -281,3 +294,5 @@ Table Name: `appInvitation`
 ## License
 
 [MIT](LICENSE.md)
+
+[--admin-docs]: https://www.better-auth.com/docs/plugins/admin
