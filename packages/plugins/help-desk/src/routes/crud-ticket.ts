@@ -6,8 +6,7 @@ import { checkPermission, type AdditionalHelpDeskFields } from "../utils";
 import z from "zod";
 import { toZodSchema } from "better-auth/db";
 import type { IsExactlyEmptyObject } from "@better-auth-extended/internal-utils";
-
-// TODO: Ticket activities
+import type { TicketActivityInput } from "../schema";
 
 export const createHelpDeskTicket = <O extends HelpDeskOptions>(
 	options: O,
@@ -96,6 +95,9 @@ export const createHelpDeskTicket = <O extends HelpDeskOptions>(
 
 			const { additionalFields: additionalData, ...data } = ctx.body;
 
+			const pendingActivities: (Omit<TicketActivityInput, "id" | "ticketId"> &
+				Record<string, any>)[] = [];
+
 			if (data.locked) {
 				const canLockConversation =
 					typeof options.canLockConversation === "function"
@@ -115,6 +117,11 @@ export const createHelpDeskTicket = <O extends HelpDeskOptions>(
 						message: "",
 					});
 				}
+				pendingActivities.push({
+					type: options.activityTypeMap?.locked ?? "locked",
+					actorId: ctx.context.session?.user.id,
+					newValue: "true",
+				});
 			}
 
 			if (data.assigneeId) {
@@ -134,9 +141,14 @@ export const createHelpDeskTicket = <O extends HelpDeskOptions>(
 						message: "",
 					});
 				}
+				pendingActivities.push({
+					type: options.activityTypeMap?.assigned ?? "assigned",
+					actorId: ctx.context.session?.user.id,
+					newValue: data.assigneeId,
+				});
 			}
 
-			const ticket = await ctx.context.adapter.transaction(
+			const response = await ctx.context.adapter.transaction(
 				async (trxAdapter) => {
 					const ticket = await adapter.createTicket<
 						typeof additionalFields.ticket.$ReturnAdditionalFields
@@ -156,7 +168,10 @@ export const createHelpDeskTicket = <O extends HelpDeskOptions>(
 					);
 
 					if (!ticket) {
-						throw ctx.error("BAD_REQUEST", {});
+						throw ctx.error("BAD_REQUEST", {
+							// TODO: Error codes
+							message: "",
+						});
 					}
 
 					if (ctx.context.session) {
@@ -167,13 +182,28 @@ export const createHelpDeskTicket = <O extends HelpDeskOptions>(
 						);
 					}
 
-					return ticket;
+					const activities = await Promise.all(
+						pendingActivities.map((data) =>
+							adapter.createTicketActivity<
+								typeof additionalFields.ticketActivity.$ReturnAdditionalFields
+							>({
+								ticketId: ticket.id,
+								...data,
+							}),
+						),
+					);
+
+					return {
+						ticket,
+						totalActivities: activities.length,
+						activities,
+					};
 				},
 			);
 
 			// TODO: After hook
 
-			return ticket;
+			return response;
 		},
 	);
 };
@@ -362,9 +392,21 @@ export const updateHelpDeskTicket = <O extends HelpDeskOptions>(
 
 			const adapter = getHelpDeskAdapter(ctx.context, options);
 
+			const currentTicket = await adapter.findTicketById(ctx.body.ticketId);
+
+			if (!currentTicket) {
+				throw ctx.error("BAD_REQUEST", {
+					// TODO: Error codes
+					message: "",
+				});
+			}
+
 			// TODO: Before hooks
 
 			const { additionalFields: additionalData, ...data } = ctx.body.data;
+
+			const pendingActivities: (Omit<TicketActivityInput, "id"> &
+				Record<string, any>)[] = [];
 
 			if (data.assigneeId) {
 				const canSetAssignee =
@@ -383,6 +425,14 @@ export const updateHelpDeskTicket = <O extends HelpDeskOptions>(
 						message: "",
 					});
 				}
+
+				pendingActivities.push({
+					ticketId: currentTicket.id,
+					type: options.activityTypeMap?.assigned ?? "assigned",
+					actorId: ctx.context.session?.user.id,
+					oldValue: currentTicket.assigneeId,
+					newValue: data.assigneeId,
+				});
 			}
 
 			if (data.locked !== undefined) {
@@ -404,31 +454,23 @@ export const updateHelpDeskTicket = <O extends HelpDeskOptions>(
 						message: "",
 					});
 				}
+
+				if (currentTicket.locked !== data.locked) {
+					pendingActivities.push({
+						ticketId: currentTicket.id,
+						type: options.activityTypeMap?.locked ?? "locked",
+						actorId: ctx.context.session?.user.id,
+						oldValue: currentTicket.locked ? "true" : "false",
+						newValue: data.locked ? "true" : "false",
+					});
+				}
 			}
 
 			if (data.status) {
-				const ticket = await ctx.context.adapter.findOne<{ status: string }>({
-					model: "ticket",
-					where: [
-						{
-							field: "id",
-							value: ctx.body.ticketId,
-						},
-					],
-					select: ["status"],
-				});
-
-				if (!ticket?.status) {
-					throw ctx.error("BAD_REQUEST", {
-						// TODO: Error codes
-						message: "",
-					});
-				}
-
 				const canChangeStatus =
 					typeof options.canChangeTicketStatus === "function"
 						? await options.canChangeTicketStatus(ctx, {
-								prev: ticket.status,
+								prev: currentTicket.status,
 								next: data.status,
 							})
 						: options.canChangeTicketStatus;
@@ -445,9 +487,29 @@ export const updateHelpDeskTicket = <O extends HelpDeskOptions>(
 						message: "",
 					});
 				}
+
+				if (currentTicket.status !== data.status) {
+					pendingActivities.push({
+						ticketId: currentTicket.id,
+						type: options.activityTypeMap?.statusChanged ?? "statusChanged",
+						actorId: ctx.context.session?.user.id,
+						oldValue: currentTicket.status,
+						newValue: data.status,
+					});
+				}
 			}
 
-			const ticket = await ctx.context.adapter.transaction(
+			if (data.title && data.title !== currentTicket.title) {
+				pendingActivities.push({
+					ticketId: currentTicket.id,
+					type: options.activityTypeMap?.titleChanged ?? "titleChanged",
+					actorId: ctx.context.session?.user.id,
+					oldValue: currentTicket.title,
+					newValue: data.title,
+				});
+			}
+
+			const response = await ctx.context.adapter.transaction(
 				async (trxAdapter) => {
 					const ticket = await adapter.updateTicket<
 						typeof additionalFields.ticket.$ReturnAdditionalFields
@@ -476,13 +538,24 @@ export const updateHelpDeskTicket = <O extends HelpDeskOptions>(
 						);
 					}
 
-					return ticket;
+					const newActivities = await Promise.all(
+						pendingActivities.map((data) =>
+							adapter.createTicketActivity<
+								typeof additionalFields.ticketActivity.$ReturnAdditionalFields
+							>(data),
+						),
+					);
+
+					return {
+						ticket,
+						newActivities,
+					};
 				},
 			);
 
 			// TODO: After hooks
 
-			return ticket;
+			return response;
 		},
 	);
 };

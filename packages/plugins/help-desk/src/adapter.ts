@@ -5,6 +5,7 @@ import type {
 	TicketInput,
 	TicketParticipantInput,
 	TicketParticipant,
+	TicketActivityInput,
 } from "./schema";
 import type { HelpDeskOptions } from "./types";
 
@@ -266,6 +267,18 @@ export const getHelpDeskAdapter = (
 						value: ticketId,
 					},
 				],
+			});
+		},
+		createTicketActivity: async <AdditionalFields extends Record<string, any>>(
+			data: Omit<TicketActivityInput, "id"> & Record<string, any>,
+			trxAdapter?: TransactionAdapter,
+		) => {
+			return (trxAdapter || adapter).create<
+				TicketActivityInput & Record<string, any>,
+				TicketActivity & AdditionalFields
+			>({
+				model: "ticketActivity",
+				data,
 			});
 		},
 	};

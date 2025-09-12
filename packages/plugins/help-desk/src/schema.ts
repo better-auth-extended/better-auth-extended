@@ -2,6 +2,7 @@ import { generateId, type AuthPluginSchema } from "better-auth";
 import z from "zod";
 
 export const defaultActivityTypes = [
+	"locked",
 	"titleChanged",
 	"statusChanged",
 	"labelsChanged",
