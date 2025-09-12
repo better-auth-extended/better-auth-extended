@@ -13,7 +13,7 @@ import type {
 	IsExactlyEmptyObject,
 	Merge,
 } from "@better-auth-extended/internal-utils";
-import type { AdditionalPluginFields } from "../utils";
+import { checkPermission, type AdditionalPluginFields } from "../utils";
 
 export const createAppInvitation = <
 	O extends AppInviteOptions,
@@ -79,18 +79,28 @@ export const createAppInvitation = <
 			}
 
 			const session = ctx.context.session;
-			const canInvite = options.allowUserToCreateInvitation
-				? typeof options.allowUserToCreateInvitation === "function"
-					? await options.allowUserToCreateInvitation(
-							session.user,
-							ctx.body.type,
-						)
-					: options.allowUserToCreateInvitation
-				: ((typeof options.canCreateInvitation === "function"
+			let hasAccess: boolean = false;
+			if (options.allowUserToCreateInvitation) {
+				hasAccess =
+					typeof options.allowUserToCreateInvitation === "function"
+						? await options.allowUserToCreateInvitation(
+								session.user,
+								ctx.body.type,
+							)
+						: options.allowUserToCreateInvitation;
+			} else if (options.canCreateInvitation) {
+				const canCreate =
+					typeof options.canCreateInvitation === "function"
 						? await options.canCreateInvitation(ctx)
-						: options.canCreateInvitation) ?? true);
-
-			if (!canInvite) {
+						: options.canCreateInvitation;
+				hasAccess =
+					typeof canCreate === "object"
+						? await checkPermission(ctx, {
+								[canCreate.statement]: canCreate.permissions,
+							})
+						: canCreate;
+			}
+			if (!hasAccess) {
 				throw new APIError("FORBIDDEN", {
 					message:
 						APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_APPLICATION,

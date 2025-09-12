@@ -5,7 +5,7 @@ import type { AppInviteOptions } from "../types";
 import { getAppInviteAdapter } from "../adapter";
 import { APP_INVITE_ERROR_CODES } from "../error-codes";
 import type { AppInvitation } from "../schema";
-import type { AdditionalPluginFields } from "../utils";
+import { checkPermission, type AdditionalPluginFields } from "../utils";
 
 export const cancelAppInvitation = <O extends AppInviteOptions>(
 	options: O,
@@ -75,15 +75,28 @@ export const cancelAppInvitation = <O extends AppInviteOptions>(
 					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
 				});
 			}
-			const canCancel = options.allowUserToCancelInvitation
-				? await options.allowUserToCancelInvitation({
-						user: session.user,
-						invitation,
-					})
-				: typeof options.canCancelInvitation === "function"
-					? await options.canCancelInvitation(ctx, invitation)
-					: options.canCancelInvitation;
-			if (!canCancel) {
+			let hasAccess: boolean = false;
+			if (options.allowUserToCancelInvitation) {
+				hasAccess =
+					typeof options.allowUserToCancelInvitation === "function"
+						? await options.allowUserToCancelInvitation({
+								user: session.user,
+								invitation,
+							})
+						: options.allowUserToCancelInvitation;
+			} else if (options.canCancelInvitation) {
+				const canCancel =
+					typeof options.canCancelInvitation === "function"
+						? await options.canCancelInvitation(ctx, invitation)
+						: options.canCancelInvitation;
+				hasAccess =
+					typeof canCancel === "object"
+						? await checkPermission(ctx, {
+								[canCancel.statement]: canCancel.permissions,
+							})
+						: canCancel;
+			}
+			if (!hasAccess) {
 				throw new APIError("FORBIDDEN", {
 					message:
 						APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_APP_INVITATION,
