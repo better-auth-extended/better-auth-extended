@@ -10,7 +10,7 @@ import {
 	cancelAppInvitation,
 	listAppInvitations,
 } from "./routes";
-import { getAdditionalFields } from "./utils";
+import { getAdditionalPluginFields } from "@better-auth-extended/internal-utils";
 
 export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
 	opts?: O,
@@ -30,7 +30,10 @@ export const appInvite = <O extends AppInviteOptions, S extends boolean = true>(
 		...opts,
 	} satisfies AppInviteOptions;
 
-	const additionalFields = getAdditionalFields(options as O, false);
+	const additionalFields = getAdditionalPluginFields("appInvitation")(
+		options as O,
+		false,
+	);
 
 	const endpoints = {
 		createAppInvitation: createAppInvitation<O, typeof additionalFields, S>(
