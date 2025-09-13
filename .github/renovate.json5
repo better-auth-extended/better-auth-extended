@@ -6,7 +6,7 @@
 		"group:allNonMajor",
 		":disablePeerDependencies",
 		"customManagers:biomeVersions",
-		"helpers:pinGithubActionDigestsToSemver",
+		"helpers:pinGitHubActionDigestsToSemver",
 	],
 	labels: [
 		"dependencies"
