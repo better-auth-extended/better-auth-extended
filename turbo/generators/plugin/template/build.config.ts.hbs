@@ -3,7 +3,13 @@ import { defineBuildConfig } from "unbuild";
 export default defineBuildConfig({
 	declaration: true,
 	rollup: {
-		emitCJS: true,
+		emitCJS: false,
+		dts: {
+			respectExternal: true,
+			compilerOptions: {
+				preserveSymlinks: true,
+			},
+		},
 	},
 	outDir: "dist",
 	clean: false,

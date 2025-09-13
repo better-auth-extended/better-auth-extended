@@ -1,0 +1,14 @@
+import { generateId, type AuthPluginSchema } from "better-auth";
+import { z } from "zod";
+
+export const myTableSchema = z.object({
+	id: z.string().default(generateId),
+});
+export type MyTable = z.infer<typeof myTableSchema>;
+export type MyTableInput = z.input<typeof myTableSchema>;
+
+export const schema = {
+	myTable: {
+		fields: {},
+	},
+} satisfies AuthPluginSchema;
