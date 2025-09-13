@@ -1,11 +1,18 @@
 import type { BetterAuthPlugin } from "better-auth";
+import type { {{pascalCase name}}Options } from "./types";
+{{#if addSchema}}
+import { schema } from "./schema";
+{{/if}}
 
-export const {{camelCase name}} = () => {
+export const {{camelCase name}} = <O extends {{pascalCase name}}Options>(options?: O) => {
 	return {
 		id: "{{name}}",
+		{{#if addSchema}}
+		schema,
+		{{/if}}
+		options,
 	} satisfies BetterAuthPlugin;
 };
 
 export * from "./client";
-
-export type * from "better-call";
+export * from "./types";
