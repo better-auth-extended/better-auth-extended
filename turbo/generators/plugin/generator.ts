@@ -1,18 +1,12 @@
 import type { PlopTypes } from "@turbo/gen";
-import { PACKAGE_PREFIX } from "../config";
+import { PACKAGE_PREFIX, sanitizeName } from "../helper";
 
 const sanitize = (answers: Record<string, any> | undefined) => {
 	if (!answers) {
 		throw new Error("Generator answers are required");
 	}
 
-	if (
-		"name" in answers &&
-		typeof answers.name === "string" &&
-		answers.name.startsWith(PACKAGE_PREFIX)
-	) {
-		answers.name = answers.name.substring(PACKAGE_PREFIX.length);
-	}
+	sanitizeName(answers);
 
 	console.log("Config sanitized");
 };
@@ -24,8 +18,7 @@ export default {
 			type: "input",
 			name: "name",
 			validate: (input) => !!input,
-			message:
-				"What is the name of the plugin? (You can skip the `@better-auth-extended/` prefix)",
+			message: `What is the name of the plugin? (You can skip the \`${PACKAGE_PREFIX}\` prefix)`,
 		},
 		{
 			type: "input",
