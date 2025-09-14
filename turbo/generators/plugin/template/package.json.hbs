@@ -53,6 +53,9 @@
     "better-call": "catalog:"
   },
   "peerDependencies": {
+    {{#if addSchema}}
+    "zod": "catalog:zod",
+    {{/if}}
     "better-auth": "catalog:better-auth"
   },
   "files": [
