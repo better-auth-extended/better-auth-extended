@@ -1,0 +1,51 @@
+{
+  "name": "@better-auth-extended/{{name}}",
+  "description": "{{description}}",
+  "version": "0.0.0",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jslno/better-auth-extended.git",
+    "directory": "packages/{{type}}/{{rawName}}"
+  },
+  "license": "MIT",
+  "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild --clean",
+    "dev": "unbuild --watch",
+    "stub": "unbuild --stub",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ]
+    }
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "vitest": "catalog:",
+    "better-auth": "catalog:better-auth"
+  },
+  "peerDependencies": {
+    "better-auth": "catalog:better-auth"
+  },
+  "files": [
+    "dist"
+  ]
+}
