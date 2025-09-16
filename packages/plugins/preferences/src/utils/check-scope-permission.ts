@@ -51,9 +51,7 @@ export const checkScopePermission = async (
 		const fn = value as (
 			...args: any[]
 		) => Promise<boolean> | boolean | Promise<Permission> | Permission;
-		const result = await fn(
-			...[data.key, "value" in data && data.value, ctx].filter(Boolean),
-		);
+		const result = await fn(data, ctx);
 		await run(result);
 	}
 
