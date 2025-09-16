@@ -84,18 +84,24 @@ type InferGroupInput<
 	OmitValue extends boolean = false,
 > = (OmitValue extends true
 	? {}
-	: { values: {
-		[K in keyof FilteredGroupPreferences<G["preferences"]>]: StandardSchemaV1.InferInput<S["preferences"][K]["type"]>
-	} }) & {
-		scopeId?: string;
-	};
+	: {
+			values: {
+				[K in keyof FilteredGroupPreferences<
+					G["preferences"]
+				>]: StandardSchemaV1.InferInput<S["preferences"][K]["type"]>;
+			};
+		}) & {
+	scopeId?: string;
+};
 
 type InferGroupOutput<
 	S extends PreferenceScopeAttributes,
 	G extends PreferenceScopeGroupAttributes<S["preferences"]>,
 > = {
-	[K in keyof FilteredGroupPreferences<G["preferences"]>]: StandardSchemaV1.InferOutput<S["preferences"][K]["type"]> | null
-}
+	[K in keyof FilteredGroupPreferences<
+		G["preferences"]
+	>]: StandardSchemaV1.InferOutput<S["preferences"][K]["type"]> | null;
+};
 
 type GroupEndpointPair<
 	Scope extends string,
@@ -103,49 +109,66 @@ type GroupEndpointPair<
 	S extends PreferenceScopeAttributes,
 	G extends PreferenceScopeGroupAttributes<S["preferences"]>,
 > = {
-	set: G["operations"] extends never | "write" | ["write", "read"] | ["read", "write"] ? ReturnType<
-		typeof createAuthEndpoint<
-			`/preferences/${TransformClientPath<Scope>}/$${TransformClientPath<Group>}/set`,
-			{
-				method: "POST";
-				metadata: {
-					$Infer: {
-						body: InferGroupInput<S, G>
-					}
-				}
-			},
-			void
-		>
-	> : never;
-	get: G["operations"] extends never | "read" | ["write", "read"] | ["read", "write"] ? ReturnType<
-		typeof createAuthEndpoint<
-			`/preferences/${TransformClientPath<Scope>}/$${TransformClientPath<Group>}/get`,
-			{
-				method: "GET";
-				metadata: {
-					$Infer: {
-						query: InferGroupInput<S, G, true>
-					}
-				}
-			},
-			InferGroupOutput<S, G>
-		>
-	> : never;
+	set: G["operations"] extends
+		| never
+		| "write"
+		| ["write", "read"]
+		| ["read", "write"]
+		? ReturnType<
+				typeof createAuthEndpoint<
+					`/preferences/${TransformClientPath<Scope>}/$${TransformClientPath<Group>}/set`,
+					{
+						method: "POST";
+						metadata: {
+							$Infer: {
+								body: InferGroupInput<S, G>;
+							};
+						};
+					},
+					void
+				>
+			>
+		: never;
+	get: G["operations"] extends
+		| never
+		| "read"
+		| ["write", "read"]
+		| ["read", "write"]
+		? ReturnType<
+				typeof createAuthEndpoint<
+					`/preferences/${TransformClientPath<Scope>}/$${TransformClientPath<Group>}/get`,
+					{
+						method: "GET";
+						metadata: {
+							$Infer: {
+								query: InferGroupInput<S, G, true>;
+							};
+						};
+					},
+					InferGroupOutput<S, G>
+				>
+			>
+		: never;
 };
 
 type AffixedGroupEndpoints<
 	Scope extends string,
 	Group extends string,
 	S extends PreferenceScopeAttributes,
-	G extends PreferenceScopeGroupAttributes<S["preferences"]>
+	G extends PreferenceScopeGroupAttributes<S["preferences"]>,
 > = {
-	[K in keyof GroupEndpointPair<Scope, Group, S, G> as `${Extract<K, string>}${TransformPath<Scope>}${TransformPath<Group>}Preferences`]: GroupEndpointPair<
+	[K in keyof GroupEndpointPair<
 		Scope,
 		Group,
 		S,
 		G
-	>[K]
-}
+	> as `${Extract<K, string>}${TransformPath<Scope>}${TransformPath<Group>}Preferences`]: GroupEndpointPair<
+		Scope,
+		Group,
+		S,
+		G
+	>[K];
+};
 
 type AffixedEndpoints<
 	Scope extends string,
@@ -169,20 +192,19 @@ type AffixedEndpoints<
 export type PreferenceScopesToEndpoints<
 	S extends Record<string, PreferenceScopeAttributes>,
 > = {
-	[K in keyof S & string]: ({
+	[K in keyof S & string]: {
 		[T in keyof S[K]["preferences"] & string]: AffixedEndpoints<
 			K,
 			T,
 			S[K],
 			S[K]["preferences"][T]
 		>;
-	}[keyof S[K]["preferences"] & string])
-	& (S[K]["groups"] extends infer V ? V extends Record<string, PreferenceScopeGroupAttributes> ? {
-		[T in keyof V & string]: AffixedGroupEndpoints<
-			K,
-			T,
-			S[K],
-			V[T]
-		>;
-	}[keyof V & string] : {} : {});
+	}[keyof S[K]["preferences"] & string] &
+		(S[K]["groups"] extends infer V
+			? V extends Record<string, PreferenceScopeGroupAttributes>
+				? {
+						[T in keyof V & string]: AffixedGroupEndpoints<K, T, S[K], V[T]>;
+					}[keyof V & string]
+				: {}
+			: {});
 }[keyof S & string];

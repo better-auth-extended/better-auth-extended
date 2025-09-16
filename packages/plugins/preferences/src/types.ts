@@ -24,8 +24,11 @@ export type PreferenceScopeAttributes<
 		string,
 		PreferenceSchemaAttribute
 	>,
-	G extends Record<string, PreferenceScopeGroupAttributes<S>> = Record<string, PreferenceScopeGroupAttributes<S>>
-	> = {
+	G extends Record<string, PreferenceScopeGroupAttributes<S>> = Record<
+		string,
+		PreferenceScopeGroupAttributes<S>
+	>,
+> = {
 	preferences: S;
 	groups?: G;
 	defaultValues?: Partial<{

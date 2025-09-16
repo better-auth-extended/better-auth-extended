@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe } from "vitest";
 import { preferences } from "../src/index";
 import { preferencesClient } from "../src/client";
 import { getTestInstance } from "@better-auth-extended/test-utils";
