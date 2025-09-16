@@ -29,7 +29,8 @@ export const preferencesClient = <
 			},
 		}),
 		pathMethods: {
-			"/preferences/set-preference": "POST"
-		}
+			"/preferences/set-preference": "POST",
+			// TODO:
+		},
 	} satisfies BetterAuthClientPlugin;
 };
