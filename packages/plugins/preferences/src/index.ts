@@ -22,6 +22,7 @@ import {
 } from "./utils";
 import { createAuthEndpoint, type AuthEndpoint } from "better-auth/api";
 import type { PreferenceInput } from "./schema";
+import { checkScope } from "./utils/check-scope";
 
 export const preferences = <
 	S extends Record<string, PreferenceScopeAttributes>,
@@ -38,34 +39,30 @@ export const preferences = <
 	const setPreference = async (
 		ctx: GenericEndpointContext,
 		data: z.infer<typeof setPreferenceSchema>,
+		skipPermissionCheck: boolean = false
 	) => {
-		const scope = options.scopes[data.scope];
-		if (!scope) {
+		const { scope, config } = checkScope(ctx, options, data);
+		if (!skipPermissionCheck) {
+			await checkScopePermission(
+				{
+					type: "canWrite",
+					key: [data.key],
+					scope: data.scope,
+					values: {
+						[data.key]: data.value,
+					},
+				},
+				scope,
+				ctx,
+			);
+		}
+
+		const valueResult = await config.type["~standard"].validate(data.value);
+		if (valueResult.issues?.length) {
 			throw ctx.error("BAD_REQUEST", {
-				message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_NOT_FOUND,
+				message: z.prettifyError(valueResult)
 			});
 		}
-		const config = scope.preferences[data.key];
-		if (!config) {
-			throw ctx.error("BAD_REQUEST", {
-				message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_PREFERENCE_NOT_FOUND,
-			});
-		}
-		if (!data.scopeId && scope.requireScopeId) {
-			throw ctx.error("BAD_REQUEST", {
-				message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_ID_IS_REQURIED,
-			});
-		}
-		await checkScopePermission(
-			{
-				type: "canWrite",
-				key: data.key,
-				scope: data.scope,
-				value: data.value,
-			},
-			scope,
-			ctx,
-		);
 
 		const where: Where[] = [
 			{
@@ -118,9 +115,9 @@ export const preferences = <
 					value: JSON.stringify(
 						scope.sensitive || config.sensitive
 							? await encrypt(
-									JSON.stringify(data.value),
-									config.secret ?? scope.secret ?? ctx.context.secret,
-								)
+								JSON.stringify(data.value),
+								config.secret ?? scope.secret ?? ctx.context.secret,
+							)
 							: data.value,
 					),
 				},
@@ -137,9 +134,9 @@ export const preferences = <
 				value: JSON.stringify(
 					scope.sensitive || config.sensitive
 						? await encrypt(
-								JSON.stringify(data.value),
-								config.secret ?? scope.secret ?? ctx.context.secret,
-							)
+							JSON.stringify(data.value),
+							config.secret ?? scope.secret ?? ctx.context.secret,
+						)
 						: data.value,
 				),
 				scope: data.scope,
@@ -159,34 +156,20 @@ export const preferences = <
 	const getPreference = async (
 		ctx: GenericEndpointContext,
 		data: z.infer<typeof getPreferenceSchema>,
+		skipPermissionCheck: boolean = false
 	) => {
-		const scope = options.scopes[data.scope];
-
-		if (!scope) {
-			throw ctx.error("BAD_REQUEST", {
-				message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_NOT_FOUND,
-			});
+		const { scope, config } = checkScope(ctx, options, data);
+		if (!skipPermissionCheck) {
+			await checkScopePermission(
+				{
+					type: "canRead",
+					key: [data.key],
+					scope: data.scope,
+				},
+				scope,
+				ctx,
+			);
 		}
-		const config = scope.preferences[data.key];
-		if (!config) {
-			throw ctx.error("BAD_REQUEST", {
-				message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_PREFERENCE_NOT_FOUND,
-			});
-		}
-		if (!data.scopeId && scope.requireScopeId) {
-			throw ctx.error("BAD_REQUEST", {
-				message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_ID_IS_REQURIED,
-			});
-		}
-		await checkScopePermission(
-			{
-				type: "canRead",
-				key: data.key,
-				scope: data.scope,
-			},
-			scope,
-			ctx,
-		);
 
 		const where: Where[] = [
 			{
@@ -229,7 +212,7 @@ export const preferences = <
 				value,
 				typeof scope.defaultValues?.[data.key] === "function"
 					? // @ts-expect-error
-						await scope.defaultValues[data.key]()
+					await scope.defaultValues[data.key]()
 					: scope.defaultValues?.[data.key],
 				scope.mergeStrategy,
 			) ?? null
@@ -242,57 +225,116 @@ export const preferences = <
 			const scopeKey = transformPath(id);
 			const scopePath = transformClientPath(id);
 
-			const endpoints = Object.fromEntries(
-				Object.entries(scope.preferences).flatMap(([key, config]) => {
-					const preferenceKey = transformPath(key);
-					const preferencePath = transformClientPath(key);
+			const endpoints = Object.keys(scope.preferences).flatMap((key) => {
+				const preferenceKey = transformPath(key);
+				const preferencePath = transformClientPath(key);
 
-					return Object.entries({
-						[`set${scopeKey}${preferenceKey}Preference`]: createAuthEndpoint(
-							`/preferences/${scopePath}/${preferenceKey}/set`,
-							{
-								method: "POST",
-								body: z.object({
-									scopeId: z.string().optional(),
-									value: z.json(),
-								}),
-							},
-							async (ctx) => {
-								return await setPreference(ctx, {
-									key,
-									scope: id,
-									value: ctx.body.value,
-									scopeId: ctx.body.scopeId,
-								});
-							},
-						),
-						[`get${scopeKey}${preferenceKey}Preference`]: createAuthEndpoint(
-							`/preferences/${scopePath}/${preferencePath}/get`,
-							{
-								method: "GET",
-								query: z.object({
-									scopeId: z.string().optional(),
-								}),
-							},
-							async (ctx) => {
-								return await getPreference(ctx, {
-									key,
-									scope: id,
-									scopeId: ctx.query.scopeId,
-								});
-							},
-						),
-					} as Record<string, AuthEndpoint>);
-				}),
-			);
+				return Object.entries({
+					[`set${scopeKey}${preferenceKey}Preference`]: createAuthEndpoint(
+						`/preferences/${scopePath}/${preferenceKey}/set`,
+						{
+							method: "POST",
+							body: z.object({
+								scopeId: z.string().optional(),
+								value: z.json(),
+							}),
+						},
+						async (ctx) => {
+							return await setPreference(ctx, {
+								key,
+								scope: id,
+								value: ctx.body.value,
+								scopeId: ctx.body.scopeId,
+							});
+						},
+					),
+					[`get${scopeKey}${preferenceKey}Preference`]: createAuthEndpoint(
+						`/preferences/${scopePath}/${preferencePath}/get`,
+						{
+							method: "GET",
+							query: z.object({
+								scopeId: z.string().optional(),
+							}),
+						},
+						async (ctx) => {
+							return await getPreference(ctx, {
+								key,
+								scope: id,
+								scopeId: ctx.query.scopeId,
+							});
+						},
+					),
+				} as Record<string, AuthEndpoint>);
+			});
 
-			return Object.entries(endpoints);
+			const groupEndpoints = scope.groups ? Object.entries(scope.groups).flatMap(([key, config]) => {
+				const endpoints: Record<string, AuthEndpoint> = {}
+				const groupKey = transformPath(key);
+				const groupPath = `$${transformClientPath(key)}`;
+
+				const enabledPreferences = Object.entries(config.preferences).filter(([_, value]) => !!value).map(([key]) => key);
+				if (config.operations === "read" || config.operations?.includes("read")) {
+					endpoints[`get${scopeKey}${groupKey}Preferences`] = createAuthEndpoint(`/preferences/${scopeKey}/${groupPath}/get`, {
+						method: "GET",
+						query: z.object({
+							scopeId: z.string().optional(),
+						})
+					}, async (ctx) => {
+						await checkScopePermission({
+							type: "canRead",
+							key: enabledPreferences,
+							scope: id,
+							scopeId: ctx.query.scopeId,
+						}, scope, ctx);
+
+						const result: Record<string, any> = {};
+						for (const key of enabledPreferences) {
+							result[key] = await getPreference(ctx, {
+								key,
+								scope: id,
+								scopeId: ctx.query.scopeId,
+							}, true);
+						}
+
+						return result;
+					})
+				}
+				if (config.operations === "write" || config.operations?.includes("write")) {
+					endpoints[`set${scopeKey}${groupKey}Preferences`] = createAuthEndpoint(`/preferences/${scopeKey}/${groupPath}/set`, {
+						method: "POST",
+						body: z.object({
+							values: z.record(z.enum(enabledPreferences), z.json()),
+							scopeId: z.string().optional(),
+						})
+					}, async (ctx) => {
+						await checkScopePermission({
+							type: "canWrite",
+							key: enabledPreferences,
+							scope: id,
+							values: ctx.body.values,
+							scopeId: ctx.body.scopeId,
+						}, scope, ctx);
+
+						for (const [key, value] of Object.entries(ctx.body.values)) {
+							await setPreference(ctx, {
+								key,
+								scope: id,
+								scopeId: ctx.body.scopeId,
+								value
+							}, true);
+						}
+					})
+				}
+
+				return Object.entries(endpoints)
+			}) : []
+
+			return [...endpoints, ...groupEndpoints];
 		}),
 	) as PreferenceScopesToEndpoints<S>;
 
 	return {
 		id: "preferences",
-		// TODO: Cleanup
 		endpoints: {
 			getPreference: createAuthEndpoint(
 				"/preferences/get-preference",
@@ -319,7 +361,6 @@ export const preferences = <
 		options,
 		$ERROR_CODES: PREFERENCES_ERROR_CODES,
 		$Infer: {
-			Test: {} as PreferenceScopesToEndpoints<S>,
 			PreferenceScopes: {} as Extract<keyof S, string>,
 			"~PreferenceScopesDef": {} as S,
 		},

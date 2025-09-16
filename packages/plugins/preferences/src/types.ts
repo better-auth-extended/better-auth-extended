@@ -41,8 +41,9 @@ export type PreferenceScopeAttributes<
 	canRead?:
 		| ((
 				data: {
-					key: string;
+					key: string[];
 					scope: string;
+					scopeId?: string;
 				},
 				ctx: GenericEndpointContext,
 		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
@@ -51,9 +52,10 @@ export type PreferenceScopeAttributes<
 	canWrite?:
 		| ((
 				data: {
-					key: string;
+					key: string[];
 					scope: string;
-					value: z.util.JSONType;
+					scopeId?: string;
+					values: Record<string, z.util.JSONType>;
 				},
 				ctx: GenericEndpointContext,
 		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)

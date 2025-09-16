@@ -10,14 +10,16 @@ export const checkScopePermission = async (
 	data:
 		| {
 				type: "canWrite";
-				key: string;
-				value: z.util.JSONType;
+				key: string[];
+				values: Record<string, z.util.JSONType>;
 				scope: string;
+				scopeId?: string;
 		  }
 		| {
 				type: "canRead";
-				key: string;
+				key: string[];
 				scope: string;
+				scopeId?: string;
 		  },
 	scope: PreferenceScopeAttributes,
 	ctx: GenericEndpointContext,
