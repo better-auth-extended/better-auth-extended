@@ -2,6 +2,7 @@ import { getWebcryptoSubtle } from "@better-auth/utils";
 import { base64 } from "@better-auth/utils/base64";
 
 export * from "./check-scope-permission";
+export * from "./check-scope";
 export * from "./merge";
 export * from "./path";
 export * from "./transform";

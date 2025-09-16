@@ -2,7 +2,11 @@ import type { GenericEndpointContext } from "better-auth/types";
 import type { PreferencesOptions } from "../types";
 import { PREFERENCES_ERROR_CODES } from "../error-codes";
 
-export const checkScope = (ctx: GenericEndpointContext, options: PreferencesOptions, data: { scope: string, scopeId?: string, key: string }) => {
+export const checkScope = (
+	ctx: GenericEndpointContext,
+	options: PreferencesOptions,
+	data: { scope: string; scopeId?: string; key: string },
+) => {
 	const scope = options.scopes[data.scope];
 	if (!scope) {
 		throw ctx.error("BAD_REQUEST", {
@@ -24,5 +28,5 @@ export const checkScope = (ctx: GenericEndpointContext, options: PreferencesOpti
 	return {
 		scope,
 		config,
-	}
-}
+	};
+};
