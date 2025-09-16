@@ -51,7 +51,9 @@
     "vitest": "catalog:",
     "better-auth": "catalog:better-auth",
     "better-call": "catalog:",
-    "@better-auth/utils": "catalog:better-auth"
+    "@better-auth/utils": "catalog:better-auth",
+    "better-sqlite3": "catalog:",
+    "@types/better-sqlite3": "catalog:"
   },
   "dependencies": {
     "@better-auth-extended/internal-utils": "workspace:*",

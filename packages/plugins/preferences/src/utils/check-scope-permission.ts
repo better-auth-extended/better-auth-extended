@@ -1,9 +1,10 @@
 import type { GenericEndpointContext } from "better-auth/types";
-import type { Permission, PreferenceScopeAttributes } from "../types";
+import type { PreferenceScopeAttributes } from "../types";
 import type { admin } from "better-auth/plugins";
 import { getPlugin, tryCatch } from "@better-auth-extended/internal-utils";
 import type { z } from "zod";
 import { PREFERENCES_ERROR_CODES } from "../error-codes";
+import type { Permission } from "../internal-types";
 
 export const checkScopePermission = async (
 	data:
@@ -22,13 +23,13 @@ export const checkScopePermission = async (
 	ctx: GenericEndpointContext,
 ) => {
 	if (!scope.disableUserBinding) {
-		if (ctx.context.session?.user) {
+		if (!ctx.context.session?.session) {
 			throw ctx.error("UNAUTHORIZED");
 		}
 	}
 
 	const value = scope[data.type];
-	if (!value) {
+	if (value === undefined) {
 		return true;
 	}
 

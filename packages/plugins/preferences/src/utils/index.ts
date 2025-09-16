@@ -1,6 +1,11 @@
 import { getWebcryptoSubtle } from "@better-auth/utils";
 import { base64 } from "@better-auth/utils/base64";
 
+export * from "./check-scope-permission";
+export * from "./merge";
+export * from "./path";
+export * from "./transform";
+
 const deriveKey = async (secretKey: string): Promise<CryptoKey> => {
 	const enc = new TextEncoder();
 	const subtle = getWebcryptoSubtle();
@@ -80,6 +85,3 @@ export const decrypt = async (
 	const dec = new TextDecoder();
 	return dec.decode(decrypted);
 };
-
-export * from "./check-scope-permission";
-export * from "./merge";

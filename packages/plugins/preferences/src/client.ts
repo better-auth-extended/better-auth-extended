@@ -8,7 +8,7 @@ import type {
 export const preferencesClient = <
 	Scopes extends {
 		$Infer: {
-			PreferenceScopesDef: Record<string, PreferenceScopeAttributes>;
+			"~PreferenceScopesDef": Record<string, PreferenceScopeAttributes>;
 		};
 	},
 >() => {
@@ -16,17 +16,20 @@ export const preferencesClient = <
 		id: "preferences",
 		$InferServerPlugin: {} as ReturnType<
 			typeof preferences<
-				Scopes["$Infer"]["PreferenceScopesDef"],
-				PreferencesOptions<Scopes["$Infer"]["PreferenceScopesDef"]>
+				Scopes["$Infer"]["~PreferenceScopesDef"],
+				PreferencesOptions<Scopes["$Infer"]["~PreferenceScopesDef"]>
 			>
 		>,
 		getActions: () => ({
 			$Infer: {
 				PreferenceScopes: {} as Extract<
-					keyof Scopes["$Infer"]["PreferenceScopesDef"],
+					keyof Scopes["$Infer"]["~PreferenceScopesDef"],
 					string
 				>,
 			},
 		}),
+		pathMethods: {
+			"/preferences/set-preference": "POST"
+		}
 	} satisfies BetterAuthClientPlugin;
 };
