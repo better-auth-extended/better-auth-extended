@@ -25,7 +25,7 @@ export const checkScopePermission = async (
 	ctx: GenericEndpointContext,
 ) => {
 	if (!scope.disableUserBinding) {
-		if (!ctx.context.session?.session) {
+		if (!ctx.context.session) {
 			throw ctx.error("UNAUTHORIZED");
 		}
 	}

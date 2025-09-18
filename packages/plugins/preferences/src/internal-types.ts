@@ -12,18 +12,28 @@ export type Permission = {
 	permissions: string[];
 };
 
+type AllOptional<T> = {
+	[K in keyof T]-?: {} extends Pick<T, K> ? true : false;
+}[keyof T] extends true
+	? true
+	: false;
+
+type MakeOptionalIfAllOptional<T> = AllOptional<T> extends true
+	? T | undefined
+	: T;
+
 type InferPreferenceInput<
 	S extends PreferenceScopeAttributes,
 	P extends PreferenceSchemaAttribute,
 	OmitValue extends boolean = false,
-> = (OmitValue extends true
-	? {}
-	: { value: StandardSchemaV1.InferInput<P["type"]> }) &
-	(S["requireScopeId"] extends true
-		? { scopeId: string }
-		: S["requireScopeId"] extends false
-			? { scopeId?: string }
-			: { scopeId?: never });
+> = MakeOptionalIfAllOptional<
+	(OmitValue extends true
+		? {}
+		: { value: StandardSchemaV1.InferInput<P["type"]> }) &
+		(S["requireScopeId"] extends true
+			? { scopeId: string }
+			: { scopeId?: string })
+>;
 
 type InferPreferenceOutput<
 	Preference extends string,
@@ -82,17 +92,19 @@ type InferGroupInput<
 	S extends PreferenceScopeAttributes,
 	G extends PreferenceScopeGroupAttributes<S["preferences"]>,
 	OmitValue extends boolean = false,
-> = (OmitValue extends true
-	? {}
-	: {
-			values: {
-				[K in keyof FilteredGroupPreferences<
-					G["preferences"]
-				>]: StandardSchemaV1.InferInput<S["preferences"][K]["type"]>;
-			};
-		}) & {
-	scopeId?: string;
-};
+> = MakeOptionalIfAllOptional<
+	(OmitValue extends true
+		? {}
+		: {
+				values: {
+					[K in keyof FilteredGroupPreferences<
+						G["preferences"]
+					>]: StandardSchemaV1.InferInput<S["preferences"][K]["type"]>;
+				};
+			}) & {
+		scopeId?: string;
+	}
+>;
 
 type InferGroupOutput<
 	S extends PreferenceScopeAttributes,

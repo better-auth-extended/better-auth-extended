@@ -22,7 +22,8 @@ import {
 	transformPath,
 } from "./utils";
 import { createAuthEndpoint, type AuthEndpoint } from "better-auth/api";
-import type { PreferenceInput } from "./schema";
+import { schema, type PreferenceInput } from "./schema";
+import { preferencesMiddleware } from "./call";
 
 export const preferences = <
 	S extends Record<string, PreferenceScopeAttributes>,
@@ -142,8 +143,8 @@ export const preferences = <
 				scope: data.scope,
 				scopeId: data.scopeId,
 				userId: !scope.disableUserBinding
-					? (ctx.context.session?.user.id ?? null)
-					: null,
+					? (ctx.context.session?.user.id ?? undefined)
+					: undefined,
 			},
 		});
 	};
@@ -231,13 +232,14 @@ export const preferences = <
 
 				return Object.entries({
 					[`set${scopeKey}${preferenceKey}Preference`]: createAuthEndpoint(
-						`/preferences/${scopePath}/${preferenceKey}/set`,
+						`/preferences/${scopePath}/${preferencePath}/set`,
 						{
 							method: "POST",
 							body: z.object({
 								scopeId: z.string().optional(),
 								value: z.json(),
 							}),
+							use: [preferencesMiddleware],
 						},
 						async (ctx) => {
 							return await setPreference(ctx, {
@@ -255,6 +257,7 @@ export const preferences = <
 							query: z.object({
 								scopeId: z.string().optional(),
 							}),
+							use: [preferencesMiddleware],
 						},
 						async (ctx) => {
 							return await getPreference(ctx, {
@@ -288,6 +291,7 @@ export const preferences = <
 										query: z.object({
 											scopeId: z.string().optional(),
 										}),
+										use: [preferencesMiddleware],
 									},
 									async (ctx) => {
 										await checkScopePermission(
@@ -331,6 +335,7 @@ export const preferences = <
 											values: z.record(z.enum(enabledPreferences), z.json()),
 											scopeId: z.string().optional(),
 										}),
+										use: [preferencesMiddleware],
 									},
 									async (ctx) => {
 										await checkScopePermission(
@@ -389,6 +394,7 @@ export const preferences = <
 				{
 					method: "POST",
 					body: setPreferenceSchema,
+					use: [preferencesMiddleware],
 				},
 				async (ctx) => {
 					return await setPreference(ctx, ctx.body);
@@ -397,6 +403,7 @@ export const preferences = <
 			...endpoints,
 		},
 		options,
+		schema,
 		$ERROR_CODES: PREFERENCES_ERROR_CODES,
 		$Infer: {
 			PreferenceScopes: {} as Extract<keyof S, string>,
