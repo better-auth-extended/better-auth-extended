@@ -1,0 +1,380 @@
+---
+title: App Invite
+description: Invite users to your application and allow them to sign up.
+---
+
+<StatusBadges npmPackage="@better-auth-extended/app-invite" />
+<GithubButton username="jslno" repository="better-auth-extended" path="/packages/plugins/app-invite" />
+<NpmButton packageName="@better-auth-extended/app-invite" />
+
+The App Invite plugin enables you to invite users to your application through email invitations. It supports two types of invitations:
+
+- **Personal Invitations**: Targeted to specific email addresses, ensuring only the intended recipient can use the invitation
+- **Public Invitations**: Can be used by multiple users, making it ideal for open sign-up scenarios
+
+This plugin is particularly useful for invite-only applications.
+
+## Installation
+
+<Steps>
+    <Step>
+    ### Install the plugin
+
+    ```package-install
+    npm install @better-auth-extended/app-invite
+    ```
+    </Step>
+
+    <Step>
+    ### Add the plugin to your auth config
+
+    To use the App Invite plugin, add it to your auth config.
+
+    ```ts title="auth.ts"
+    import { betterAuth } from "better-auth";
+    import { appInvite } from "@better-auth-extended/app-invite";
+
+    export const auth = betterAuth({
+        // ... other config options
+        plugins: [
+            appInvite({
+                // required for personal invites
+                sendInvitationEmail: (data) => {
+                    // ... send invitation to the user
+                },
+            }),
+        ],
+    });
+    ```
+    </Step>
+
+    <Step>
+    ### Add the client plugin
+
+    Include the App Invite client plugin in your authentication client instance.
+
+    ```ts
+    import { createAuthClient } from "better-auth/client";
+    import { appInviteClient } from "@better-auth-extended/app-invite/client";
+
+    const authClient = createAuthClient({
+        plugins: [appInviteClient()],
+    });
+    ```
+    </Step>
+
+    <Step>
+    ### Run migrations
+
+    This plugin adds an additional table to the database. [Click here to see the schema](#schema)
+    
+    ```package-install
+    npx @better-auth/cli migrate
+    ```
+
+    or generate
+
+    ```package-install
+    npx @better-auth/cli generate
+    ```
+    </Step>
+</Steps>
+
+## Usage
+
+To add members to the application, we first need to send an invitation to the user.
+The user will receive an email with the invitation link. Once the user accepts the invitation, they will be signed up to the application.
+
+### Setup Invitation Email
+
+For personal invites to work we first need to provide `sendInvitationEmail` to the `better-auth` instance.
+This function is responsible for sending the invitation email to the user.
+
+You'll need to construct and send the invitation link to the user. The link should include the invitation ID,
+which will be used with the `acceptInvitation` function when the user clicks on it.
+
+This is only required for personal invites. Sharing public invitations is up to the inviter.
+
+```ts title="auth.ts"
+import { betterAuth } from "better-auth";
+import { appInvite } from "@better-auth-extended/app-invite";
+import { sendAppInvitation } from "./email";
+
+export const auth = betterAuth({
+    plugins: [
+        appInvite({
+            async sendInvitationEmail(data) {
+                const inviteLink = `https://example.com/accept-invitation/${data.id}`;
+                sendAppInvitation({
+                    name: data.name,
+                    email: data.email,
+                    invitedByUsername: data.inviter.name,
+                    invitedByEmail: data.inviter.email,
+                    inviteLink,
+                });
+            },
+        }),
+    ],
+});
+```
+
+### Send Invitation
+
+To invite users to the app, you can use the `invite` function provided by the server and client.
+
+<APIMethod path="/invite-user" method="POST">
+```ts
+type inviteUser = {
+    /**
+     * The email address of the user to invite. Leave empty to create a public invitation.
+    */
+    email?: string
+    /**
+     * A boolean value that determines whether to resend the invitation email,
+     * if the user is already invited. Defaults to `false`
+    */
+    resend?: boolean
+    /**
+     * An optional comma-separated list of domains that allows public invitations to be accepted only from approved domains (e.g., `example.com,*.example.org`).
+    */
+    domainWhitelist?: string
+}
+```
+</APIMethod>
+
+### Accept Invitation
+
+When a user receives an invitation email, they can click on the invitation link to accept the invitation.
+The link should include the invitation ID, which will be used to accept the invitation.
+
+<APIMethod path="/accept-invitation" method="POST">
+```ts
+type acceptAppInvitation = {
+    /**
+     * The ID of the invitation to accept
+    */
+    invitationId: string
+    /**
+     * The name of the user that accepts the invitation. (overriden if predefined in the invitation)
+    */
+    name?: string
+    /**
+     * The email address of the user that accepts the invitation. Required for public invites.
+    */
+    email?: string
+    /**
+     * The password used to sign in after accepting the invitation.
+    */
+    password: string
+}
+```
+</APIMethod>
+
+### Update Invitation Status
+
+To update the status of invitations you can use the `acceptInvitation`, `rejectInvitation`, `cancelInvitation`
+function provided by the client. The functions take the invitation id as an argument.
+
+<APIMethod path="/cancel-invitation" method="POST">
+```ts
+type cancelAppInvitation = {
+    /**
+     * The ID of the invitation to cancel.
+    */
+    invitationId: string
+}
+```
+</APIMethod>
+
+<br />
+
+<APIMethod path="/reject-invitation" method="POST" note="This is only available for personal invites">
+```ts
+type rejectAppInvitation = {
+    /**
+     * The ID of the invitation to reject.
+    */
+    invitationId: string
+}
+```
+</APIMethod>
+
+### Get Invitation
+
+To get an invitation you can use the `getAppInvitation` function provided by the client. You need to provide the
+invitation id as a query parameter.
+
+<APIMethod path="/get-app-invitation" method="GET">
+```ts
+type getAppInvitation = {
+    /**
+     * The ID of the invitation to retrieve.
+    */
+    id: string
+}
+```
+</APIMethod>
+
+### List Invitations
+
+Allows a user to list all invitations issued by themselves.
+By default 100 invitations are returned.
+
+<APIMethod path="/list-invitations" method="GET">
+```ts
+type listAppInvitation = {
+    /**
+     * The field to search on, which can be `email`, `name`, or `domainWhitelist`.
+    */
+    searchField?: string
+    /**
+     * The value to search for.
+    */
+    searchValue?: string
+    /**
+     * The operator to use for the search. Can be `contains`, `starts_with` or `ends_with`
+    */
+    searchOperator?: string
+    /**
+     * The number of invitations to return.
+    */
+    limit?: number
+    /**
+     * The number of invitations to skip.
+    */
+    offset?: number
+    /**
+     * The field to sort the invitations by.
+    */
+    sortBy?: string
+    /**
+     * The direction to sort the invitations by. Defaults to `asc`.
+    */
+    sortDirection?: string
+    /**
+     * The field to filter the invitations by.
+    */
+    filterField?: string
+    /**
+     * The value to filter the invitations by.
+    */
+    filterValue?: string
+    /**
+     * The operator to use for the filter. It can be `eq`, `ne`, `lt`, `lte`, `gt`, or `gte`.
+    */
+    filterOperator?: string
+}
+```
+</APIMethod>
+
+## Schema
+
+The plugin requires an additional table in the database.
+
+Table Name: `appInvitation`
+
+<DatabaseTable
+    fields={[
+        {
+            name: "id",
+            type: "string",
+            description: "Unique identifier for each invitation",
+            isPrimaryKey: true,
+        },
+        {
+            name: "name",
+            type: "string",
+            description: "The name of the user",
+            isOptional: true,
+        },
+        {
+            name: "email",
+            type: "string",
+            description: "The email address of the user",
+            isOptional: true,
+        },
+        {
+            name: "inviterId",
+            type: "string",
+            description: "The ID of the inviter",
+            isForeignKey: true,
+        },
+        {
+            name: "status",
+            type: "string",
+            description: "The status of the invitation",
+        },
+        {
+            name: "domainWhitelist",
+            type: "string",
+            description: "A comma separated whitelist of domains for a public invitation",
+            isOptional: true,
+        },
+        {
+            name: "expiresAt",
+            type: "Date",
+            description: "Timestamp of when the invitation expires",
+            isOptional: true,
+        },
+        {
+            name: "createdAt",
+            type: "Date",
+            description: "Timestamp of when the invitation was created",
+        },
+    ]}
+/>
+
+## Options
+
+**canCreateInvitation**: `((ctx: GenericEndpointContext) => Promise<boolean> | boolean | Promise<Permission> | Permission)` | `boolean | Permission` - A function that determines whether a user can create an invitation. By default, it's `true`. You can set it to `false` to restrict users from creating invitations.
+
+**canCancelInvitation** `((ctx: GenericEndpointContext, invite: AppInvitation) => Promise<boolean> | boolean | Promise<Permission> | Permission)` | `boolean | Permission` - A function that determines whether a user can cancel invitations. By default, the user can only cancel invites they created. You can set it to `false` to restrict users from canceling invitations.
+
+<Callout>
+Returning `Permission` requires the [admin plugin](https://www.better-auth.com/docs/plugins/admin) to be configured. If it's not set up, the request will fail.
+
+Example:
+
+```ts title="auth.ts"
+canCancelInvitation: {
+    statement: "appInvite",
+    permissions: ["create"],
+};
+```
+</Callout>
+
+**sendInvitationEmail**: `async (data) => Promise<void>` - A function that sends an invitation email to the user. This is only required for personal invitations.
+
+**invitationExpiresIn**: `number` - How long the invitation link is valid for in seconds. By default an invitation expires after 48 hours (2 days). Set it to `null` to prevent invitations from expiring.
+
+**autoSignIn**: `boolean` - A boolean value that determines whether to prevent automatic sign-up when accepting an invitation. Defaults to `false`.
+
+**cleanupExpiredInvitations**: `boolean` - Clean up expired invitations when a value is fetched. Default `true`.
+
+**cleanupPersonalInvitesOnDecision**: `boolean` - Cleanup personal invitations when a decision is made. Default `false`.
+
+**verifyEmailOnAccept**: `boolean` - Whether to verify email addresses when accepting invitations. Default `true`.
+
+**resendExistingInvite**: `boolean` - Whether to resend existing invitations, instead of creating a new one. Default `false`.
+
+**hooks.create.before**: `(ctx: GenericEndpointContext) => Promise<void> | void` - A function that runs before an invitation is created.
+
+**hooks.create.after**: `(ctx: GenericEndpointContext, invitation: AppInvitation) => Promise<void> | void` - A function that runs after an invitation was created.
+
+**hooks.accept.before**: `(ctx: GenericEndpointContext, userToCreate: Partial<User> & { email: string }) => Promise<{ user?: User; } | void> | { user?: User; } | void;` - A function that runs before an invitation is accepted.
+
+**hooks.accept.after**: `(ctx: GenericEndpointContext, data: { invitation: AppInvitation; user: User; }) => Promise<void> | void` - A function that runs after an invitation was accepted.
+
+**hooks.reject.before**: `(ctx: GenericEndpointContext, invitation: AppInvitation) => Promise<void> | void` - A function that runs before an invitation is rejected.
+
+**hooks.reject.after**: `(ctx: GenericEndpointContext, invitation: AppInvitation) => Promise<void> | void` - A function that runs after an invitation was rejected.
+
+**hooks.cancel.before**: `(ctx: GenericEndpointContext, invitation: AppInvitation) => Promise<void> | void` - A function that runs before an invitation is canceled.
+
+**hooks.cancel.after**: `(ctx: GenericEndpointContext, invitation: AppInvitation) => Promise<void> | void` - A function that runs after an invitation was canceled.
+
+**schema**: The schema for the app-invite plugin. Allows you to infer additional fields for the `user` and `appInvitation` tables. This option is available in the client plugin as well.
+
+~~**allowUserToCreateInvitation**~~: `boolean` | `((user: User, type: "personal" | "public") => Promise<boolean> | boolean)` - A function that determines whether a user can invite others. By defaults it's `true`. You can set it to `false` to restrict users from creating invitations. (deprecated. use `canCreateInvitation` instead.)
+
+~~**allowUserToCancelInvitation**~~: `(data: { user: User, invitation: AppInvitation }) => Promise<boolean> | boolean` - A function that determines whether a user can cancel invitations. By default the user can only cancel invites created by them. You can set it to `false` to restrict users from canceling invitations. (deprecated. use `canCancelInvitation` instead.)
