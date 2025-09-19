@@ -11,8 +11,41 @@ import {
 import { useTheme } from "next-themes";
 import { Logo } from "./logo";
 import { useMounted } from "@/hooks/use-mounted";
+import {
+	NavigationMenu,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+} from "./ui/navigation-menu";
+import { usePathname } from "next/navigation";
+import { Separator } from "./ui/separator";
+import { buttonVariants } from "./ui/button";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+
+const navigationLinks: NavigationLink[] = [
+	{
+		href: "/",
+		label: "Home",
+		matcher: (href, pathname) => href === pathname,
+	},
+	{
+		href: "/docs",
+		label: "Documentation",
+	},
+	{
+		href: "/marketplace",
+		label: "Marketplace",
+	},
+];
+
+type NavigationLink = {
+	href: string;
+	label: string;
+	matcher?: (href: string, pathname: string) => boolean;
+};
 
 export const Navbar = () => {
+	const pathname = usePathname();
 	const { resolvedTheme } = useTheme();
 	const { scrollY } = useScroll();
 	const mounted = useMounted();
@@ -33,11 +66,39 @@ export const Navbar = () => {
 					<Logo className="h-5" />
 					better-auth-extended
 				</Link>
-
-				<Link href={"/docs"}>Docs</Link>
+				<Separator orientation="vertical" className="ml-3 mr-1.5 h-6!" />
+				<NavigationMenu className="max-md:hidden">
+					<NavigationMenuList className="gap-2">
+						{navigationLinks.map((link, index) => (
+							<NavigationMenuItem key={index}>
+								<NavigationMenuLink
+									active={
+										(!link.matcher
+											? pathname.startsWith(link.href)
+											: link.matcher(link.href, pathname)) ?? false
+									}
+									href={link.href}
+									className="text-muted-foreground dark:hover:bg-accent/30 dark:data-[active]:bg-accent/50 hover:text-primary py-1.5 font-medium"
+								>
+									{link.label}
+								</NavigationMenuLink>
+							</NavigationMenuItem>
+						))}
+					</NavigationMenuList>
+				</NavigationMenu>
 			</div>
 
 			<div className="flex items-center gap-2.5">
+				<Link
+					href="https://github.com/jslno/better-auth-extended"
+					className={buttonVariants({
+						variant: "outline",
+						size: "icon",
+					})}
+				>
+					<GitHubLogoIcon />
+					<span className="sr-only">better-auth-extended repository</span>
+				</Link>
 				<ThemeToggle />
 			</div>
 		</motion.nav>
