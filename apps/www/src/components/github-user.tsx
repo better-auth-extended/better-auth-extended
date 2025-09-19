@@ -6,7 +6,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from "./ui/hover-card";
 import { buttonVariants } from "./ui/button";
 import { cn, uri } from "@/lib/utils";
 
-export type GithubUserProps = {
+export type GithubUserProps = React.ComponentProps<"span"> & {
 	user: string | string[];
 	compact?: boolean;
 };
@@ -37,17 +37,28 @@ export const getGithubUserImage = (username: string, size?: number) => {
 	return `https://github.com/${username}.png${size ? `?size=${size}` : ""}`;
 };
 
-export const GithubUser = ({ user, compact }: GithubUserProps) => {
+export const GithubUser = ({
+	user,
+	compact,
+	className,
+	...props
+}: GithubUserProps) => {
 	const users = [...new Set(Array.isArray(user) ? user : [user])];
 	return (
-		<div className="flex items-center">
+		<span
+			className={cn(
+				"align-middle inline-flex not-prose items-center",
+				className,
+			)}
+			{...props}
+		>
 			{users.length > 1 && (
-				<div className="flex -space-x-3 -mr-3">
+				<span className="flex -space-x-3 -mr-3">
 					{users.slice(1).map((user) => {
 						return (
 							<Link
 								key={user}
-								href={uri`https://github.com/${user}`}
+								href={`https://github.com/${user}`}
 								tabIndex={-1}
 								target="_blank"
 								rel="noopener noreferrer"
@@ -60,11 +71,11 @@ export const GithubUser = ({ user, compact }: GithubUserProps) => {
 							</Link>
 						);
 					})}
-				</div>
+				</span>
 			)}
 			<Link
-				href={uri`https://github.com/${users[0]}`}
-				className="inline-flex items-center gap-2 group"
+				href={`https://github.com/${users[0]}`}
+				className="inline-flex items-center gap-2 group no-underline"
 				target="_blank"
 				rel="noopener noreferrer"
 			>
@@ -104,7 +115,7 @@ export const GithubUser = ({ user, compact }: GithubUserProps) => {
 								className={buttonVariants({
 									size: "sm",
 									variant: "ghost",
-									className: "rounded-sm justify-start",
+									className: "rounded-sm justify-start no-underline",
 								})}
 								target="_blank"
 								rel="noopener noreferrer"
@@ -116,7 +127,7 @@ export const GithubUser = ({ user, compact }: GithubUserProps) => {
 					</HoverCardContent>
 				</HoverCard>
 			)}
-		</div>
+		</span>
 	);
 };
 GithubUser.displayName = "GithubUser";

@@ -4,7 +4,26 @@ const withMDX = createMDX();
 
 /** @type {import("next").NextConfig} */
 const nextConfig = {
-	/* config options here */
+	reactStrictMode: true,
+	redirects: async () => [
+		{
+			source: "/docs",
+			destination: "/docs/introduction",
+			permanent: true,
+		},
+	],
+	images: {
+		remotePatterns: [
+			{
+				protocol: "https",
+				hostname: "github.com",
+			},
+			{
+				protocol: "https",
+				hostname: "img.shields.io",
+			},
+		],
+	},
 };
 
 export default withMDX(nextConfig);

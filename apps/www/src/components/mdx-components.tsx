@@ -24,6 +24,7 @@ import DatabaseTable from "./database-table";
 import { StatusBadges } from "./status-badges";
 import { NpmButton } from "./npm-button";
 import { GithubButton } from "./github-button";
+import { GithubUser, GithubUserProps } from "./github-user";
 
 export const getMDXComponents = (components?: MDXComponents): MDXComponents => {
 	return {
@@ -98,6 +99,9 @@ export const getMDXComponents = (components?: MDXComponents): MDXComponents => {
 		StatusBadges,
 		NpmButton,
 		GithubButton,
+		GithubUser: ({ className, ...props }: GithubUserProps) => {
+			return <GithubUser className={cn("-mt-1", className)} {...props} />;
+		},
 		iframe: (props) => <iframe {...props} className="w-full h-[500px]" />,
 		...components,
 	};

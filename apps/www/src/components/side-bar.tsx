@@ -7,7 +7,7 @@ import { useSearchContext } from "fumadocs-ui/provider";
 import { ChevronDownIcon, Search } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
 import { Suspense, useEffect, useState } from "react";
-import { contents, examples } from "./sidebar-content";
+import { contents, examples } from "../sidebar-content";
 import { Badge } from "./ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select";
 

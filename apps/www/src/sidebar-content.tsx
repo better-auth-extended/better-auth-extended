@@ -89,7 +89,7 @@ export const contents: Content[] = [
 		list: [
 			{
 				title: "Introduction",
-				href: "/docs",
+				href: "/docs/introduction",
 				icon: () => (
 					<svg
 						xmlns="http://www.w3.org/2000/svg"

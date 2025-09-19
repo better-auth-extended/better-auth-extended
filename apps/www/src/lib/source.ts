@@ -1,5 +1,5 @@
 import { docs } from "@/.source";
-import { getPageTree } from "@/components/sidebar-content";
+import { getPageTree } from "@/sidebar-content";
 import { loader } from "fumadocs-core/source";
 
 export let source = loader({
