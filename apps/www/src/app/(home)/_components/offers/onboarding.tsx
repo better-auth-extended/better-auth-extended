@@ -11,15 +11,16 @@ const STEPS = 4;
 
 export const OnboardingOffer = () => {
 	const { hovering } = useBentoGridItem();
-	const [currentStep, setCurrentStep] = useState(1);
+	const [currentStep, setCurrentStep] = useState(0);
 
 	useEffect(() => {
 		if (!hovering) {
-			setCurrentStep(1);
+			setCurrentStep(0);
 			return;
 		}
 
 		let step = 1;
+		setCurrentStep(1);
 		const interval = setInterval(() => {
 			step++;
 			setCurrentStep(step);
@@ -100,7 +101,7 @@ export const OnboardingOffer = () => {
 					<span className="text-sm font-medium">Onboarding</span>
 					<div className="text-xl font-bold">
 						<span>Step </span>
-						<SlidingNumber value={currentStep} />
+						<SlidingNumber value={currentStep === 0 ? 1 : currentStep} />
 					</div>
 				</div>
 			</motion.div>
