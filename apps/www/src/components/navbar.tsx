@@ -120,7 +120,7 @@ const SearchTrigger = () => {
 	return (
 		<div
 			role="searchbox"
-			className="cursor-text h-9 rounded-md bg-input/50 hover:bg-input focus-visible:bg-input dark:bg-input/30 dark:hover:bg-input/50 dark:focus-visible:bg-input/50 border border-input flex items-center gap-2 px-2.5 text-sm text-muted-foreground w-[200px] transition-colors"
+			className="cursor-text h-9 rounded-md bg-accent/50 hover:bg-accent focus-visible:bg-accent dark:bg-accent/30 dark:hover:bg-accent/50 dark:focus-visible:bg-accent/50 border border-border flex items-center gap-2 px-2.5 text-sm text-muted-foreground w-[200px] transition-colors"
 			onClick={() => setOpenSearch(true)}
 		>
 			<SearchIcon className="size-4" />
