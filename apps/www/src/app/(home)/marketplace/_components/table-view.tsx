@@ -29,7 +29,6 @@ import {
 } from "lucide-react";
 import { CSSProperties } from "react";
 import type { Resource } from "~/resources";
-import { columns } from "./columns";
 
 const getPinningStyles = (column: Column<Resource>): CSSProperties => {
 	const isPinned = column.getIsPinned();

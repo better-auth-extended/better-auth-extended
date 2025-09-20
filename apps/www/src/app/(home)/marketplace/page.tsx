@@ -16,7 +16,7 @@ import {
 	useReactTable,
 	VisibilityState,
 } from "@tanstack/react-table";
-import { Toolbar } from "../../components/data-table/toolbar";
+import { Toolbar } from "@/components/data-table/toolbar";
 import { useEffect, useId, useMemo, useState } from "react";
 import { Pagination } from "@/components/data-table/pagination";
 import { Sort } from "./_components/sort";

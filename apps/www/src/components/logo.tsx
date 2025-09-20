@@ -5,15 +5,17 @@ import { SVGProps } from "react";
 export const Logo = (props: SVGProps<SVGSVGElement>) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
-		width={"1em"}
-		height={"1em"}
-		viewBox="0 0 300 500"
+		viewBox="0 0 24 24"
 		fill="none"
 		{...props}
 	>
 		<path
 			fill="currentColor"
-			d="M100 400h100V300h100v200H0V300h100v100ZM200 300H100V200H0V0h100v100h100V0h100v200H200v100Z"
+			d="M9.667 18.6h4.666v-4.4H19V23H5v-8.8h4.667v4.4Z"
+		/>
+		<path
+			fill="currentColor"
+			d="M14.333 14.2H9.667V9.8H5V1h4.667v4.4h4.666V1H19v8.8h-4.667v4.4Z"
 		/>
 	</svg>
 );

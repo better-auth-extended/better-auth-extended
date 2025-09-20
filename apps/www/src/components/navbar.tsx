@@ -66,7 +66,7 @@ export const Navbar = () => {
 						href="/"
 						className="flex w-(--fd-sidebar-width) h-(--fd-nav-height) items-center gap-2.5 tracking-tight font-medium"
 					>
-						<Logo className="h-5" />
+						<Logo className="h-6" />
 						better-auth-extended
 					</Link>
 					<Separator
