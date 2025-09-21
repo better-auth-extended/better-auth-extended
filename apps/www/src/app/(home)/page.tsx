@@ -1,7 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/logo";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Prism } from "@/components/ui/prism";
 import {
 	BentoGrid,

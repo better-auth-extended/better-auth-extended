@@ -70,7 +70,7 @@ export const columns: ColumnDef<Resource>[] = [
 	{
 		id: "_bookmarkRank",
 		accessorFn: (row) => (getBookmarks().includes(row.name) ? 1 : 0),
-		enableHiding: true,
+		enableHiding: false,
 		enablePinning: false,
 		enableResizing: false,
 		enableSorting: true,
@@ -209,6 +209,9 @@ export const columns: ColumnDef<Resource>[] = [
 	{
 		accessorKey: "dateAdded",
 		header: "Added",
+		meta: {
+			displayName: "Added",
+		},
 		sortingFn: bookmarkSortingWrapper(dateSortingFn),
 		cell: ({ row }) => {
 			return (
@@ -231,7 +234,7 @@ export const columns: ColumnDef<Resource>[] = [
 			return $bookmarks.get().includes(original.name);
 		},
 		enableSorting: false,
-		enableHiding: true,
+		enableHiding: false,
 		enablePinning: false,
 	},
 ];

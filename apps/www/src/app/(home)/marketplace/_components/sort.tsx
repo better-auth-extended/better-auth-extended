@@ -61,7 +61,7 @@ export const Sort = ({ table }: SortProps) => {
 			const currentSorting = sorting[1];
 
 			return (
-				option.id === currentSorting.id && option.desc === currentSorting.desc
+				option.id === currentSorting?.id && option.desc === currentSorting?.desc
 			);
 		}) ?? sortOptions[0];
 	const handleSortChange = (value: string) => {

@@ -5,6 +5,7 @@ import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { RootProvider } from "fumadocs-ui/provider";
 import { CustomSearchDialog } from "@/components/search-dialog";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -31,23 +32,25 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-dvh bg-surface`}
 			>
-				<RootProvider
-					search={{
-						enabled: true,
-						SearchDialog: CustomSearchDialog,
-					}}
-				>
-					<ThemeProvider
-						attribute="class"
-						defaultTheme="system"
-						enableSystem
-						disableTransitionOnChange
+				<NuqsAdapter>
+					<RootProvider
+						search={{
+							enabled: true,
+							SearchDialog: CustomSearchDialog,
+						}}
 					>
-						<Navbar />
+						<ThemeProvider
+							attribute="class"
+							defaultTheme="system"
+							enableSystem
+							disableTransitionOnChange
+						>
+							<Navbar />
 
-						{children}
-					</ThemeProvider>
-				</RootProvider>
+							{children}
+						</ThemeProvider>
+					</RootProvider>
+				</NuqsAdapter>
 			</body>
 		</html>
 	);

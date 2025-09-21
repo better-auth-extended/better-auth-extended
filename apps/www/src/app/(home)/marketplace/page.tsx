@@ -4,20 +4,16 @@ import { Button } from "@/components/ui/button";
 import { BookmarkIcon, Grid2x2Icon, ListIcon, Table2Icon } from "lucide-react";
 import { columns, multiColumnFilterFn } from "./_components/columns";
 import {
-	ColumnFiltersState,
 	getCoreRowModel,
 	getFacetedRowModel,
 	getFacetedUniqueValues,
 	getFilteredRowModel,
 	getPaginationRowModel,
 	getSortedRowModel,
-	PaginationState,
-	SortingState,
 	useReactTable,
-	VisibilityState,
 } from "@tanstack/react-table";
 import { Toolbar } from "@/components/data-table/toolbar";
-import { useEffect, useId, useMemo, useState } from "react";
+import { useId, useMemo } from "react";
 import { Pagination } from "@/components/data-table/pagination";
 import { Sort } from "./_components/sort";
 import { cn } from "@/lib/utils";
@@ -29,23 +25,87 @@ import { TableView } from "./_components/table-view";
 import { BulkActions } from "@/components/data-table/bulk-actions";
 import { addBookmarks, useBookmarks } from "./_components/utils";
 import { useMounted } from "@/hooks/use-mounted";
+import { Logo } from "@/components/logo";
+import {
+	parseAsIndex,
+	parseAsInteger,
+	parseAsJson,
+	parseAsString,
+	parseAsStringEnum,
+	useQueryState,
+	useQueryStates,
+} from "nuqs";
+import { z } from "zod";
+
+// TODO: Cleanup
 
 const Items = () => {
 	const id = useId();
-	const [view, setView] = useState<"table" | "grid" | "list">("grid");
-	const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-	const [sorting, setSorting] = useState<SortingState>([
-		{
-			id: "dateAdded",
-			desc: true,
+	const [tab, setTab] = useQueryState(
+		"tab",
+		parseAsStringEnum(["table", "grid", "list"]).withDefault("grid"),
+	);
+	const [columnVisibility, setColumnVisibility] = useQueryState(
+		"view",
+		parseAsJson(z.record(z.string(), z.boolean())).withDefault({}),
+	);
+	const [sorting, setSorting] = useQueryState("sort", {
+		parse(value) {
+			return [
+				{
+					id: "_bookmarkRank",
+					desc: true,
+				},
+				...z
+					.object({
+						id: z.string(),
+						desc: z.boolean(),
+					})
+					.array()
+					.parse(JSON.parse(value)),
+			];
 		},
-	]);
-	const [globalFilter, setGlobalFilter] = useState<string | undefined>("");
-	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-	const [pagination, setPagination] = useState<PaginationState>({
-		pageIndex: 0,
-		pageSize: 20,
+		defaultValue: [
+			{ id: "_bookmarkRank", desc: true },
+			{
+				id: "dateAdded",
+				desc: true,
+			},
+		],
+		serialize(value) {
+			return JSON.stringify(value.filter((v) => v.id !== "_bookmarkRank"));
+		},
 	});
+	const [globalFilter, setGlobalFilter] = useQueryState(
+		"query",
+		parseAsString
+			.withOptions({
+				limitUrlUpdates: {
+					method: "debounce",
+					timeMs: 300,
+				},
+			})
+			.withDefault(""),
+	);
+	const [pagination, setPagination] = useQueryStates({
+		page: parseAsIndex.withDefault(0).withOptions({
+			scroll: true,
+		}),
+		size: parseAsInteger.withDefault(20).withOptions({
+			scroll: true,
+		}),
+	});
+	const [columnFilters, setColumnFilters] = useQueryState(
+		"filter",
+		parseAsJson(
+			z
+				.object({
+					id: z.string(),
+					value: z.json(),
+				})
+				.array(),
+		).withDefault([]),
+	);
 
 	const mounted = useMounted();
 
@@ -59,15 +119,6 @@ const Items = () => {
 		[bookmarks],
 	);
 
-	// TODO: Sync state with url
-
-	useEffect(() => {
-		setSorting((prev) => {
-			const withoutRank = prev.filter((s) => s.id !== "_bookmarkRank");
-			return [{ id: "_bookmarkRank", desc: true }, ...withoutRank];
-		});
-	}, []);
-
 	const table = useReactTable({
 		data,
 		columns,
@@ -80,12 +131,31 @@ const Items = () => {
 			},
 			globalFilter,
 			columnFilters,
-			pagination,
+			pagination: {
+				pageIndex: pagination.page,
+				pageSize: pagination.size,
+			},
 		},
 		columnResizeMode: "onChange",
 		globalFilterFn: multiColumnFilterFn,
 		getRowId: (row) => row.name,
-		onPaginationChange: setPagination,
+		onPaginationChange: (updater) => {
+			setPagination((old) => {
+				const next =
+					typeof updater === "function"
+						? updater({
+								pageIndex: old.page,
+								pageSize: old.size,
+							})
+						: updater;
+
+				return {
+					page: next.pageIndex,
+					size: next.pageSize,
+				};
+			});
+		},
+		// @ts-expect-error
 		onColumnFiltersChange: setColumnFilters,
 		onGlobalFilterChange: setGlobalFilter,
 		onSortingChange: setSorting,
@@ -104,9 +174,20 @@ const Items = () => {
 
 	return (
 		<>
+			<div className="space-y-2">
+				<div className="space-y-0.5">
+					<div className="text-muted-foreground flex items-center gap-0.5 text-xs">
+						<Logo className="h-3.5" />
+						<span>better-auth-extended</span>
+					</div>
+					<h1 className="text-3xl font-medium">Marketplace</h1>
+				</div>
+				<p className="text-muted-foreground">
+					Minim consequat id aute voluptate nostrud.
+				</p>
+			</div>
 			<Toolbar
 				table={table}
-				searchKey="name"
 				filters={[
 					{
 						columnId: "category",
@@ -128,10 +209,10 @@ const Items = () => {
 						size="icon"
 						className={cn(
 							"overflow-clip relative",
-							view === "table" &&
+							tab === "table" &&
 								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
 						)}
-						onClick={() => setView("table")}
+						onClick={() => setTab("table")}
 					>
 						<Table2Icon />
 					</Button>
@@ -140,10 +221,10 @@ const Items = () => {
 						size="icon"
 						className={cn(
 							"overflow-clip relative",
-							view === "grid" &&
+							tab === "grid" &&
 								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
 						)}
-						onClick={() => setView("grid")}
+						onClick={() => setTab("grid")}
 					>
 						<Grid2x2Icon />
 					</Button>
@@ -152,10 +233,10 @@ const Items = () => {
 						size="icon"
 						className={cn(
 							"overflow-clip relative",
-							view === "list" &&
+							tab === "list" &&
 								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
 						)}
-						onClick={() => setView("list")}
+						onClick={() => setTab("list")}
 					>
 						<ListIcon />
 					</Button>
@@ -163,9 +244,9 @@ const Items = () => {
 			</Toolbar>
 			{table.getRowModel().rows.length > 0 ? (
 				<>
-					{view === "grid" && <GridView table={table} />}
-					{view === "list" && <ListView table={table} />}
-					{view === "table" && <TableView table={table} />}
+					{tab === "grid" && <GridView table={table} />}
+					{tab === "list" && <ListView table={table} />}
+					{tab === "table" && <TableView table={table} />}
 				</>
 			) : (
 				<p>No results.</p>
@@ -198,7 +279,7 @@ Items.displayName = "Items";
 export default function Home() {
 	return (
 		<>
-			<div className="font-sans min-h-screen p-8 pb-20 gap-16 sm:p-20 h-[1500px]">
+			<div className="font-sans p-8 pb-20 gap-16 sm:p-20">
 				<div className="flex flex-col gap-6 mx-auto max-w-7xl @container/content">
 					<Items />
 				</div>

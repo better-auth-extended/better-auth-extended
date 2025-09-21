@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
 import { CircleXIcon, ListFilterIcon, XIcon } from "lucide-react";
 import React, { useRef } from "react";
+import { ViewOptions } from "./view-options";
 
 export type ToolbarProps<TData> = {
 	table: Table<TData>;
@@ -118,7 +119,10 @@ export const Toolbar = <TData,>({
 					</Button>
 				)}
 			</div>
-			{children}
+			<div className="flex items-center gap-2">
+				<ViewOptions table={table} />
+				{children}
+			</div>
 		</div>
 	);
 };

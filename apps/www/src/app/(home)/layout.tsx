@@ -20,7 +20,7 @@ export default function HomeLayout({
 					mutation.attributeName === "style"
 				) {
 					if (
-						target.computedStyleMap().get("overflow")?.toString() &&
+						target?.computedStyleMap().get("overflow")?.toString() &&
 						!lenisRef.current?.lenis?.isStopped
 					) {
 						lenisRef.current?.lenis?.stop();

@@ -13,7 +13,7 @@ import { CategoryBadge } from "./category-badge";
 import { GithubUser } from "@/components/github-user";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
-import { addBookmarks } from "./utils";
+import { addBookmarks, isHidden } from "./utils";
 
 export const ListItem = ({ row }: { row: Row<Resource> }) => {
 	const data = row.original;
@@ -34,9 +34,15 @@ export const ListItem = ({ row }: { row: Row<Resource> }) => {
 							</Badge>
 						)}
 					</CardTitle>
-					<CategoryBadge category={data.category} />
+					{!isHidden(row, "category") && (
+						<CategoryBadge category={data.category} />
+					)}
 				</div>
-				<CardDescription>{data.description}</CardDescription>
+				<CardDescription
+					className={isHidden(row, "description") ? "sr-only" : ""}
+				>
+					{data.description}
+				</CardDescription>
 			</CardHeader>
 			<CardFooter className="mt-auto">
 				<div className="flex w-full flex-col gap-2">
@@ -74,13 +80,17 @@ export const ListItem = ({ row }: { row: Row<Resource> }) => {
 							</Link>
 						</div>
 						<div className="flex flex-col justify-end items-end gap-1.5">
-							<div className="flex items-center gap-1.5 text-muted-foreground">
-								<CalendarIcon className="size-3" aria-hidden="true" />
-								<p className="text-xs">
-									{data.dateAdded.toISOString().split("T")[0]}
-								</p>
-							</div>
-							{data.author && <GithubUser user={data.author} compact />}
+							{!isHidden(row, "dateAdded") && (
+								<div className="flex items-center gap-1.5 text-muted-foreground">
+									<CalendarIcon className="size-3" aria-hidden="true" />
+									<p className="text-xs">
+										{data.dateAdded.toISOString().split("T")[0]}
+									</p>
+								</div>
+							)}
+							{data.author && !isHidden(row, "author") && (
+								<GithubUser user={data.author} compact />
+							)}
 						</div>
 					</div>
 				</div>

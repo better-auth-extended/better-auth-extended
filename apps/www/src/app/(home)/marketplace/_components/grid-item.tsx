@@ -14,7 +14,7 @@ import { Resource } from "~/resources";
 import { CategoryBadge } from "./category-badge";
 import { GithubUser } from "@/components/github-user";
 import Link from "next/link";
-import { addBookmarks } from "./utils";
+import { addBookmarks, isHidden } from "./utils";
 import { Badge } from "@/components/ui/badge";
 
 // TODO: Add author
@@ -24,7 +24,7 @@ export const GridItem = ({ row }: { row: Row<Resource> }) => {
 	return (
 		<Card>
 			<CardHeader className="space-y-2">
-				<div className="flex items-center justify-between">
+				<div className="flex items-center">
 					<CardTitle>
 						{data.name}
 						{data.isNew && (
@@ -37,20 +37,30 @@ export const GridItem = ({ row }: { row: Row<Resource> }) => {
 							</Badge>
 						)}
 					</CardTitle>
-					<CategoryBadge category={data.category} />
+					{!isHidden(row, "category") && (
+						<CategoryBadge className="ms-auto" category={data.category} />
+					)}
 				</div>
-				<CardDescription>{data.description}</CardDescription>
+				<CardDescription
+					className={isHidden(row, "description") ? "sr-only" : ""}
+				>
+					{data.description}
+				</CardDescription>
 			</CardHeader>
 			<CardFooter className="mt-auto">
 				<div className="flex w-full flex-col gap-3">
-					<div className="flex items-center justify-between">
-						<div className="flex items-center gap-1.5 text-muted-foreground">
-							<CalendarIcon className="size-3" aria-hidden="true" />
-							<p className="text-xs">
-								{data.dateAdded.toISOString().split("T")[0]}
-							</p>
-						</div>
-						{data.author && <GithubUser user={data.author} compact />}
+					<div className="flex items-center">
+						{!isHidden(row, "dateAdded") && (
+							<div className="flex items-center gap-1.5 text-muted-foreground">
+								<CalendarIcon className="size-3" aria-hidden="true" />
+								<p className="text-xs">
+									{data.dateAdded.toISOString().split("T")[0]}
+								</p>
+							</div>
+						)}
+						{data.author && !isHidden(row, "author") && (
+							<GithubUser className="ms-auto" user={data.author} compact />
+						)}
 					</div>
 					<div className="flex items-center gap-2">
 						<Button
