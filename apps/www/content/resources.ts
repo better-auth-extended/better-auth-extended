@@ -21,7 +21,6 @@ export const resources: Resource[] = [
 		name: "preferences",
 		description:
 			"Define and manage preferences, with support for scoped settings.",
-		// TODO:
 		dateAdded: new Date(),
 		author: "jslno",
 		category: "plugins",

@@ -87,11 +87,11 @@ export function CustomSearchDialog(props: SharedProps) {
 								name: "Docs",
 								icon: BookTextIcon,
 							},
-							resources: {
-								name: "Resources",
+							marketplace: {
+								name: "Marketplace",
 								icon: BoxesIcon,
 							},
-							...(tag?.includes("resources") ? categories : {}),
+							...(tag?.includes("marketplace") ? categories : {}),
 						}).map(([id, config]) => (
 							<button
 								type="button"
@@ -107,9 +107,10 @@ export function CustomSearchDialog(props: SharedProps) {
 										const isActive = prev.includes(id);
 										const categoryKeys = Object.keys(categories);
 										if (isActive) {
-											if (id === "resources") {
+											if (id === "marketplace") {
 												return prev.filter(
-													(t) => t !== "resources" && !categoryKeys.includes(t),
+													(t) =>
+														t !== "marketplace" && !categoryKeys.includes(t),
 												);
 											}
 
@@ -118,11 +119,11 @@ export function CustomSearchDialog(props: SharedProps) {
 											}
 											return prev.filter((t) => t !== id);
 										}
-										if (id === "docs" || id === "resources") {
+										if (id === "docs" || id === "marketplace") {
 											return [id];
 										}
 										if (categoryKeys.includes(id)) {
-											return ["resources", id];
+											return ["marketplace", id];
 										}
 										return prev;
 									});
@@ -303,7 +304,7 @@ function SearchDialogListItem({
 	const icons = {
 		text: null,
 		heading: <HashIcon className="size-4 shrink-0 text-fd-muted-foreground" />,
-		page: item.id.startsWith("resources:") ? (
+		page: item.id.startsWith("marketplace:") ? (
 			<BoxIcon className={pageIconClassName} />
 		) : (
 			<FileTextIcon className={pageIconClassName} />

@@ -104,6 +104,8 @@ export const Navbar = () => {
 						variant: "outline",
 						size: "icon",
 					})}
+					rel="noreferrer noopener"
+					target="_blank"
 				>
 					<GitHubLogoIcon />
 					<span className="sr-only">better-auth-extended repository</span>

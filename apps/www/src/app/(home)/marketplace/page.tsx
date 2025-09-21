@@ -1,47 +1,6 @@
-"use client";
-
-import { Button, buttonVariants } from "@/components/ui/button";
-import {
-	ArrowRightIcon,
-	BookmarkIcon,
-	Grid2x2Icon,
-	ListIcon,
-	Table2Icon,
-} from "lucide-react";
-import { columns, multiColumnFilterFn } from "./_components/columns";
-import {
-	getCoreRowModel,
-	getFacetedRowModel,
-	getFacetedUniqueValues,
-	getFilteredRowModel,
-	getPaginationRowModel,
-	getSortedRowModel,
-	useReactTable,
-} from "@tanstack/react-table";
-import { Toolbar } from "@/components/data-table/toolbar";
-import { useId, useMemo } from "react";
-import { Pagination } from "@/components/data-table/pagination";
-import { Sort } from "./_components/sort";
-import { cn } from "@/lib/utils";
-import { GridView } from "./_components/grid-view";
-import { resources } from "~/resources";
-import { categories } from "~/categories";
-import { ListView } from "./_components/list-view";
-import { TableView } from "./_components/table-view";
-import { BulkActions } from "@/components/data-table/bulk-actions";
-import { addBookmarks, useBookmarks } from "./_components/utils";
-import { useMounted } from "@/hooks/use-mounted";
+import { buttonVariants } from "@/components/ui/button";
+import { ArrowRightIcon } from "lucide-react";
 import { Logo } from "@/components/logo";
-import {
-	parseAsIndex,
-	parseAsInteger,
-	parseAsJson,
-	parseAsString,
-	parseAsStringEnum,
-	useQueryState,
-	useQueryStates,
-} from "nuqs";
-import { z } from "zod";
 import {
 	Card,
 	CardDescription,
@@ -50,252 +9,36 @@ import {
 } from "@/components/ui/card";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { Marketplace } from "./client";
+import { createMetadata } from "@/lib/metadata";
 
-// TODO: Cleanup
-
-const Items = () => {
-	const id = useId();
-	const [tab, setTab] = useQueryState(
-		"tab",
-		parseAsStringEnum(["table", "grid", "list"]).withDefault("grid"),
-	);
-	const [columnVisibility, setColumnVisibility] = useQueryState(
-		"view",
-		parseAsJson(z.record(z.string(), z.boolean())).withDefault({}),
-	);
-	const [sorting, setSorting] = useQueryState("sort", {
-		parse(value) {
-			return [
-				{
-					id: "_bookmarkRank",
-					desc: true,
-				},
-				...z
-					.object({
-						id: z.string(),
-						desc: z.boolean(),
-					})
-					.array()
-					.parse(JSON.parse(value)),
-			];
-		},
-		defaultValue: [
-			{ id: "_bookmarkRank", desc: true },
-			{
-				id: "dateAdded",
-				desc: true,
-			},
-		],
-		serialize(value) {
-			return JSON.stringify(value.filter((v) => v.id !== "_bookmarkRank"));
-		},
-	});
-	const [globalFilter, setGlobalFilter] = useQueryState(
-		"query",
-		parseAsString
-			.withOptions({
-				limitUrlUpdates: {
-					method: "debounce",
-					timeMs: 300,
-				},
-			})
-			.withDefault(""),
-	);
-	const [pagination, setPagination] = useQueryStates({
-		page: parseAsIndex.withDefault(0).withOptions({
-			scroll: true,
-		}),
-		size: parseAsInteger.withDefault(20).withOptions({
-			scroll: true,
-		}),
-	});
-	const [columnFilters, setColumnFilters] = useQueryState(
-		"filter",
-		parseAsJson(
-			z
-				.object({
-					id: z.string(),
-					value: z.json(),
-				})
-				.array(),
-		).withDefault([]),
-	);
-
-	const mounted = useMounted();
-
-	const bookmarks = useBookmarks();
-
-	const data = useMemo(
-		() => [
-			...resources.filter(({ name }) => bookmarks.includes(name)),
-			...resources.filter(({ name }) => !bookmarks.includes(name)),
-		],
-		[bookmarks],
-	);
-
-	const table = useReactTable({
-		data,
-		columns,
-		state: {
-			sorting,
-			columnVisibility: {
-				...columnVisibility,
-				bookmarked: false,
-				_bookmarkRank: false,
-			},
-			globalFilter,
-			columnFilters,
-			pagination: {
-				pageIndex: pagination.page,
-				pageSize: pagination.size,
-			},
-		},
-		columnResizeMode: "onChange",
-		globalFilterFn: multiColumnFilterFn,
-		getRowId: (row) => row.name,
-		onPaginationChange: (updater) => {
-			setPagination((old) => {
-				const next =
-					typeof updater === "function"
-						? updater({
-								pageIndex: old.page,
-								pageSize: old.size,
-							})
-						: updater;
-
-				return {
-					page: next.pageIndex,
-					size: next.pageSize,
-				};
-			});
-		},
-		// @ts-expect-error
-		onColumnFiltersChange: setColumnFilters,
-		onGlobalFilterChange: setGlobalFilter,
-		onSortingChange: setSorting,
-		onColumnVisibilityChange: setColumnVisibility,
-		getPaginationRowModel: getPaginationRowModel(),
-		getCoreRowModel: getCoreRowModel(),
-		getFilteredRowModel: getFilteredRowModel(),
-		getSortedRowModel: getSortedRowModel(),
-		getFacetedRowModel: getFacetedRowModel(),
-		getFacetedUniqueValues: getFacetedUniqueValues(),
-	});
-
-	if (!mounted) {
-		return null;
-	}
-
-	return (
-		<div className="flex flex-col gap-6">
-			<div className="space-y-2">
-				<div className="space-y-0.5">
-					<div className="text-muted-foreground flex items-center gap-0.5 text-xs">
-						<Logo className="h-3.5" />
-						<span>better-auth-extended</span>
-					</div>
-					<h1 className="text-3xl font-medium">Marketplace</h1>
-				</div>
-				<p className="text-muted-foreground">
-					Minim consequat id aute voluptate nostrud.
-				</p>
-			</div>
-			<Toolbar
-				table={table}
-				filters={[
-					{
-						columnId: "category",
-						title: "Category",
-						options: Object.entries(categories).map(([id, config]) => {
-							return {
-								label: config.name,
-								value: id,
-								icon: "icon" in config ? config.icon : undefined,
-							};
-						}),
-					},
-					<Sort key={`${id}-sorting`} table={table} />,
-				]}
-			>
-				<div className="flex items-center *:size-8 *:not-first:rounded-l-none *:not-first:border-l-0 *:not-last:rounded-r-none">
-					<Button
-						variant="outline"
-						size="icon"
-						className={cn(
-							"overflow-clip relative",
-							tab === "table" &&
-								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
-						)}
-						onClick={() => setTab("table")}
-					>
-						<Table2Icon />
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className={cn(
-							"overflow-clip relative",
-							tab === "grid" &&
-								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
-						)}
-						onClick={() => setTab("grid")}
-					>
-						<Grid2x2Icon />
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className={cn(
-							"overflow-clip relative",
-							tab === "list" &&
-								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
-						)}
-						onClick={() => setTab("list")}
-					>
-						<ListIcon />
-					</Button>
-				</div>
-			</Toolbar>
-			{table.getRowModel().rows.length > 0 ? (
-				<>
-					{tab === "grid" && <GridView table={table} />}
-					{tab === "list" && <ListView table={table} />}
-					{tab === "table" && <TableView table={table} />}
-				</>
-			) : (
-				<p>No results.</p>
-			)}
-			<Pagination table={table} />
-			<BulkActions table={table} entityName="item">
-				<div className="flex items-center gap-1.5">
-					<Button
-						variant="outline"
-						size="sm"
-						className="h-8"
-						onClick={() => {
-							const rows = table
-								.getFilteredSelectedRowModel()
-								.rows.map((row) => row.original.name);
-
-							addBookmarks(...rows);
-						}}
-					>
-						<BookmarkIcon className="-ms-0.5" />
-						<span>Bookmark</span>
-					</Button>
-				</div>
-			</BulkActions>
-		</div>
-	);
-};
-Items.displayName = "Items";
+// TODO: Update description
+export const metadata = createMetadata({
+	title: "Marketplace",
+	description:
+		"Ea aliquip pariatur nisi amet voluptate minim occaecat dolor est laboris.",
+});
 
 export default function Home() {
 	return (
 		<>
 			<div className="font-sans p-8 pb-20 sm:p-20">
 				<div className="flex flex-col gap-16 mx-auto max-w-7xl @container/content">
-					<Items />
+					<div className="flex flex-col gap-6">
+						<div className="space-y-2">
+							<div className="space-y-0.5">
+								<div className="text-muted-foreground flex items-center gap-0.5 text-xs">
+									<Logo className="h-3.5" />
+									<span>better-auth-extended</span>
+								</div>
+								<h1 className="text-3xl font-medium">Marketplace</h1>
+							</div>
+							<p className="text-muted-foreground">
+								Minim consequat id aute voluptate nostrud.
+							</p>
+						</div>
+						<Marketplace />
+					</div>
 					<Card>
 						<CardHeader className="flex flex-row items-center gap-6">
 							<div className="space-y-2">

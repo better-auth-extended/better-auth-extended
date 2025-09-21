@@ -17,7 +17,6 @@ import Link from "next/link";
 import { addBookmarks, isHidden } from "./utils";
 import { Badge } from "@/components/ui/badge";
 
-// TODO: Add author
 export const GridItem = ({ row }: { row: Row<Resource> }) => {
 	const data = row.original;
 

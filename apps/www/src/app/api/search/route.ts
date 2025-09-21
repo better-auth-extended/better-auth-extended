@@ -24,7 +24,7 @@ export const { GET } = createSearchAPI("advanced", {
 						headings: [],
 						contents: [],
 					},
-					tag: ["resources", resource.category],
+					tag: ["marketplace", resource.category],
 				}) satisfies AdvancedIndex,
 		),
 	],

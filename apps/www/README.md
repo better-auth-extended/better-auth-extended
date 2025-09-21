@@ -9,4 +9,4 @@ pnpm install
 pnpm run dev
 ```
 
-This will start the site on http://localhost:4000
+This will start the site on http://localhost:3000
