@@ -117,6 +117,9 @@ export const columns: ColumnDef<Resource>[] = [
 				checked={row.getIsSelected()}
 				onCheckedChange={(value) => row.toggleSelected(!!value)}
 				aria-label="Select row"
+				onClick={(e) => {
+					e.stopPropagation();
+				}}
 			/>
 		),
 		enableResizing: false,
@@ -151,7 +154,8 @@ export const columns: ColumnDef<Resource>[] = [
 							!bookmarked &&
 								"opacity-0 group-focus-visible/row:opacity-100 group-hover/row:opacity-100",
 						)}
-						onClick={() => {
+						onClick={(e) => {
+							e.stopPropagation();
 							addBookmarks(row.original.name);
 						}}
 					>
@@ -195,7 +199,12 @@ export const columns: ColumnDef<Resource>[] = [
 	{
 		accessorKey: "author",
 		header: "Author",
-		cell: ({ row }) => <GithubUser user={row.getValue("author")} />,
+		cell: ({ row }) => (
+			<GithubUser
+				user={row.getValue("author")}
+				onClick={(e) => e.stopPropagation()}
+			/>
+		),
 	},
 	{
 		accessorKey: "dateAdded",

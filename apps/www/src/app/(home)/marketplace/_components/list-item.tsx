@@ -66,6 +66,8 @@ export const ListItem = ({ row }: { row: Row<Resource> }) => {
 									size: "sm",
 									className: "cursor-default",
 								})}
+								target="_blank"
+								rel="noopener noreferrer"
 							>
 								View Resource
 								<ExternalLinkIcon />

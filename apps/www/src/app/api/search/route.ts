@@ -19,7 +19,7 @@ export const { GET } = createSearchAPI("advanced", {
 					id: `resources:${resource.name}`,
 					title: resource.name,
 					description: resource.description,
-					url: `/#${resource.name}`,
+					url: `/marketplace#${resource.name}`,
 					structuredData: {
 						headings: [],
 						contents: [],
@@ -27,15 +27,5 @@ export const { GET } = createSearchAPI("advanced", {
 					tag: ["resources", resource.category],
 				}) satisfies AdvancedIndex,
 		),
-		{
-			id: "custom:github",
-			title: "GitHub Repository",
-			description: "Check out the source code on GitHub",
-			url: "https://github.com/your/repo",
-			structuredData: {
-				contents: [],
-				headings: [],
-			}, // required, but can be empty
-		},
 	],
 });

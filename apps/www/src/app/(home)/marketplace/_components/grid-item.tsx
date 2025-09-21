@@ -77,6 +77,8 @@ export const GridItem = ({ row }: { row: Row<Resource> }) => {
 								size: "sm",
 								className: "grow cursor-default",
 							})}
+							target="_blank"
+							rel="noopener noreferrer"
 						>
 							View Resource
 							<ExternalLinkIcon />

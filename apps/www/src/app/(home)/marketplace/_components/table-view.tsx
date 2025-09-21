@@ -181,7 +181,7 @@ const Row = ({ row }: { row: TanstackRow<Resource> }) => {
 			data-state={row.getIsSelected() && "selected"}
 			className="cursor-pointer group/row"
 			onClick={(e) => {
-				if (!e.isDefaultPrevented) {
+				if (!e.isPropagationStopped()) {
 					window.open(row.original.url, "_blank", "noopener,noreferrer");
 				}
 			}}

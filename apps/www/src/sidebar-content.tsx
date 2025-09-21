@@ -1,6 +1,7 @@
 import { QuestionMarkCircledIcon } from "@radix-ui/react-icons";
 import { PageTree } from "fumadocs-core/server";
 import {
+	BookOpenTextIcon,
 	DoorOpenIcon,
 	FlaskConicalIcon,
 	HourglassIcon,
@@ -90,19 +91,7 @@ export const contents: Content[] = [
 			{
 				title: "Introduction",
 				href: "/docs/introduction",
-				icon: () => (
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="1.2em"
-						height="1.2em"
-						viewBox="0 0 256 256"
-					>
-						<path
-							fill="currentColor"
-							d="M232 48h-64a32 32 0 0 0-32 32v87.73a8.17 8.17 0 0 1-7.47 8.25a8 8 0 0 1-8.53-8V80a32 32 0 0 0-32-32H24a8 8 0 0 0-8 8v144a8 8 0 0 0 8 8h72a24 24 0 0 1 24 23.94a7.9 7.9 0 0 0 5.12 7.55A8 8 0 0 0 136 232a24 24 0 0 1 24-24h72a8 8 0 0 0 8-8V56a8 8 0 0 0-8-8m-24 120h-39.73a8.17 8.17 0 0 1-8.25-7.47a8 8 0 0 1 8-8.53h39.73a8.17 8.17 0 0 1 8.25 7.47a8 8 0 0 1-8 8.53m0-32h-39.73a8.17 8.17 0 0 1-8.25-7.47a8 8 0 0 1 8-8.53h39.73a8.17 8.17 0 0 1 8.25 7.47a8 8 0 0 1-8 8.53m0-32h-39.73a8.17 8.17 0 0 1-8.27-7.47a8 8 0 0 1 8-8.53h39.73a8.17 8.17 0 0 1 8.27 7.47a8 8 0 0 1-8 8.53"
-						/>
-					</svg>
-				),
+				icon: () => <BookOpenTextIcon className="size-4" />,
 			},
 		],
 	},
