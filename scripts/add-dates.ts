@@ -53,18 +53,6 @@ const main = async () => {
 							);
 						}
 					}
-					if (
-						dateProp.getKind() === SyntaxKind.PropertyAssignment &&
-						dateProp
-							.asKindOrThrow(SyntaxKind.PropertyAssignment)
-							.getInitializerOrThrow()
-							.getText()
-							.match(/^new Date\(\s*\)$/)
-					) {
-						dateProp
-							.asKindOrThrow(SyntaxKind.PropertyAssignment)
-							.setInitializer(`new Date("${new Date().toISOString()}")`);
-					}
 				}
 			}
 		});
