@@ -50,7 +50,7 @@ export const GridItem = ({ row }: { row: Row<Resource> }) => {
 			<CardFooter className="mt-auto">
 				<div className="flex w-full flex-col gap-3">
 					<div className="flex items-center">
-						{!isHidden(row, "dateAdded") && (
+						{data.dateAdded && !isHidden(row, "dateAdded") && (
 							<div className="flex items-center gap-1.5 text-muted-foreground">
 								<CalendarIcon className="size-3" aria-hidden="true" />
 								<p className="text-xs">

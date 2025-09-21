@@ -80,7 +80,7 @@ export const ListItem = ({ row }: { row: Row<Resource> }) => {
 							</Link>
 						</div>
 						<div className="flex flex-col justify-end items-end gap-1.5">
-							{!isHidden(row, "dateAdded") && (
+							{data.dateAdded && !isHidden(row, "dateAdded") && (
 								<div className="flex items-center gap-1.5 text-muted-foreground">
 									<CalendarIcon className="size-3" aria-hidden="true" />
 									<p className="text-xs">

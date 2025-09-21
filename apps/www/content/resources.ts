@@ -1,6 +1,6 @@
 import { Categories } from "./categories";
 
-export const resources = [
+export const resources: Resource[] = [
 	{
 		name: "app-invite",
 		description: "Invite users to your application and allow them to sign up.",
@@ -37,12 +37,12 @@ export const resources = [
 		category: "libraries",
 		url: "/docs/libraries/test-utils",
 	},
-] satisfies Resource[];
+];
 
 export type Resource = {
 	name: string;
 	description?: string;
-	dateAdded: Date;
+	dateAdded?: Date;
 	author?: string | string[];
 	category: Categories;
 	url: string;

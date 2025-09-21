@@ -214,15 +214,19 @@ export const columns: ColumnDef<Resource>[] = [
 		},
 		sortingFn: bookmarkSortingWrapper(dateSortingFn),
 		cell: ({ row }) => {
+			const date = row.getValue<Date | undefined>("dateAdded");
+
+			if (!date) {
+				return null;
+			}
+
 			return (
 				<div className="flex items-center gap-1.5">
 					<CalendarIcon
 						className="shrink-0 size-3.5 text-muted-foreground"
 						aria-hidden="true"
 					/>
-					<p className="truncate">
-						{row.getValue<Date>("dateAdded")?.toISOString().split("T")[0]}
-					</p>
+					<p className="truncate">{date.toISOString().split("T")[0]}</p>
 				</div>
 			);
 		},

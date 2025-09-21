@@ -23,6 +23,7 @@ import { buttonVariants } from "./ui/button";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { SearchIcon } from "lucide-react";
 import { useSearchContext } from "fumadocs-ui/provider";
+import { MetaOrControl } from "./keyboard-shortcuts";
 
 const navigationLinks: NavigationLink[] = [
 	{
@@ -116,6 +117,7 @@ Navbar.displayName = "Navbar";
 
 const SearchTrigger = () => {
 	const { setOpenSearch } = useSearchContext();
+	const mounted = useMounted();
 
 	return (
 		<div
@@ -126,9 +128,11 @@ const SearchTrigger = () => {
 			<SearchIcon className="size-4" />
 			<span>Search...</span>
 			<div className="ml-auto text-muted-foreground pointer-events-none flex items-center justify-center">
-				<kbd className="text-muted-foreground/70 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-					⌘K
-				</kbd>
+				{mounted && (
+					<kbd className="text-muted-foreground/70 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
+						<MetaOrControl /> K
+					</kbd>
+				)}
 			</div>
 		</div>
 	);
