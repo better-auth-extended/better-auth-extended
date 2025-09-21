@@ -55,7 +55,8 @@ export const BentoGridItem = ({
 		>
 			<div
 				className={cn(
-					"row-span-1 overflow-hidden rounded-xl group/bento transition duration-200 shadow-input dark:shadow-none p-4 border border-border/60 dark:border-border/40 justify-between flex flex-col space-y-4",
+					"cursor-pointer row-span-1 overflow-hidden rounded-xl group/bento transition duration-200 shadow-input dark:shadow-none p-4 border border-border/60 hover:border-border/90 dark:border-border/40 dark:hover:border-border/70 justify-between flex flex-col space-y-4",
+					"outline-0 focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
 					className,
 				)}
 				role="button"
@@ -101,7 +102,7 @@ export const BentoGridItemTitle = ({
 		>
 			{Icon && (
 				<Icon
-					className="inline size-4 text-muted-foreground group-hover/bento:text-foreground transition-colors"
+					className="inline size-4 text-muted-foreground group-hover/bento:text-foreground group-focus-visible/bento:text-foreground transition-colors"
 					aria-hidden="true"
 				/>
 			)}

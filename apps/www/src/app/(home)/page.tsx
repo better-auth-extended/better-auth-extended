@@ -1,7 +1,7 @@
 "use client";
 
 import { Logo } from "@/components/logo";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Prism } from "@/components/ui/prism";
 import {
 	BentoGrid,
@@ -20,8 +20,12 @@ import { LegalConsentOffer } from "./_components/offers/legal-consent";
 import { AppInviteOffer } from "./_components/offers/app-invite";
 import { PreferencesOffer } from "./_components/offers/preferences";
 import { OnboardingOffer } from "./_components/offers/onboarding";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function HomePage() {
+	const router = useRouter();
+
 	return (
 		<div>
 			<div className="z-[2] -mt-(--fd-nav-height) h-[calc(80dvh+var(--fd-nav-height))] relative">
@@ -33,10 +37,23 @@ export default function HomePage() {
 							A curated set of plugins, tools, and libraries for Better-Auth.
 						</p>
 						<div className="grid grid-cols-2 mt-4 gap-2">
-							<Button size="lg">Get Started</Button>
-							<Button size="lg" variant="ghost">
+							<Link
+								href="/docs"
+								className={buttonVariants({
+									size: "lg",
+								})}
+							>
+								Get Started
+							</Link>
+							<Link
+								href="/marketplace"
+								className={buttonVariants({
+									size: "lg",
+									variant: "ghost",
+								})}
+							>
 								Visit Marketplace
-							</Button>
+							</Link>
 						</div>
 					</div>
 				</div>
@@ -54,9 +71,13 @@ export default function HomePage() {
 					/>
 				</div>
 			</div>
-			<div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+			<div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
 				<BentoGrid>
-					<BentoGridItem>
+					<BentoGridItem
+						onClick={() => {
+							router.push("/docs/plugins/app-invite");
+						}}
+					>
 						<div className="h-full group-hover/bento:mask-t-from-80% transition-all">
 							<div className="h-full mask-b-from-80% group-hover/bento:mask-none transition-all">
 								<AppInviteOffer />
@@ -69,7 +90,12 @@ export default function HomePage() {
 							Dolor exercitation exercitation proident sint ad ad nulla dolor.
 						</BentoGridItemDescription>
 					</BentoGridItem>
-					<BentoGridItem className="md:col-span-2">
+					<BentoGridItem
+						className="md:col-span-2"
+						onClick={() => {
+							router.push("/docs/plugins/onboarding");
+						}}
+					>
 						<div className="h-full mask-b-from-80% transition-all">
 							<OnboardingOffer />
 						</div>
@@ -81,7 +107,11 @@ export default function HomePage() {
 							aliquip elit magna.
 						</BentoGridItemDescription>
 					</BentoGridItem>
-					<BentoGridItem>
+					<BentoGridItem
+						onClick={() => {
+							router.push("/docs/plugins/waitlist");
+						}}
+					>
 						<div className="h-full mask-r-from-80% mask-b-from-80%">
 							<WaitlistOffer />
 						</div>
@@ -93,7 +123,11 @@ export default function HomePage() {
 							consectetur cupidatat id anim.
 						</BentoGridItemDescription>
 					</BentoGridItem>
-					<BentoGridItem>
+					<BentoGridItem
+						onClick={() => {
+							router.push("/docs/plugins/legal-consent");
+						}}
+					>
 						<div className="h-full group-hover/bento:mask-t-from-80% transition-all">
 							<LegalConsentOffer />
 						</div>
@@ -104,7 +138,11 @@ export default function HomePage() {
 							Cupidatat voluptate dolore sint fugiat elit dolore.
 						</BentoGridItemDescription>
 					</BentoGridItem>
-					<BentoGridItem>
+					<BentoGridItem
+						onClick={() => {
+							router.push("/docs/plugins/preferences");
+						}}
+					>
 						<div className="h-full mask-b-from-60% transition-all">
 							<PreferencesOffer />
 						</div>

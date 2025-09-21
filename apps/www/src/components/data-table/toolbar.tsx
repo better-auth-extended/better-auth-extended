@@ -4,8 +4,8 @@ import { FacetedFilter } from "@/components/data-table/faceted-filter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
-import { CircleXIcon, XIcon } from "lucide-react";
-import React, { useEffect, useRef } from "react";
+import { CircleXIcon, ListFilterIcon, XIcon } from "lucide-react";
+import React, { useRef } from "react";
 
 export type ToolbarProps<TData> = {
 	table: Table<TData>;
@@ -24,7 +24,6 @@ export type ToolbarProps<TData> = {
 		| React.JSX.Element
 	)[];
 	children?: React.ReactNode;
-	disableSearchShortcut?: boolean;
 };
 
 export const Toolbar = <TData,>({
@@ -33,7 +32,6 @@ export const Toolbar = <TData,>({
 	searchKey,
 	filters = [],
 	children,
-	disableSearchShortcut,
 }: ToolbarProps<TData>) => {
 	const inputRef = useRef<HTMLInputElement>(null);
 	const isFiltered =
@@ -45,24 +43,6 @@ export const Toolbar = <TData,>({
 			: table.setGlobalFilter("");
 		inputRef.current?.focus();
 	};
-
-	useEffect(() => {
-		if (disableSearchShortcut) {
-			return;
-		}
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if ((e.metaKey || e.ctrlKey) && e.key.toLocaleLowerCase() === "k") {
-				e.preventDefault();
-				inputRef.current?.focus();
-			}
-		};
-
-		window.addEventListener("keydown", handleKeyDown, { capture: true });
-
-		return () => {
-			window.removeEventListener("keydown", handleKeyDown, { capture: true });
-		};
-	}, []);
 
 	return (
 		<div className="flex items-center justify-between">
@@ -78,7 +58,7 @@ export const Toolbar = <TData,>({
 							onChange={(event) =>
 								table.getColumn(searchKey)?.setFilterValue(event.target.value)
 							}
-							className="h-8 w-[150px] lg:w-[250px]"
+							className="peer ps-9 pe-9 h-8 w-[150px] lg:w-[250px]"
 						/>
 					) : (
 						<Input
@@ -86,9 +66,12 @@ export const Toolbar = <TData,>({
 							placeholder={searchPlaceholder}
 							value={table.getState().globalFilter ?? ""}
 							onChange={(event) => table.setGlobalFilter(event.target.value)}
-							className="h-8 w-[150px] lg:w-[250px]"
+							className="peer ps-9 pe-9 h-8 w-[150px] lg:w-[250px]"
 						/>
 					)}
+					<div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
+						<ListFilterIcon className="size-4" />
+					</div>
 					{(
 						searchKey
 							? table.getColumn(searchKey)?.getFilterValue()
@@ -101,12 +84,6 @@ export const Toolbar = <TData,>({
 						>
 							<CircleXIcon size={16} aria-hidden="true" />
 						</button>
-					) : !disableSearchShortcut ? (
-						<div className="text-muted-foreground pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-2">
-							<kbd className="text-muted-foreground/70 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-								⌘K
-							</kbd>
-						</div>
 					) : null}
 				</div>
 				<div className="flex gap-x-2">

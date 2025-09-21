@@ -100,7 +100,7 @@ export function CustomSearchDialog(props: SharedProps) {
 								className={badgeVariants({
 									variant: "outline",
 									className:
-										"flex items-center gap-1.5 text-muted-foreground data-[active=true]:bg-accent data-[active=true]:text-foreground rounded-sm dark:data-[active=true]:bg-accent/50 transition-colors",
+										"outline-0 flex items-center gap-1.5 text-muted-foreground data-[active=true]:bg-accent data-[active=true]:text-foreground rounded-sm dark:data-[active=true]:bg-accent/50 transition-colors",
 								})}
 								onClick={() => {
 									setTag((prev) => {

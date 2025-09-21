@@ -62,13 +62,13 @@ export const Navbar = () => {
 		>
 			<div className="flex items-center gap-2.5">
 				<div className="flex items-center pl-6">
-					<Link
+					<a
 						href="/"
 						className="flex w-(--fd-sidebar-width) h-(--fd-nav-height) items-center gap-2.5 tracking-tight font-medium"
 					>
 						<Logo className="h-6" />
 						better-auth-extended
-					</Link>
+					</a>
 					<Separator
 						orientation="vertical"
 						className="-ml-px h-(--fd-nav-height)! bg-border"

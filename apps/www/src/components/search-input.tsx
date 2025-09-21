@@ -36,7 +36,7 @@ export const SearchInput = () => {
 			<Input
 				id={id}
 				ref={inputRef}
-				className="pe-9"
+				className="ps-9 pe-9"
 				placeholder="Search..."
 				type="text"
 				value={inputValue}
@@ -50,13 +50,7 @@ export const SearchInput = () => {
 				>
 					<CircleXIcon size={16} aria-hidden="true" />
 				</button>
-			) : (
-				<div className="text-muted-foreground pointer-events-none absolute inset-y-0 end-0 flex items-center justify-center pe-2">
-					<kbd className="text-muted-foreground/70 inline-flex h-5 max-h-full items-center rounded border px-1 font-[inherit] text-[0.625rem] font-medium">
-						⌘K
-					</kbd>
-				</div>
-			)}
+			) : null}
 		</div>
 	);
 };
