@@ -1,6 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { RootProvider } from "fumadocs-ui/provider";
 import { CustomSearchDialog } from "@/components/search-dialog";
