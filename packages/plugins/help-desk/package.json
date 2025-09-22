@@ -1,0 +1,65 @@
+{
+  "name": "@better-auth-extended/help-desk",
+  "description": "The Help Desk plugin allows users to submit support tickets, track their status and give admins tools to respond and resolve issues.",
+  "version": "0.0.1",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jslno/better-auth-extended.git",
+    "directory": "packages/plugins/help-desk"
+  },
+  "license": "MIT",
+  "keywords": [],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "unbuild --clean",
+    "dev": "unbuild --watch",
+    "stub": "unbuild --stub",
+    "test": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./client": {
+      "types": "./dist/client.d.ts",
+      "import": "./dist/client.mjs",
+      "require": "./dist/client.cjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "./dist/index.d.ts"
+      ],
+      "client": [
+        "./dist/client.d.ts"
+      ]
+    }
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "unbuild": "catalog:",
+    "@better-auth-extended/test-utils": "workspace:*",
+    "vitest": "catalog:",
+    "better-auth": "^1.3.10-beta.1",
+    "better-call": "catalog:"
+  },
+  "peerDependencies": {
+    "better-auth": "^1.3.10-beta.1"
+  },
+  "dependencies": {
+    "@better-auth-extended/internal-utils": "workspace:*",
+    "zod": "catalog:"
+  },
+  "files": [
+    "dist"
+  ]
+}
