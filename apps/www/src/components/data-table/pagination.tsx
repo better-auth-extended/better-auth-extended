@@ -34,8 +34,8 @@ export const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
 			)}
 			style={{ overflowClipMargin: 1 }}
 		>
-			<div className="flex w-full items-center justify-between">
-				<div className="flex w-[100px] items-center justify-center text-sm font-medium @2xl/content:hidden">
+			<div className="flex w-full items-center">
+				<div className="flex w-[100px] items-center justify-center text-sm font-medium @3xl/content:hidden">
 					Page {currentPage} of {totalPages}
 				</div>
 				<div className="flex items-center gap-2 @max-2xl/container:flex-row-reverse">
