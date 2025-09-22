@@ -1,17 +1,17 @@
 <h1>
     <span>better-auth-extended</span>
      <div style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem;margin-bottom:0.5rem" aria-hidden="true">
-        <a href="https://github.com/jslno/better-auth-extended/issues">
-            <img alt="GitHub Issues" src="https://img.shields.io/github/issues/jslno/better-auth-extended?style=flat-square">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/issues">
+            <img alt="GitHub Issues" src="https://img.shields.io/github/issues/better-auth-extended/better-auth-extended?style=flat-square">
         </a>
-        <a href="https://github.com/jslno/better-auth-extended/pulls">
-            <img alt="GitHub Pull Request" src="https://img.shields.io/github/issues-pr/jslno/better-auth-extended?style=flat-square">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/pulls">
+            <img alt="GitHub Pull Request" src="https://img.shields.io/github/issues-pr/better-auth-extended/better-auth-extended?style=flat-square">
         </a>
-        <a href="https://github.com/jslno/better-auth-extended/stargazers">
-            <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/jslno/better-auth-extended?style=flat-square">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/stargazers">
+            <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/better-auth-extended/better-auth-extended?style=flat-square">
         </a>
-        <a href="https://github.com/jslno/better-auth-extended/actions/workflows/ci.yml">
-            <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/jslno/better-auth-extended/ci.yml?branch=main&style=flat-square">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/actions/workflows/ci.yml">
+            <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/better-auth-extended/better-auth-extended/ci.yml?branch=main&style=flat-square">
         </a>
     </div>
 </h1>
@@ -26,8 +26,8 @@ A curated set of plugins, tools, and libraries for [Better-Auth][better-auth-rep
 
 ## Plugins
 
-| Name                     | Description                                                 |                                                                                                                                                               |
-| ------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name                     | Description                                                 |                                                                                                                                                                                                           |
+| ------------------------ | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [app-invite][app-invite] | Invite users to your application and allow them to sign up. | [![NPM Version][app-invite-shield-npm-version]][app-invite-npm] <br/> [![npm bundle size][app-invite-shield-npm-bundle-size]]() <br/> [![NPM License][app-invite-shield-npm-license]][app-invite-license] |
 | [onboarding][onboarding] | Easily add onboarding to your authentication flow.          | [![NPM Version][onboarding-shield-npm-version]][onboarding-npm] <br/> [![npm bundle size][onboarding-shield-npm-bundle-size]]() <br/> [![NPM License][onboarding-shield-npm-license]][onboarding-license] |
 
