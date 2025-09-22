@@ -277,7 +277,7 @@ export async function getLLMText(docPage: any) {
 
 	return `# ${category}: ${docPage.data.title}
 URL: ${docPage.url}
-Source: https://raw.githubusercontent.com/better-auth/better-auth/refs/heads/main/docs/content/docs/${
+Source: https://raw.githubusercontent.com/jslno/better-auth-extended/refs/heads/main/apps/www/content/docs/${
 		docPage.file.path
 	}
 
