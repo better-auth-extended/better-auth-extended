@@ -214,6 +214,7 @@ const tabs = [
 		),
 		title: "Examples",
 		description: "examples and guides",
+		isDisabled: true,
 	},
 ];
 
@@ -254,11 +255,17 @@ function SidebarTab({
 			</SelectTrigger>
 			<SelectContent>
 				{tabs.map((tab) => (
-					<SelectItem key={tab.value} value={tab.value} className="h-12">
+					<SelectItem
+						key={tab.value}
+						value={tab.value}
+						disabled={tab.isDisabled}
+						className="h-12"
+					>
 						<div className="flex flex-col items-start gap-0.5 pb-0.5">
 							<div className="flex items-center gap-1">
 								{tab.icon}
 								{tab.title}
+								{tab.isDisabled && <Badge variant="outline">Soon</Badge>}
 							</div>
 							<p className="text-xs text-muted-foreground">{tab.description}</p>
 						</div>

@@ -31,7 +31,7 @@ export const DocsFooter = (props: { editOnGithub: EditOnGitHubOptions }) => (
 	<div className="mt-4">
 		<NextPrevButtons />
 		<Feedback onRateAction={onRateAction}>
-			<div className="ms-auto flex flex-row items-center flex-wrap gap-4">
+			<div className="flex flex-row items-center flex-wrap gap-y-2 gap-x-4">
 				<Link
 					href="/llms.txt"
 					target="_blank"

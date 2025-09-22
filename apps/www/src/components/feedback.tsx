@@ -95,36 +95,38 @@ export function Feedback({
 			}}
 			className="border-y py-3"
 		>
-			<div className="flex flex-row items-center gap-2">
-				<p className="text-sm font-medium pe-2">How is this guide?</p>
-				<button
-					disabled={previous !== null}
-					className={cn(
-						rateButtonVariants({
-							active: activeOpinion === "good",
-						}),
-					)}
-					onClick={() => {
-						setOpinion("good");
-					}}
-				>
-					<ThumbsUp />
-					Good
-				</button>
-				<button
-					disabled={previous !== null}
-					className={cn(
-						rateButtonVariants({
-							active: activeOpinion === "bad",
-						}),
-					)}
-					onClick={() => {
-						setOpinion("bad");
-					}}
-				>
-					<ThumbsDown />
-					Bad
-				</button>
+			<div className="flex flex-row flex-wrap-reverse items-center justify-between gap-y-4 gap-x-2">
+				<div className="flex items-center gap-2">
+					<p className="text-sm font-medium pe-2">How is this guide?</p>
+					<button
+						disabled={previous !== null}
+						className={cn(
+							rateButtonVariants({
+								active: activeOpinion === "good",
+							}),
+						)}
+						onClick={() => {
+							setOpinion("good");
+						}}
+					>
+						<ThumbsUp />
+						Good
+					</button>
+					<button
+						disabled={previous !== null}
+						className={cn(
+							rateButtonVariants({
+								active: activeOpinion === "bad",
+							}),
+						)}
+						onClick={() => {
+							setOpinion("bad");
+						}}
+					>
+						<ThumbsDown />
+						Bad
+					</button>
+				</div>
 				{children}
 			</div>
 			<CollapsibleContent className="mt-3">
