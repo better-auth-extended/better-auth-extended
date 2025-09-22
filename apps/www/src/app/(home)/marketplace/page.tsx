@@ -1,5 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowRightIcon } from "lucide-react";
+import { ArrowRightIcon, BoxesIcon } from "lucide-react";
 import { Logo } from "@/components/logo";
 import {
 	Card,
@@ -29,13 +29,10 @@ export default function Home() {
 				<div className="flex flex-col gap-16 mx-auto max-w-7xl @container/content">
 					<div className="flex flex-col gap-6">
 						<div className="space-y-2">
-							<div className="space-y-0.5">
-								<div className="text-muted-foreground flex items-center gap-0.5 text-xs">
-									<Logo className="h-3.5" />
-									<span>better-auth-extended</span>
-								</div>
-								<h1 className="text-3xl font-medium">Marketplace</h1>
-							</div>
+							{/* <div className="mb-0.5 size-8 rounded-full border grid place-items-center">
+								<BoxesIcon className="size-4 text-muted-foreground" />
+							</div> */}
+							<h1 className="text-3xl font-medium">Marketplace</h1>
 							<p className="text-muted-foreground">
 								Minim consequat id aute voluptate nostrud.
 							</p>

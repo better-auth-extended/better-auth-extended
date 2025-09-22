@@ -22,7 +22,6 @@ import { PreferencesOffer } from "./_components/offers/preferences";
 import { OnboardingOffer } from "./_components/offers/onboarding";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Suspense } from "react";
 
 export default function HomePage() {
 	const router = useRouter();
@@ -59,19 +58,17 @@ export default function HomePage() {
 					</div>
 				</div>
 				<div className="-z-[1] absolute inset-0 mask-t-from-92% mask-b-from-80%">
-					<Suspense>
-						<Prism
-							animationType="rotate"
-							timeScale={0.314159}
-							height={3.5}
-							baseWidth={6}
-							scale={2.8}
-							hueShift={0}
-							colorFrequency={1}
-							noise={0.05}
-							glow={1}
-						/>
-					</Suspense>
+					<Prism
+						animationType="rotate"
+						timeScale={0.314159}
+						height={3.5}
+						baseWidth={6}
+						scale={2.8}
+						hueShift={0}
+						colorFrequency={1}
+						noise={0.05}
+						glow={1}
+					/>
 				</div>
 			</div>
 			<div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
