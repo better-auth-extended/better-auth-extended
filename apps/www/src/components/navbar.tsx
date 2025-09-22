@@ -147,7 +147,7 @@ const SearchTrigger = ({ isDocs }: { isDocs: boolean }) => {
 				variant="outline"
 				size="icon"
 				onClick={() => setOpenSearch(true)}
-				className={isDocs ? "md:hidden" : ""}
+				className={isDocs ? "md:hidden" : "lg:hidden"}
 			>
 				<SearchIcon />
 				<span className="sr-only">Search...</span>
