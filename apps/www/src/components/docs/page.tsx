@@ -26,8 +26,9 @@ import {
 	TOCScrollArea,
 } from "./layout/toc";
 import { buttonVariants } from "../ui/button";
-import { Edit, Text } from "lucide-react";
+import { BookOpenTextIcon, Edit, Text } from "lucide-react";
 import { I18nLabel } from "fumadocs-ui/provider";
+import Link from "next/link";
 
 type TableOfContentOptions = Omit<TOCProps, "items" | "children"> &
 	Pick<AnchorProviderProps, "single"> & {
@@ -171,9 +172,23 @@ export function DocsPage({
 					{props.children}
 					<div role="none" className="flex-1" />
 					<div className="flex flex-row flex-wrap items-center justify-between gap-4 empty:hidden">
-						{props.editOnGithub ? (
-							<EditOnGitHub {...props.editOnGithub} />
-						) : null}
+						<div className="flex flex-row items-center flex-wrap gap-4">
+							<Link
+								href="/llms.txt"
+								target="_blank"
+								rel="noreferrer noopener"
+								className={buttonVariants({
+									variant: "secondary",
+									className: "text-muted-foreground!",
+								})}
+							>
+								<BookOpenTextIcon />
+								llms.txt
+							</Link>
+							{props.editOnGithub ? (
+								<EditOnGitHub {...props.editOnGithub} />
+							) : null}
+						</div>
 						{props.lastUpdate ? (
 							<LastUpdate date={new Date(props.lastUpdate)} />
 						) : null}

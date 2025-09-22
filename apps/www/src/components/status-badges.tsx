@@ -27,7 +27,7 @@ export const StatusBadges = ({ npmPackage }: { npmPackage: string }) => {
 
 	return (
 		<>
-			<div className="!-mt-8 mb-4 flex items-center gap-1.5 not-prose">
+			<div className="flex items-center gap-1.5 not-prose">
 				<Link href={`https://www.npmjs.com/package/${npmPackage}`}>
 					<img
 						className={imgClass}

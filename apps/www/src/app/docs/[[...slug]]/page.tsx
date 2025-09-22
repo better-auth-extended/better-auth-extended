@@ -13,6 +13,7 @@ import { StatusBadges } from "@/components/status-badges";
 import { GithubButton } from "@/components/github-button";
 import { NpmButton } from "@/components/npm-button";
 import path from "node:path";
+import { LLMCopyButton, ViewOptions } from "@/components/page-actions";
 
 const removeExt = (fullPath: string) => {
 	const parsed = path.parse(fullPath);
@@ -44,22 +45,33 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 				component: <Footer className="mt-4" variant="docs" />,
 			}}
 		>
-			<DocsTitle>{page.data.title}</DocsTitle>
-			<DocsDescription>{page.data.description}</DocsDescription>
+			<div className="-mb-10 space-y-4">
+				<DocsTitle>{page.data.title}</DocsTitle>
+				<DocsDescription>{page.data.description}</DocsDescription>
+			</div>
 			{!!page.data.packageName && (
-				<div className="space-y-1">
+				<div className="-mb-2">
 					<StatusBadges npmPackage={page.data.packageName} />
+				</div>
+			)}
+			<div className="mb-4 flex items-center gap-2">
+				<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
+				<ViewOptions
+					markdownUrl={`${page.url}.mdx`}
+					githubUrl={`https://github.com/jslno/better-auth-extended/tree/main/apps/www/content/docs/${page.path}`}
+				/>
+				{!!page.data.packageName && (
 					<div className="flex items-center gap-2">
 						<GithubButton
+							label="Source"
 							username="jslno"
 							repository="better-auth-extended"
 							path={`/packages/${removeExt(page.path)}`}
 						/>
 						<NpmButton packageName={page.data.packageName} />
 					</div>
-				</div>
-			)}
-			{/* TODO: LLM Header */}
+				)}
+			</div>
 			<DocsBody>
 				<MDX components={getMDXComponents()} />
 			</DocsBody>

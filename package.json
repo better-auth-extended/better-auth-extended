@@ -30,6 +30,6 @@
   "devDependencies": {
     "@biomejs/js-api": "^3.0.0",
     "@biomejs/wasm-nodejs": "^2.2.4",
-    "ts-morph": "^27.0.0"
+    "ts-morph": "^26.0.0"
   }
 }

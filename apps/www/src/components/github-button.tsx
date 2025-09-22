@@ -1,5 +1,5 @@
 import { SquareArrowOutUpRight } from "lucide-react";
-import { Button } from "./ui/button";
+import { buttonVariants } from "./ui/button";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 
@@ -8,7 +8,9 @@ export const GithubButton = ({
 	repository,
 	sha = "main",
 	path,
+	label = "GitHub",
 }: {
+	label?: string;
 	username: string;
 	repository: string;
 	sha?: string;
@@ -19,12 +21,14 @@ export const GithubButton = ({
 			href={`https://github.com/${username}/${repository}/tree/${sha}${path ? (path?.startsWith("/") ? path : `/${path}`) : ""}`}
 			target="_blank"
 			rel="noopener noreferrer"
+			className={buttonVariants({
+				variant: "secondary",
+				size: "sm",
+			})}
 		>
-			<Button variant="outline" className="cursor-pointer">
-				<GitHubLogoIcon />
-				Github
-				<SquareArrowOutUpRight className="size-3" />
-			</Button>
+			<GitHubLogoIcon />
+			{label}
+			<SquareArrowOutUpRight className="size-3.5 text-muted-foreground" />
 		</Link>
 	);
 };
