@@ -73,7 +73,7 @@ export const Navbar = () => {
 			<motion.nav
 				style={mounted ? { backgroundColor } : undefined}
 				className={cn(
-					"h-(--fd-nav-height) z-40 not-supports-[backdrop-filter:blur(4px)]:bg-background/95 sticky top-0 backdrop-blur-lg inset-x-0 py-3 pr-6 flex items-center justify-between border-b",
+					"h-(--fd-nav-height) z-40 not-supports-[backdrop-filter:blur(4px)]:bg-background/95 sticky top-0 backdrop-blur-lg inset-x-0 py-3 pr-3 md:pr-6 flex items-center justify-between border-b",
 					isOpen && "max-md:bg-background/75!",
 				)}
 			>
