@@ -5,7 +5,7 @@
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jslno/better-auth-extended.git",
+    "url": "https://github.com/better-auth-extended/better-auth-extended.git",
     "directory": "packages/internal/env"
   },
   "license": "MIT",
