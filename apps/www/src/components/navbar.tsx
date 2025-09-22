@@ -4,7 +4,6 @@ import Link from "next/link";
 import { ThemeToggle } from "./theme-toggle";
 import {
 	motion,
-	MotionValue,
 	useMotionTemplate,
 	useScroll,
 	useTransform,
