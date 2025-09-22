@@ -15,6 +15,7 @@ import {
 	TextIcon,
 } from "lucide-react";
 import { Resource } from "~/resources";
+import { cn } from "@/lib/utils";
 
 export type SortProps = {
 	table: Table<Resource>;
@@ -26,6 +27,7 @@ export const Sort = ({ table }: SortProps) => {
 			key: "date-desc",
 			id: "dateAdded",
 			desc: true,
+			labelShort: "Date",
 			label: "Date (Newest first)",
 			icon: <CalendarIcon className="size-4 mr-2" />,
 			directionIcon: <SortDescIcon className="size-4 ml-2 inline" />,
@@ -34,6 +36,7 @@ export const Sort = ({ table }: SortProps) => {
 			key: "date-asc",
 			id: "dateAdded",
 			desc: false,
+			labelShort: "Date",
 			label: "Date (Oldest first)",
 			icon: <CalendarIcon className="size-4 mr-2" />,
 			directionIcon: <SortAscIcon className="size-4 ml-2 inline" />,
@@ -42,6 +45,7 @@ export const Sort = ({ table }: SortProps) => {
 			key: "name-asc",
 			id: "name",
 			desc: false,
+			labelShort: "Name",
 			label: "Name (A-Z)",
 			icon: <TextIcon className="size-4 mr-2" />,
 			directionIcon: <SortDescIcon className="size-4 ml-2 inline" />,
@@ -49,6 +53,7 @@ export const Sort = ({ table }: SortProps) => {
 		{
 			key: "name-desc",
 			id: "name",
+			labelShort: "Name",
 			label: "Name (Z-A)",
 			desc: true,
 			icon: <TextIcon className="size-4 mr-2" />,
@@ -87,7 +92,19 @@ export const Sort = ({ table }: SortProps) => {
 				<SelectValue>
 					<span className="flex items-center">
 						{selectedOption.icon}
-						<span className="truncate font-medium">{selectedOption.label}</span>
+						{selectedOption.labelShort && (
+							<div className="truncate font-medium md:hidden">
+								{selectedOption.labelShort}
+							</div>
+						)}
+						<div
+							className={cn(
+								"truncate font-medium",
+								selectedOption.labelShort && "max-md:hidden",
+							)}
+						>
+							{selectedOption.label}
+						</div>
 						{selectedOption.directionIcon}
 					</span>
 				</SelectValue>

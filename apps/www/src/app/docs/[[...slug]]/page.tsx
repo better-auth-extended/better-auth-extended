@@ -1,7 +1,6 @@
 import { source } from "@/lib/source";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx-components";
-import { Footer } from "@/components/footer";
 import {
 	DocsBody,
 	DocsDescription,
@@ -14,6 +13,8 @@ import { GithubButton } from "@/components/github-button";
 import { NpmButton } from "@/components/npm-button";
 import path from "node:path";
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions";
+import { DocsFooter } from "./_components/footer";
+import { owner, repo } from "@/lib/github";
 
 const removeExt = (fullPath: string) => {
 	const parsed = path.parse(fullPath);
@@ -31,18 +32,21 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 		<DocsPage
 			toc={page.data.toc}
 			full={page.data.full}
-			editOnGithub={{
-				owner: "jslno",
-				repo: "better-auth-extended",
-				sha: "main",
-				path: `apps/www/content/docs/${params.slug?.join("/")}.mdx`,
-			}}
 			tableOfContent={{
 				header: <div className="w-10 h-4"></div>,
 			}}
 			footer={{
 				enabled: true,
-				component: <Footer className="mt-4" variant="docs" />,
+				component: (
+					<DocsFooter
+						editOnGithub={{
+							owner,
+							repo,
+							sha: "main",
+							path: `apps/www/content/docs/${params.slug?.join("/")}.mdx`,
+						}}
+					/>
+				),
 			}}
 		>
 			<div className="-mb-10 space-y-4">
@@ -58,14 +62,14 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 				<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
 				<ViewOptions
 					markdownUrl={`${page.url}.mdx`}
-					githubUrl={`https://github.com/jslno/better-auth-extended/tree/main/apps/www/content/docs/${page.path}`}
+					githubUrl={`https://github.com/${owner}/${repo}/tree/main/apps/www/content/docs/${page.path}`}
 				/>
 				{!!page.data.packageName && (
 					<div className="flex items-center gap-2">
 						<GithubButton
 							label="Source"
-							username="jslno"
-							repository="better-auth-extended"
+							username={owner}
+							repository={repo}
 							path={`/packages/${removeExt(page.path)}`}
 						/>
 						<NpmButton packageName={page.data.packageName} />

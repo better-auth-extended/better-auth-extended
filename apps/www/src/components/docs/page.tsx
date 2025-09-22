@@ -1,10 +1,5 @@
 import type { TableOfContents } from "fumadocs-core/server";
-import {
-	type AnchorHTMLAttributes,
-	forwardRef,
-	type HTMLAttributes,
-	type ReactNode,
-} from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
 import { type AnchorProviderProps, AnchorProvider } from "fumadocs-core/toc";
 import { replaceOrDefault } from "./shared";
 import { cn } from "../../lib/utils";
@@ -25,10 +20,8 @@ import {
 	type TOCProps,
 	TOCScrollArea,
 } from "./layout/toc";
-import { buttonVariants } from "../ui/button";
-import { BookOpenTextIcon, Edit, Text } from "lucide-react";
+import { Text } from "lucide-react";
 import { I18nLabel } from "fumadocs-ui/provider";
-import Link from "next/link";
 
 type TableOfContentOptions = Omit<TOCProps, "items" | "children"> &
 	Pick<AnchorProviderProps, "single"> & {
@@ -37,24 +30,6 @@ type TableOfContentOptions = Omit<TOCProps, "items" | "children"> &
 	};
 
 type TableOfContentPopoverOptions = Omit<TableOfContentOptions, "single">;
-
-interface EditOnGitHubOptions
-	extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href" | "children"> {
-	owner: string;
-	repo: string;
-
-	/**
-	 * SHA or ref (branch or tag) name.
-	 *
-	 * @defaultValue main
-	 */
-	sha?: string;
-
-	/**
-	 * File path in the repo
-	 */
-	path: string;
-}
 
 interface BreadcrumbOptions extends BreadcrumbProps {
 	enabled: boolean;
@@ -97,7 +72,6 @@ export interface DocsPageProps {
 	 */
 	footer?: Partial<FooterOptions>;
 
-	editOnGithub?: EditOnGitHubOptions;
 	lastUpdate?: Date | string | number;
 
 	container?: HTMLAttributes<HTMLDivElement>;
@@ -171,24 +145,7 @@ export function DocsPage({
 				>
 					{props.children}
 					<div role="none" className="flex-1" />
-					<div className="flex flex-row flex-wrap items-center justify-between gap-4 empty:hidden">
-						<div className="flex flex-row items-center flex-wrap gap-4">
-							<Link
-								href="/llms.txt"
-								target="_blank"
-								rel="noreferrer noopener"
-								className={buttonVariants({
-									variant: "secondary",
-									className: "text-muted-foreground!",
-								})}
-							>
-								<BookOpenTextIcon />
-								llms.txt
-							</Link>
-							{props.editOnGithub ? (
-								<EditOnGitHub {...props.editOnGithub} />
-							) : null}
-						</div>
+					<div className="flex flex-row flex-wrap items-center justify-end gap-4 empty:hidden">
 						{props.lastUpdate ? (
 							<LastUpdate date={new Date(props.lastUpdate)} />
 						) : null}
@@ -218,35 +175,6 @@ export function DocsPage({
 				},
 			)}
 		</AnchorProvider>
-	);
-}
-
-function EditOnGitHub({
-	owner,
-	repo,
-	sha,
-	path,
-	...props
-}: EditOnGitHubOptions) {
-	const href = `https://github.com/${owner}/${repo}/blob/${sha}/${path.startsWith("/") ? path.slice(1) : path}`;
-
-	return (
-		<a
-			href={href}
-			target="_blank"
-			rel="noreferrer noopener"
-			{...props}
-			className={cn(
-				buttonVariants({
-					variant: "secondary",
-					className: "gap-1.5 text-fd-muted-foreground",
-				}),
-				props.className,
-			)}
-		>
-			<Edit className="size-3.5" />
-			<I18nLabel label="editOnGithub" />
-		</a>
 	);
 }
 

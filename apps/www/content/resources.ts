@@ -1,3 +1,4 @@
+import { owner } from "@/lib/github";
 import { Categories } from "./categories";
 
 export const resources: Resource[] = [
@@ -5,7 +6,7 @@ export const resources: Resource[] = [
 		name: "app-invite",
 		description: "Invite users to your application and allow them to sign up.",
 		dateAdded: new Date("2025-09-03"),
-		author: "jslno",
+		author: owner,
 		category: "plugins",
 		url: "/docs/plugins/app-invite",
 	},
@@ -13,7 +14,7 @@ export const resources: Resource[] = [
 		name: "onboarding",
 		description: "Easily add onboarding to your authentication flow.",
 		dateAdded: new Date("2025-09-04"),
-		author: "jslno",
+		author: owner,
 		category: "plugins",
 		url: "/docs/plugins/onboarding",
 	},
@@ -22,7 +23,7 @@ export const resources: Resource[] = [
 		description:
 			"Define and manage preferences, with support for scoped settings.",
 		dateAdded: new Date(),
-		author: "jslno",
+		author: owner,
 		category: "plugins",
 		url: "/docs/plugins/preferences",
 		isNew: true,
@@ -32,7 +33,7 @@ export const resources: Resource[] = [
 		description:
 			"A collection of utilities to help you test your Better-Auth plugins.",
 		dateAdded: new Date("2025-09-03"),
-		author: "jslno",
+		author: owner,
 		category: "libraries",
 		url: "/docs/libraries/test-utils",
 	},

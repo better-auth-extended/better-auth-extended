@@ -7,6 +7,7 @@ import remarkMdx from "remark-mdx";
 import { remarkAutoTypeTable } from "fumadocs-typescript";
 import { remarkInclude } from "fumadocs-mdx/config";
 import { readFile } from "fs/promises";
+import { owner, repo } from "@/lib/github";
 
 function extractAPIMethods(rawContent: string): string {
 	const apiMethodRegex = /<APIMethod\s+([^>]+)>([\s\S]*?)<\/APIMethod>/g;
@@ -277,7 +278,7 @@ export async function getLLMText(docPage: any) {
 
 	return `# ${category}: ${docPage.data.title}
 URL: ${docPage.url}
-Source: https://raw.githubusercontent.com/jslno/better-auth-extended/refs/heads/main/apps/www/content/docs/${
+Source: https://raw.githubusercontent.com/${owner}/${repo}/refs/heads/main/apps/www/content/docs/${
 		docPage.file.path
 	}
 

@@ -133,7 +133,7 @@ export interface FooterProps {
 }
 
 const itemVariants = cva(
-	"flex w-full flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-fd-accent/80 hover:text-fd-accent-foreground",
+	"flex w-full flex-col gap-2 rounded-lg border p-4 text-sm transition-colors hover:bg-fd-accent/80 dark:hover:bg-fd-accent/30 hover:text-fd-accent-foreground",
 );
 
 const itemLabel = cva(

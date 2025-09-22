@@ -27,6 +27,7 @@ import { cn } from "@/lib/utils";
 import { NavbarMobile, NavbarMobileBtn, useNavbarMobile } from "./nav-mobile";
 import { useRef } from "react";
 import { useClickOutside } from "@/hooks/use-click-outside";
+import { owner, repo } from "@/lib/github";
 
 const navigationLinks: NavigationLink[] = [
 	{
@@ -114,7 +115,7 @@ export const Navbar = () => {
 				<div className="flex items-center gap-1.5 md:gap-2.5">
 					<SearchTrigger isDocs={isDocs} />
 					<Link
-						href="https://github.com/jslno/better-auth-extended"
+						href={`https://github.com/${owner}/${repo}`}
 						className={buttonVariants({
 							variant: "outline",
 							size: "icon",

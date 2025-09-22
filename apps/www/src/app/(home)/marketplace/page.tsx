@@ -1,6 +1,5 @@
 import { buttonVariants } from "@/components/ui/button";
-import { ArrowRightIcon, BoxesIcon } from "lucide-react";
-import { Logo } from "@/components/logo";
+import { ArrowRightIcon } from "lucide-react";
 import {
 	Card,
 	CardDescription,
@@ -11,6 +10,7 @@ import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { Marketplace } from "./client";
 import { createMetadata } from "@/lib/metadata";
+import { owner, repo } from "@/lib/github";
 
 // TODO: Update description
 export const metadata = createMetadata({
@@ -22,10 +22,10 @@ export const metadata = createMetadata({
 	},
 });
 
-export default function Home() {
+export default function MarketplacePage() {
 	return (
 		<>
-			<div className="font-sans p-8 pb-20 sm:p-20">
+			<div className="flex-1 font-sans p-8 pb-16 md:p-16 lg:pb-20 lg:p-20">
 				<div className="flex flex-col gap-16 mx-auto max-w-7xl @container/content">
 					<div className="flex flex-col gap-6">
 						<div className="space-y-2">
@@ -40,9 +40,11 @@ export default function Home() {
 						<Marketplace />
 					</div>
 					<Card>
-						<CardHeader className="flex flex-row items-center gap-6">
+						<CardHeader className="flex flex-col md:flex-row justify-between md:items-center gap-6">
 							<div className="space-y-2">
-								<CardTitle className="text-2xl">Help grow this list</CardTitle>
+								<CardTitle className="text-2xl">
+									Help to grow this list
+								</CardTitle>
 								<CardDescription className="text-base max-w-3xl">
 									Have an awesome Better Auth related project or resource? Share
 									it with the community! Open a PR and help grow this curated
@@ -50,9 +52,9 @@ export default function Home() {
 								</CardDescription>
 							</div>
 							<Link
-								href="https://github.com/jslno/better-auth-extended/compare/main...my-branch?template=marketplace.md"
+								href={`https://github.com/${owner}/${repo}/compare/main...my-branch?template=marketplace.md`}
 								className={buttonVariants({
-									className: "ms-auto",
+									className: "md:ms-auto",
 								})}
 								rel="noreferrer noopener"
 								target="_blank"

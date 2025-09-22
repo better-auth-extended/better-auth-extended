@@ -2,6 +2,7 @@ import Link from "next/link";
 import { buttonVariants } from "./ui/button";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { cn } from "@/lib/utils";
+import { owner, repo } from "../lib/github";
 
 export const Socials = ({
 	className,
@@ -27,7 +28,7 @@ export const Socials = ({
 				<span className="sr-only">better-auth-extended discord</span>
 			</Link>
 			<Link
-				href="https://github.com/jslno/better-auth-extended"
+				href={`https://github.com/${owner}/${repo}`}
 				className={buttonVariants({
 					variant: "outline",
 					size: "icon",

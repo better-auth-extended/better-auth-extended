@@ -46,8 +46,8 @@ export const Toolbar = <TData,>({
 	};
 
 	return (
-		<div className="flex items-center justify-between">
-			<div className="flex flex-1 flex-col-reverse items-start gap-y-2 sm:flex-row sm:items-center sm:space-x-2">
+		<div className="flex items-start flex-wrap-reverse gap-2">
+			<div className="flex flex-1 flex-wrap-reverse items-start gap-y-2 tems-center space-x-2">
 				<div className="relative">
 					{searchKey ? (
 						<Input
@@ -59,7 +59,7 @@ export const Toolbar = <TData,>({
 							onChange={(event) =>
 								table.getColumn(searchKey)?.setFilterValue(event.target.value)
 							}
-							className="peer ps-9 pe-9 h-8 w-[150px] lg:w-[250px]"
+							className="peer ps-9 pe-9 h-8 w-full min-w-[200px] lg:w-[250px]"
 						/>
 					) : (
 						<Input
@@ -67,7 +67,7 @@ export const Toolbar = <TData,>({
 							placeholder={searchPlaceholder}
 							value={table.getState().globalFilter ?? ""}
 							onChange={(event) => table.setGlobalFilter(event.target.value)}
-							className="peer ps-9 pe-9 h-8 w-[150px] lg:w-[250px]"
+							className="peer ps-9 pe-9 h-8 w-full min-w-[200px] lg:w-[250px]"
 						/>
 					)}
 					<div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
@@ -119,7 +119,7 @@ export const Toolbar = <TData,>({
 					</Button>
 				)}
 			</div>
-			<div className="flex items-center gap-2">
+			<div className="ms-auto flex items-center gap-2">
 				<ViewOptions table={table} />
 				{children}
 			</div>

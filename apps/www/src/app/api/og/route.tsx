@@ -1,4 +1,5 @@
 import { Logo } from "@/components/logo";
+import { owner, repo } from "@/lib/github";
 import { ImageResponse } from "@vercel/og";
 import { z } from "zod";
 import { categories } from "~/categories";
@@ -70,14 +71,16 @@ export const GET = async (req: Request) => {
 						></path>
 					</svg>
 					<span tw="ml-2 font-medium">
-						github.com/jslno/better-auth-extended
+						github.com/{owner}/{repo}
 					</span>
 				</div>
 				<div tw={"relative flex flex-col w-full h-full p-8"}>
 					<div tw="flex items-center">
 						<div tw="flex items-center">
 							<Logo width="2.5em" height="2.5em" />
-							<span tw="ml-1.5 text-xl tracking-tight">better-auth-extended</span>
+							<span tw="ml-1.5 text-xl tracking-tight">
+								better-auth-extended
+							</span>
 						</div>
 						{!!category && (
 							<span tw="ml-auto">

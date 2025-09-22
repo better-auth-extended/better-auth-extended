@@ -27,7 +27,7 @@ export default function HomePage() {
 	const router = useRouter();
 
 	return (
-		<div>
+		<div className="flex-1">
 			<div className="z-[2] -mt-(--fd-nav-height) h-[calc(80dvh+var(--fd-nav-height))] relative">
 				<div className="h-full grid place-items-center max-w-7xl mx-auto">
 					<div className="flex flex-col items-center gap-4 max-w-sm text-center">
