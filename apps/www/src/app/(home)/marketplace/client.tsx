@@ -188,7 +188,7 @@ export const Marketplace = () => {
 					<Sort key={`${id}-sorting`} table={table} />,
 				]}
 			>
-				<div className="flex items-center *:size-8 *:not-first:rounded-l-none *:not-first:border-l-0 *:not-last:rounded-r-none">
+				<div className="hidden md:flex items-center *:size-8 *:not-first:rounded-l-none *:not-first:border-l-0 *:not-last:rounded-r-none">
 					<Button
 						variant="outline"
 						size="icon"

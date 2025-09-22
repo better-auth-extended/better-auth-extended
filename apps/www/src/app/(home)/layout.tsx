@@ -4,6 +4,7 @@ import ReactLenis, { LenisRef } from "lenis/react";
 import { cancelFrame, frame } from "motion/react";
 import { useEffect, useRef } from "react";
 import "lenis/dist/lenis.css";
+import { Footer } from "@/components/footer";
 
 export default function HomeLayout({
 	children,
@@ -53,6 +54,8 @@ export default function HomeLayout({
 		<>
 			<ReactLenis root options={{ autoRaf: false }} ref={lenisRef} />
 			{children}
+
+			<Footer />
 		</>
 	);
 }

@@ -16,7 +16,7 @@ export const { GET } = createSearchAPI("advanced", {
 		...resources.map(
 			(resource) =>
 				({
-					id: `resources:${resource.name}`,
+					id: `marketplace:${resource.name}`,
 					title: resource.name,
 					description: resource.description,
 					url: `/marketplace#${resource.name}`,

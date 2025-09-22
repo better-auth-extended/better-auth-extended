@@ -6,6 +6,7 @@ import { RootProvider } from "fumadocs-ui/provider";
 import { CustomSearchDialog } from "@/components/search-dialog";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { baseUrl, createMetadata } from "@/lib/metadata";
+import { NavbarProvider } from "@/components/nav-mobile";
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -50,9 +51,11 @@ export default function RootLayout({
 							enableSystem
 							disableTransitionOnChange
 						>
-							<Navbar />
+							<NavbarProvider>
+								<Navbar />
 
-							{children}
+								{children}
+							</NavbarProvider>
 						</ThemeProvider>
 					</RootProvider>
 				</NuqsAdapter>

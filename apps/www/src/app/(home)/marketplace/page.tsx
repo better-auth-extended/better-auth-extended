@@ -50,10 +50,12 @@ export default function Home() {
 								</CardDescription>
 							</div>
 							<Link
-								href="/"
+								href="https://github.com/jslno/better-auth-extended/compare/main...my-branch?template=marketplace.md"
 								className={buttonVariants({
 									className: "ms-auto",
 								})}
+								rel="noreferrer noopener"
+								target="_blank"
 							>
 								<GitHubLogoIcon />
 								Open a PR
