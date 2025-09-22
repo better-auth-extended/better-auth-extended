@@ -13,7 +13,7 @@ export const Socials = ({
 			<Link
 				href="https://discord.gg/HV2ex6DuES"
 				className={buttonVariants({
-					variant: "outline",
+					variant: "ghost",
 					size: "icon",
 				})}
 				rel="noreferrer noopener"
@@ -30,7 +30,7 @@ export const Socials = ({
 			<Link
 				href={`https://github.com/${owner}/${repo}`}
 				className={buttonVariants({
-					variant: "outline",
+					variant: "ghost",
 					size: "icon",
 				})}
 				rel="noreferrer noopener"
