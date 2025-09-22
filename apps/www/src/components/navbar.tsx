@@ -51,9 +51,9 @@ type NavigationLink = {
 	matcher?: (href: string, pathname: string) => boolean;
 };
 
-export const Navbar = () => {
+export const Navbar = ({ forceIsDocs }: { forceIsDocs?: boolean }) => {
 	const pathname = usePathname();
-	const isDocs = pathname.startsWith("/docs");
+	const isDocs = forceIsDocs ?? pathname.startsWith("/docs");
 	const { resolvedTheme } = useTheme();
 	const { scrollY } = useScroll();
 	const mounted = useMounted();

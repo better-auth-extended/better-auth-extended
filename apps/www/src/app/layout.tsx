@@ -51,11 +51,7 @@ export default function RootLayout({
 							enableSystem
 							disableTransitionOnChange
 						>
-							<NavbarProvider>
-								<Navbar />
-
-								{children}
-							</NavbarProvider>
+							<NavbarProvider>{children}</NavbarProvider>
 						</ThemeProvider>
 					</RootProvider>
 				</NuqsAdapter>
