@@ -1,7 +1,7 @@
 import { App, Octokit } from "octokit";
 
 export const repo = "better-auth-extended";
-export const owner = "jslno";
+export const owner = "better-auth-extended";
 export const DocsCategory = "Docs Feedback";
 
 let instance: Octokit | undefined;
