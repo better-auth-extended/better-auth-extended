@@ -49,12 +49,14 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 				),
 			}}
 		>
-			<div className="-mb-10 space-y-4">
+			<div className="space-y-4">
 				<DocsTitle>{page.data.title}</DocsTitle>
-				<DocsDescription>{page.data.description}</DocsDescription>
+				<DocsDescription className="-mb-3">
+					{page.data.description}
+				</DocsDescription>
 			</div>
 			{!!page.data.packageName && (
-				<div className="-mb-2">
+				<div>
 					<StatusBadges npmPackage={page.data.packageName} />
 				</div>
 			)}
