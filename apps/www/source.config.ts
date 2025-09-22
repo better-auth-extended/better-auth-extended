@@ -1,9 +1,19 @@
-import { defineDocs, defineConfig } from "fumadocs-mdx/config";
+import {
+	defineDocs,
+	defineConfig,
+	frontmatterSchema,
+} from "fumadocs-mdx/config";
 import { remarkAutoTypeTable, createGenerator } from "fumadocs-typescript";
 import { remarkNpm } from "fumadocs-core/mdx-plugins";
+import z from "zod";
 
 export const docs = defineDocs({
 	dir: "content/docs",
+	docs: {
+		schema: frontmatterSchema.extend({
+			packageName: z.string().optional(),
+		}),
+	},
 });
 
 const generator = createGenerator();

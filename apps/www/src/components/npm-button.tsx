@@ -11,7 +11,7 @@ export const NpmButton = ({ packageName }: { packageName: string }) => {
 		>
 			<Button variant="outline" className="cursor-pointer">
 				<svg
-					className="fill-black dark:fill-white"
+					className="fill-foreground"
 					viewBox="0 0 24 24"
 					xmlns="http://www.w3.org/2000/svg"
 				>

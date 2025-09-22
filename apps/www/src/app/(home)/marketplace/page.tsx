@@ -17,6 +17,9 @@ export const metadata = createMetadata({
 	title: "Marketplace",
 	description:
 		"Ea aliquip pariatur nisi amet voluptate minim occaecat dolor est laboris.",
+	openGraph: {
+		url: "/marketplace",
+	},
 });
 
 export default function Home() {

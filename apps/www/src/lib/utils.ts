@@ -17,10 +17,6 @@ export function uri(
 		.join("");
 }
 
-export function absoluteUrl(path: string) {
-	return `${process.env.NEXT_PUBLIC__URL}${path}`;
-}
-
 export function mergeRefs<T>(
 	...refs: (React.Ref<T> | undefined)[]
 ): React.RefCallback<T> {

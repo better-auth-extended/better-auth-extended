@@ -1,17 +1,23 @@
 import { source } from "@/lib/source";
 import { notFound } from "next/navigation";
 import { getMDXComponents } from "@/components/mdx-components";
-import type { Metadata } from "next";
 import { Footer } from "@/components/footer";
-import { Socials } from "@/components/socials";
 import {
 	DocsBody,
 	DocsDescription,
 	DocsPage,
 	DocsTitle,
 } from "@/components/docs/page";
-import { absoluteUrl } from "@/lib/utils";
 import { baseUrl } from "@/lib/metadata";
+import { StatusBadges } from "@/components/status-badges";
+import { GithubButton } from "@/components/github-button";
+import { NpmButton } from "@/components/npm-button";
+import path from "node:path";
+
+const removeExt = (fullPath: string) => {
+	const parsed = path.parse(fullPath);
+	return path.join(parsed.dir, parsed.name);
+};
 
 export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 	const params = await props.params;
@@ -40,6 +46,19 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 		>
 			<DocsTitle>{page.data.title}</DocsTitle>
 			<DocsDescription>{page.data.description}</DocsDescription>
+			{!!page.data.packageName && (
+				<div className="space-y-1">
+					<StatusBadges npmPackage={page.data.packageName} />
+					<div className="flex items-center gap-2">
+						<GithubButton
+							username="jslno"
+							repository="better-auth-extended"
+							path={`/packages/${removeExt(page.path)}`}
+						/>
+						<NpmButton packageName={page.data.packageName} />
+					</div>
+				</div>
+			)}
 			{/* TODO: LLM Header */}
 			<DocsBody>
 				<MDX components={getMDXComponents()} />
@@ -56,10 +75,17 @@ export async function generateMetadata({
 	const { slug } = await params;
 	const page = source.getPage(slug);
 	if (page == null) notFound();
-	const url = new URL(`${baseUrl}/api/og`);
-	const { title, description } = page.data;
+	const url = new URL(`${baseUrl}api/og`);
+	const { title, description, packageName } = page.data;
 	const pageSlug = page.path;
 	url.searchParams.set("type", "Documentation");
+	if (page.data.description) {
+		url.searchParams.set("description", `${page.data.description}`);
+	}
+	if (packageName) {
+		url.searchParams.set("packageName", `${packageName}`);
+	}
+	url.searchParams.set("category", `${page.slugs[0]}`);
 	url.searchParams.set("mode", "dark");
 	url.searchParams.set("heading", `${title}`);
 
@@ -70,7 +96,7 @@ export async function generateMetadata({
 			title,
 			description,
 			type: "website",
-			url: absoluteUrl(`docs/${pageSlug}`),
+			url: `${baseUrl}docs/${removeExt(pageSlug)}`,
 			images: [
 				{
 					url: url.toString(),
