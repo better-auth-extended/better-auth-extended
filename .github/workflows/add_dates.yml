@@ -55,6 +55,7 @@ jobs:
               with:
                 token: ${{ steps.app-token.outputs.token }}
                 branch: ${{ steps.branch.outputs.branch }}
+                base: "main"
                 title: 'chore(marketplace): add dates to new resources'
                 body: 'Automated PR to add dates to new resources'
 
