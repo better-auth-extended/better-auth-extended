@@ -39,28 +39,20 @@ jobs:
                 app-id: ${{ vars.APP_ID }}
                 private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-            - name: Create a new branch
-              id: branch
+            - name: Commit Changes
               run: |
-                BRANCH="add-dates-$(date +%s)"
-                echo "branch=$BRANCH" >> $GITHUB_OUTPUT
-                git checkout -b $BRANCH
-                git add apps/www/content/resources.ts
-                git diff --quiet && git diff --staged --quiet || git commit -m "chore(marketplace): add dates to new resources"
-                git push https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }} $BRANCH
+                FILE="apps/www/content/resources.ts"
+                CONTENT=$(base64 -w 0 "$FILE")
+                SHA=$(gh api \
+                  /repos/${{ github.repository }}/contents/$FILE \
+                  --jq '.sha' || echo "")
 
-            - name: Create Pull Request
-              id: cpr
-              uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
-              with:
-                token: ${{ steps.app-token.outputs.token }}
-                branch: ${{ steps.branch.outputs.branch }}
-                base: "main"
-                title: 'chore(marketplace): add dates to new resources'
-                body: 'Automated PR to add dates to new resources'
-
-            - name: Merge Pull Request
-              run: |
-                gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --merge --auto
+                gh api \
+                  --method PUT \
+                  /repos/${{ github.repository }}/contents/$FILE \
+                  -f message="chore(marketplace): add dates to new resources" \
+                  -f content="$CONTENT" \
+                  -f sha="$SHA" \
+                  -f branch="main"
               env:
                 GH_TOKEN: ${{ steps.app-token.outputs.token }}
