@@ -8,7 +8,6 @@ export const categories = {
 	libraries: {
 		name: "Library",
 		icon: LibraryIcon,
-		isNew: true,
 	},
 } satisfies Record<string, Category>;
 
