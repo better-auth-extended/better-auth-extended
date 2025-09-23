@@ -163,10 +163,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
 		};
 
 		if (mouseInteractive) {
-			target.addEventListener(
-				"mousemove",
-				handleMouseMove,
-			);
+			target.addEventListener("mousemove", handleMouseMove);
 		}
 
 		const setSize = () => {
@@ -203,10 +200,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
 			cancelAnimationFrame(raf);
 			ro.disconnect();
 			if (mouseInteractive && containerRef.current) {
-				target.removeEventListener(
-					"mousemove",
-					handleMouseMove,
-				);
+				target.removeEventListener("mousemove", handleMouseMove);
 			}
 			try {
 				containerRef.current?.removeChild(canvas);
