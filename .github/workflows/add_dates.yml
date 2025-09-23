@@ -44,6 +44,8 @@ jobs:
               run: |
                 BRANCH="add-dates-$(date +%s)"
                 echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+                git config --local user.email "${{ vars.APP_ID }}+${{ vars.APP_SLUG }}[bot]@users.noreply.github.com"
+                git config --local user.name "${{ vars.APP_SLUG }}[bot]"
                 git checkout -b $BRANCH
                 git add apps/www/content/resources.ts
                 git diff --quiet && git diff --staged --quiet || git commit -m "chore(marketplace): add dates to new resources"
