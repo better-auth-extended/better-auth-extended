@@ -60,7 +60,7 @@ export default async function Page(props: PageProps<"/docs/[[...slug]]">) {
 					<StatusBadges npmPackage={page.data.packageName} />
 				</div>
 			)}
-			<div className="mb-4 flex items-center gap-2">
+			<div className="mb-4 flex items-center flex-wrap gap-2">
 				<LLMCopyButton markdownUrl={`${page.url}.mdx`} />
 				<ViewOptions
 					markdownUrl={`${page.url}.mdx`}
