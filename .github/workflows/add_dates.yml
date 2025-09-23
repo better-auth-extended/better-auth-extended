@@ -10,6 +10,7 @@ on:
 
 jobs:
     add-dates:
+        if: github.actor != format('{0}[bot]', vars.APP_SLUG)
         runs-on: ubuntu-latest
         permissions:
             contents: write
@@ -42,16 +43,21 @@ jobs:
             - name: Commit Changes
               run: |
                 FILE="apps/www/content/resources.ts"
-                CONTENT=$(base64 -w 0 "$FILE")
-                SHA=$(gh api \
-                  /repos/${{ github.repository }}/contents/$FILE \
-                  --jq '.sha' || echo "")
+                REMOTE_CONTENT=$(gh api /repos/${{ github.repository }}/contents/$FILE --jq '.content' | tr -d '\n' | base64 -d || echo "")
+                LOCAL_CONTENT=$(cat "$FILE")
+
+                if [ "$REMOTE_CONTENT" = "$LOCAL_CONTENT" ]; then
+                  echo "No changes detected, skipping commit"
+                  exit 0
+                fi
+
+                SHA=$(gh api /repos/${{ github.repository }}/contents/$FILE --jq '.sha' || echo "")
 
                 gh api \
                   --method PUT \
                   /repos/${{ github.repository }}/contents/$FILE \
                   -f message="chore(marketplace): add dates to new resources" \
-                  -f content="$CONTENT" \
+                  -f content="$(base64 -w 0 "$FILE")" \
                   -f sha="$SHA" \
                   -f branch="main"
               env:
