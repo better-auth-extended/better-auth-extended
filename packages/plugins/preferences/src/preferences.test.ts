@@ -231,5 +231,98 @@ describe("Preferences", async () => {
 			expect(saved?.scopeId).toBe("ws-1");
 			expect(saved?.userId).toBeNull();
 		});
+
+		it("should reject unauthenticated write when user binding enabled", async () => {
+			const { error } = await client.preferences.user.theme.set({
+				value: "dark",
+			});
+			expect(error?.statusText).toBe("UNAUTHORIZED");
+		});
+
+		it("should forbid when canWrite is false", async () => {
+			const { error } = await client.preferences.restricted.adminSetting.set({
+				value: true,
+				fetchOptions: { headers: user.headers },
+			});
+			expect(error?.statusText).toBe("FORBIDDEN");
+		});
+
+		it("should return BAD_REQUEST for unknown scope", async () => {
+			const res = await client.preferences.setPreference({
+				scope: "unknown",
+				key: "x",
+				value: "y",
+				fetchOptions: {
+					headers: user.headers,
+				},
+			});
+			expect(res.error?.statusText).toBe("BAD_REQUEST");
+		});
+
+		it("should return BAD_REQUEST for unknown key", async () => {
+			const res = await client.preferences.setPreference({
+				scope: "user",
+				key: "unknown",
+				value: "y",
+				fetchOptions: {
+					headers: user.headers,
+				},
+			});
+
+			expect(res.error?.statusText).toBe("BAD_REQUEST");
+		});
+	});
+
+	describe("getPreference", () => {
+		it("should reject unauthenticated read when user binding enabled", async () => {
+			const { error } = await client.preferences.user.theme.get();
+			expect(error?.statusText).toBe("UNAUTHORIZED");
+		});
+
+		it("should allow unauthenticated access when user binding disabled", async () => {
+			const { error } = await client.preferences.workspace.language.set({
+				scopeId: "ws-open",
+				value: "EN",
+			});
+			expect(error).toBeNull();
+			const { data } = await client.preferences.workspace.language.get({
+				query: {
+					scopeId: "ws-open",
+				},
+			});
+			expect(data).toBe("EN");
+		});
+
+		it("get without saved value and no default returns null", async () => {
+			const { data, error } = await client.preferences.project.language.get({
+				fetchOptions: { headers: user.headers },
+			});
+			expect(error).toBeNull();
+			expect(data).toBeNull();
+		});
+
+		it("should return default value when no value is saved", async () => {
+			const { data, error } = await client.preferences.user.notifications.get({
+				fetchOptions: { headers: user.headers },
+			});
+			expect(error).toBeNull();
+			expect(data).toEqual({ email: true, push: false, sms: false });
+		});
+
+		it("should error when scopeId missing and required", async () => {
+			const { error } = await client.preferences.workspace.language.get({
+				query: {} as any,
+			});
+			expect(error?.statusText).toBe("BAD_REQUEST");
+		});
+
+		it("read is allowed when canRead is true", async () => {
+			const { data, error } =
+				await client.preferences.restricted.adminSetting.get({
+					fetchOptions: { headers: user.headers },
+				});
+			expect(error).toBeNull();
+			expect(data).toBeNull();
+		});
 	});
 });
