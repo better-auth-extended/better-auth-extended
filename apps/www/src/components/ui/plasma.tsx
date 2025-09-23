@@ -11,7 +11,7 @@ interface PlasmaProps {
 	opacity?: number;
 	mouseInteractive?: boolean;
 	mouseInteractionMultiplier?: number;
-	mouseTarget?: HTMLElement;
+	mouseTarget?: "window" | "container";
 }
 
 const hexToRgb = (hex: string): [number, number, number] => {
@@ -104,13 +104,14 @@ export const Plasma: React.FC<PlasmaProps> = ({
 	opacity = 1,
 	mouseInteractive = true,
 	mouseInteractionMultiplier = 1,
-	mouseTarget,
+	mouseTarget = "container",
 }) => {
 	const containerRef = useRef<HTMLDivElement | null>(null);
 	const mousePos = useRef({ x: 0, y: 0 });
 
 	useEffect(() => {
 		if (!containerRef.current) return;
+		const target = mouseTarget === "window" ? window : containerRef.current;
 
 		const useCustomColor = color ? 1.0 : 0.0;
 		const customColorRgb = color ? hexToRgb(color) : [1, 1, 1];
@@ -151,7 +152,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
 
 		const mesh = new Mesh(gl, { geometry, program });
 
-		const handleMouseMove = (e: MouseEvent) => {
+		const handleMouseMove = (e: any) => {
 			if (!mouseInteractive) return;
 			const rect = containerRef.current!.getBoundingClientRect();
 			mousePos.current.x = e.clientX - rect.left;
@@ -162,7 +163,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
 		};
 
 		if (mouseInteractive) {
-			(mouseTarget ?? containerRef.current).addEventListener(
+			target.addEventListener(
 				"mousemove",
 				handleMouseMove,
 			);
@@ -202,7 +203,7 @@ export const Plasma: React.FC<PlasmaProps> = ({
 			cancelAnimationFrame(raf);
 			ro.disconnect();
 			if (mouseInteractive && containerRef.current) {
-				(mouseTarget ?? containerRef.current).removeEventListener(
+				target.removeEventListener(
 					"mousemove",
 					handleMouseMove,
 				);
