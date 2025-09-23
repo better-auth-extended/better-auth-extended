@@ -1,0 +1,241 @@
+import type { TableOfContents } from "fumadocs-core/server";
+import { forwardRef, type HTMLAttributes, type ReactNode } from "react";
+import { type AnchorProviderProps, AnchorProvider } from "fumadocs-core/toc";
+import { replaceOrDefault } from "./shared";
+import { cn } from "../../lib/utils";
+import {
+	Footer,
+	type FooterProps,
+	LastUpdate,
+	TocPopoverHeader,
+	type BreadcrumbProps,
+	PageBody,
+	PageArticle,
+} from "./page.client";
+import {
+	Toc,
+	TOCItems,
+	TocPopoverTrigger,
+	TocPopoverContent,
+	type TOCProps,
+	TOCScrollArea,
+} from "./layout/toc";
+import { Text } from "lucide-react";
+import { I18nLabel } from "fumadocs-ui/provider";
+
+type TableOfContentOptions = Omit<TOCProps, "items" | "children"> &
+	Pick<AnchorProviderProps, "single"> & {
+		enabled: boolean;
+		component: ReactNode;
+	};
+
+type TableOfContentPopoverOptions = Omit<TableOfContentOptions, "single">;
+
+interface BreadcrumbOptions extends BreadcrumbProps {
+	enabled: boolean;
+	component: ReactNode;
+
+	/**
+	 * Show the full path to the current page
+	 *
+	 * @defaultValue false
+	 * @deprecated use `includePage` instead
+	 */
+	full?: boolean;
+}
+
+interface FooterOptions extends FooterProps {
+	enabled: boolean;
+	component: ReactNode;
+}
+
+export interface DocsPageProps {
+	toc?: TableOfContents;
+
+	/**
+	 * Extend the page to fill all available space
+	 *
+	 * @defaultValue false
+	 */
+	full?: boolean;
+
+	tableOfContent?: Partial<TableOfContentOptions>;
+	tableOfContentPopover?: Partial<TableOfContentPopoverOptions>;
+
+	/**
+	 * Replace or disable breadcrumb
+	 */
+	breadcrumb?: Partial<BreadcrumbOptions>;
+
+	/**
+	 * Footer navigation, you can disable it by passing `false`
+	 */
+	footer?: Partial<FooterOptions>;
+
+	lastUpdate?: Date | string | number;
+
+	container?: HTMLAttributes<HTMLDivElement>;
+	article?: HTMLAttributes<HTMLElement>;
+	children: ReactNode;
+}
+
+export function DocsPage({
+	toc = [],
+	full = false,
+	tableOfContentPopover: {
+		enabled: tocPopoverEnabled,
+		component: tocPopoverReplace,
+		...tocPopoverOptions
+	} = {},
+	tableOfContent: {
+		enabled: tocEnabled,
+		component: tocReplace,
+		...tocOptions
+	} = {},
+	...props
+}: DocsPageProps) {
+	const isTocRequired =
+		toc.length > 0 ||
+		tocOptions.footer !== undefined ||
+		tocOptions.header !== undefined;
+
+	// disable TOC on full mode, you can still enable it with `enabled` option.
+	tocEnabled ??= !full && isTocRequired;
+
+	tocPopoverEnabled ??=
+		toc.length > 0 ||
+		tocPopoverOptions.header !== undefined ||
+		tocPopoverOptions.footer !== undefined;
+
+	return (
+		<AnchorProvider toc={toc} single={tocOptions.single}>
+			<PageBody
+				{...props.container}
+				className={cn(props.container?.className)}
+				style={
+					{
+						"--fd-tocnav-height": !tocPopoverEnabled ? "0px" : undefined,
+						...props.container?.style,
+					} as object
+				}
+			>
+				{replaceOrDefault(
+					{ enabled: tocPopoverEnabled, component: tocPopoverReplace },
+					<TocPopoverHeader className="h-10">
+						<TocPopoverTrigger className="w-full" items={toc} />
+						<TocPopoverContent>
+							{tocPopoverOptions.header}
+							<TOCScrollArea isMenu>
+								<TOCItems items={toc} />
+							</TOCScrollArea>
+							{tocPopoverOptions.footer}
+						</TocPopoverContent>
+					</TocPopoverHeader>,
+					{
+						items: toc,
+						...tocPopoverOptions,
+					},
+				)}
+				<PageArticle
+					{...props.article}
+					className={cn(
+						full || !tocEnabled ? "max-w-[1120px]" : "max-w-[860px]",
+						props.article?.className,
+					)}
+				>
+					{props.children}
+					<div role="none" className="flex-1" />
+					<div className="flex flex-row flex-wrap items-center justify-end gap-4 empty:hidden">
+						{props.lastUpdate ? (
+							<LastUpdate date={new Date(props.lastUpdate)} />
+						) : null}
+					</div>
+					{replaceOrDefault(
+						props.footer,
+						<Footer items={props.footer?.items} />,
+					)}
+				</PageArticle>
+			</PageBody>
+			{replaceOrDefault(
+				{ enabled: tocEnabled, component: tocReplace },
+				<Toc>
+					{tocOptions.header}
+					<h3 className="inline-flex items-center gap-1.5 text-sm text-fd-muted-foreground">
+						<Text className="size-4" />
+						<I18nLabel label="toc" />
+					</h3>
+					<TOCScrollArea>
+						<TOCItems items={toc} />
+					</TOCScrollArea>
+					{tocOptions.footer}
+				</Toc>,
+				{
+					items: toc,
+					...tocOptions,
+				},
+			)}
+		</AnchorProvider>
+	);
+}
+
+/**
+ * Add typography styles
+ */
+export const DocsBody = forwardRef<
+	HTMLDivElement,
+	HTMLAttributes<HTMLDivElement>
+>((props, ref) => (
+	<div ref={ref} {...props} className={cn("prose", props.className)}>
+		{props.children}
+	</div>
+));
+
+DocsBody.displayName = "DocsBody";
+
+export const DocsDescription = forwardRef<
+	HTMLParagraphElement,
+	HTMLAttributes<HTMLParagraphElement>
+>((props, ref) => {
+	// don't render if no description provided
+	if (props.children === undefined) return null;
+
+	return (
+		<p
+			ref={ref}
+			{...props}
+			className={cn("mb-8 text-lg text-fd-muted-foreground", props.className)}
+		>
+			{props.children}
+		</p>
+	);
+});
+
+DocsDescription.displayName = "DocsDescription";
+
+export const DocsTitle = forwardRef<
+	HTMLHeadingElement,
+	HTMLAttributes<HTMLHeadingElement>
+>((props, ref) => {
+	return (
+		<h1
+			ref={ref}
+			{...props}
+			className={cn("text-3xl font-semibold", props.className)}
+		>
+			{props.children}
+		</h1>
+	);
+});
+
+DocsTitle.displayName = "DocsTitle";
+
+/**
+ * For separate MDX page
+ */
+export function withArticle({ children }: { children: ReactNode }): ReactNode {
+	return (
+		<main className="container py-12">
+			<article className="prose">{children}</article>
+		</main>
+	);
+}
