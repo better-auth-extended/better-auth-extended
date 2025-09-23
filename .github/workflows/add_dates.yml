@@ -13,6 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: write
+            pull-requests: write
         steps:
             - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
               with:
@@ -38,10 +39,27 @@ jobs:
                 app-id: ${{ vars.APP_ID }}
                 private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-            - name: Commit changes (if any)
+            - name: Create a new branch
+              id: branch
               run: |
-                git config --local user.email "${{ vars.APP_ID }}+${{ vars.APP_SLUG }}[bot]@users.noreply.github.com"
-                git config --local user.name "${{ vars.APP_SLUG }}[bot]"
+                BRANCH="add-dates-$(date +%s)"
+                echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+                git checkout -b $BRANCH
                 git add apps/www/content/resources.ts
                 git diff --quiet && git diff --staged --quiet || git commit -m "chore(marketplace): add dates to new resources"
-                git push --force-with-lease https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }} HEAD:main
+                git push https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }} $BRANCH
+
+            - name: Create Pull Request
+              id: cpr
+              uses: peter-evans/create-pull-request@271a8d0340265f705b14b6d32b9829c1cb33d45e # v7.0.8
+              with:
+                token: ${{ steps.app-token.outputs.token }}
+                branch: ${{ steps.branch.outputs.branch }}
+                title: 'chore(marketplace): add dates to new resources'
+                body: 'Automated PR to add dates to new resources'
+
+            - name: Merge Pull Request
+              run: |
+                gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --merge --auto
+              env:
+                GH_TOKEN: ${{ steps.app-token.outputs.token }}
