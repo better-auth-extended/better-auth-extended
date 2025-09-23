@@ -26,7 +26,7 @@ const { auth, db, client, testUser, signUpWithTestUser } =
             plugins: [myPlugin()],
         },
         clientOptions: {
-            plugins: [myClientPlugin()],
+            plugins: [myPluginClient()],
         },
     });
 ```
@@ -58,7 +58,7 @@ const auth = betterAuth({
 const { db, client, testUser, signUpWithTestUser } = await getTestInstance({
     auth,
     clientOptions: {
-        plugins: [myClientPlugin()],
+        plugins: [myPluginClient()],
     },
 });
 ```
@@ -114,7 +114,7 @@ const {
     },
     clientOptions: {
         // Client options
-        plugins: [myClientPlugin()],
+        plugins: [myPluginClient()],
     },
 });
 ```
