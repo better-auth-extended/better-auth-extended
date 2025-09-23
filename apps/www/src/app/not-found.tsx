@@ -5,14 +5,12 @@ import { Logo } from "@/components/logo";
 import { Navbar } from "@/components/navbar";
 import { buttonVariants } from "@/components/ui/button";
 import { Plasma } from "@/components/ui/plasma";
-import { useMounted } from "@/hooks/use-mounted";
 import { ArrowLeftIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 
 export default function NotFound() {
 	const { resolvedTheme } = useTheme();
-	const mounted = useMounted();
 
 	return (
 		<>
@@ -66,18 +64,16 @@ export default function NotFound() {
 				</div>
 				<Footer className="mt-auto" />
 				<div className="absolute inset-0 -z-[1]">
-					{mounted && (
-						<Plasma
-							color={resolvedTheme === "dark" ? "#525252" : "#fbfbfb"}
-							speed={0.4}
-							direction="forward"
-							scale={1.1}
-							opacity={0.8}
-							mouseInteractive={true}
-							mouseInteractionMultiplier={0.35}
-							mouseTarget="window"
-						/>
-					)}
+					<Plasma
+						color={resolvedTheme === "dark" ? "#525252" : "#fbfbfb"}
+						speed={0.4}
+						direction="forward"
+						scale={1.1}
+						opacity={0.8}
+						mouseInteractive={true}
+						mouseInteractionMultiplier={0.35}
+						mouseTarget="window"
+					/>
 				</div>
 			</div>
 		</>
