@@ -26,7 +26,6 @@ export const resources: Resource[] = [
 		author: owner,
 		category: "plugins",
 		url: "/docs/plugins/preferences",
-		isNew: true,
 	},
 	{
 		name: "test-utils",
