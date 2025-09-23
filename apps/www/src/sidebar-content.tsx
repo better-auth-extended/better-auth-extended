@@ -6,6 +6,7 @@ import {
 	FlaskConicalIcon,
 	HourglassIcon,
 	LucideIcon,
+	ScaleIcon,
 	Settings2Icon,
 	UserPlusIcon,
 } from "lucide-react";
@@ -140,6 +141,12 @@ export const contents: Content[] = [
 				title: "Waitlist",
 				href: "/docs/plugins/waitlist",
 				icon: () => <HourglassIcon className="size-4" />,
+				isDisabled: true,
+			},
+			{
+				title: "Legal Consent",
+				href: "/docs/plugins/legal-consent",
+				icon: () => <ScaleIcon className="size-4" />,
 				isDisabled: true,
 			},
 		],

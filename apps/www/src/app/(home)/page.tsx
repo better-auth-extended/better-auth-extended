@@ -22,6 +22,7 @@ import { PreferencesOffer } from "./_components/offers/preferences";
 import { OnboardingOffer } from "./_components/offers/onboarding";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Badge } from "@/components/ui/badge";
 
 export default function HomePage() {
 	const router = useRouter();
@@ -87,7 +88,7 @@ export default function HomePage() {
 							App Invite
 						</BentoGridItemTitle>
 						<BentoGridItemDescription>
-							Dolor exercitation exercitation proident sint ad ad nulla dolor.
+							Invite users to your application and allow them to sign up.
 						</BentoGridItemDescription>
 					</BentoGridItem>
 					<BentoGridItem
@@ -103,8 +104,7 @@ export default function HomePage() {
 							Onboarding
 						</BentoGridItemTitle>
 						<BentoGridItemDescription>
-							Labore excepteur in ex minim consectetur consectetur cupidatat
-							aliquip elit magna.
+							Easily add onboarding to your authentication flow.
 						</BentoGridItemDescription>
 					</BentoGridItem>
 					<BentoGridItem
@@ -116,11 +116,11 @@ export default function HomePage() {
 							<WaitlistOffer />
 						</div>
 						<BentoGridItemTitle icon={DoorOpenIcon}>
-							Waitlist
+							Waitlist <Badge variant="outline">Soon</Badge>
 						</BentoGridItemTitle>
 						<BentoGridItemDescription>
-							Proident deserunt pariatur non reprehenderit aliquip nisi occaecat
-							consectetur cupidatat id anim.
+							Manage and prioritize user sign-ups with a customizable waitlist
+							system.
 						</BentoGridItemDescription>
 					</BentoGridItem>
 					<BentoGridItem
@@ -132,10 +132,11 @@ export default function HomePage() {
 							<LegalConsentOffer />
 						</div>
 						<BentoGridItemTitle icon={ScaleIcon}>
-							Legal Consent
+							Legal Consent <Badge variant="outline">Soon</Badge>
 						</BentoGridItemTitle>
 						<BentoGridItemDescription>
-							Cupidatat voluptate dolore sint fugiat elit dolore.
+							Collect and manage user legal consents efficiently for compliance
+							purposes.
 						</BentoGridItemDescription>
 					</BentoGridItem>
 					<BentoGridItem
@@ -147,10 +148,10 @@ export default function HomePage() {
 							<PreferencesOffer />
 						</div>
 						<BentoGridItemTitle icon={Settings2Icon}>
-							Preferences
+							Preferences <Badge variant="outline">Soon</Badge>
 						</BentoGridItemTitle>
 						<BentoGridItemDescription>
-							Minim culpa fugiat laboris reprehenderit et velit.
+							Define and manage preferences, with support for scoped settings.
 						</BentoGridItemDescription>
 					</BentoGridItem>
 				</BentoGrid>

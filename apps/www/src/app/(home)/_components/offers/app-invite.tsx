@@ -36,13 +36,14 @@ export const AppInviteOffer = () => {
 					<div className="size-16 text-muted-foreground rounded-full bg-card border grid place-items-center">
 						<UserIcon className="size-8" />
 					</div>
-					<span className="text-center w-full flex justify-center items-center text-base">
-						John Doe invited you to join us.
-					</span>
-					<span className="text-center text-muted-foreground w-full flex justify-center items-center text-sm">
-						Cillum ipsum incididunt laborum velit deserunt pariatur cupidatat
-						magna.
-					</span>
+					<div className="space-y-3">
+						<span className="text-center w-full flex justify-center items-center text-lg">
+							John Doe invited you to join us.
+						</span>
+						<span className="text-center text-muted-foreground w-full flex justify-center items-center text-sm">
+							Accept this invitation to start using the app.
+						</span>
+					</div>
 					<div className="mt-auto w-full flex items-center gap-2">
 						<motion.div
 							variants={buttonVariants}

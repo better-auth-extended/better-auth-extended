@@ -4,9 +4,9 @@ import { docsOptions } from "@/layout.config";
 
 export default function Layout({ children }: LayoutProps<"/docs">) {
 	return (
-		<DocsLayout {...docsOptions}>
+		<>
 			<Navbar />
-			{children}
-		</DocsLayout>
+			<DocsLayout {...docsOptions}>{children}</DocsLayout>
+		</>
 	);
 }

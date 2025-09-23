@@ -34,7 +34,8 @@ export default function MarketplacePage() {
 							</div> */}
 							<h1 className="text-3xl font-medium">Marketplace</h1>
 							<p className="text-muted-foreground">
-								Minim consequat id aute voluptate nostrud.
+								Discover and share free open-source resources and plugins for
+								Better Auth.
 							</p>
 						</div>
 						<Marketplace />
@@ -43,12 +44,12 @@ export default function MarketplacePage() {
 						<CardHeader className="flex flex-col md:flex-row justify-between md:items-center gap-6">
 							<div className="space-y-2">
 								<CardTitle className="text-2xl">
-									Help to grow this list
+									Contribute to the Marketplace
 								</CardTitle>
 								<CardDescription className="text-base max-w-3xl">
-									Have an awesome Better Auth related project or resource? Share
-									it with the community! Open a PR and help grow this curated
-									list.
+									Got a free open-source project or resource related to Better
+									Auth? Share it with the community! Open a PR and help expand
+									this curated collection of tools, plugins, and resources.
 								</CardDescription>
 							</div>
 							<Link
