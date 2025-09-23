@@ -44,4 +44,4 @@ jobs:
                 git config --local user.name "${{ vars.APP_SLUG }}[bot]"
                 git add apps/www/content/resources.ts
                 git diff --quiet && git diff --staged --quiet || git commit -m "chore(marketplace): add dates to new resources"
-                git push https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}
+                git push --force-with-lease https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }} HEAD:main
