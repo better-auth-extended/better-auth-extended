@@ -228,9 +228,8 @@ describe("Preferences", async () => {
 				select: ["scopeId", "userId"],
 			});
 
-			console.log(saved);
 			expect(saved?.scopeId).toBe("ws-1");
-			expect(saved?.userId).toBeUndefined();
+			expect(saved?.userId).toBeNull();
 		});
 	});
 });
