@@ -1,0 +1,44 @@
+name: Add Dates
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'apps/www/content/resources.ts'
+
+jobs:
+    add-dates:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+              with:
+                fetch-depth: 0
+
+            - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+            - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+              with:
+                node-version: 22.x
+                registry-url: 'https://registry.npmjs.org'
+                cache: pnpm
+
+            - name: Install
+              run: pnpm add -D -w tsx
+            
+            - name: Add dates to new resources
+              run: pnpm exec tsx scripts/add-dates.ts
+
+            - id: app-token
+              uses: actions/create-github-app-token@67018539274d69449ef7c02e8e71183d1719ab42 # v2.1.4
+              with:
+                app-id: ${{ vars.APP_ID }}
+                private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
+            - name: Commit changes (if any)
+              run: |
+                git config --local user.email "${{ vars.APP_ID }}+${{ vars.APP_SLUG }}[bot]@users.noreply.github.com"
+                git config --local user.name "${{ vars.APP_SLUG }}[bot]"
+                git add apps/www/content/resources.ts
+                git diff --quiet && git diff --staged --quiet || git commit -m "chore(marketplace): add dates to new resources"
+                git push https://x-access-token:${{ steps.app-token.outputs.token }}@github.com/${{ github.repository }}

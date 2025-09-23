@@ -21,10 +21,15 @@
   },
   "dependencies": {
     "@biomejs/biome": "^2.2.2",
+    "@changesets/cli": "^2.29.6",
     "@turbo/gen": "^2.5.6",
     "@types/node": "^22.15.18",
     "turbo": "^2.5.6",
-    "typescript": "catalog:",
-    "@changesets/cli": "^2.29.6"
+    "typescript": "catalog:"
+  },
+  "devDependencies": {
+    "@biomejs/js-api": "^3.0.0",
+    "@biomejs/wasm-nodejs": "^2.2.4",
+    "ts-morph": "^26.0.0"
   }
 }
