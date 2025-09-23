@@ -22,7 +22,7 @@ export const resources: Resource[] = [
 		name: "preferences",
 		description:
 			"Define and manage preferences, with support for scoped settings.",
-		dateAdded: new Date(),
+		dateAdded: new Date("2025-09-23T02:40:49.474Z"),
 		author: owner,
 		category: "plugins",
 		url: "/docs/plugins/preferences",
