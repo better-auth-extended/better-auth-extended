@@ -324,5 +324,33 @@ describe("Preferences", async () => {
 			expect(error).toBeNull();
 			expect(data).toBeNull();
 		});
+
+		it("should decrypt sensitive value", async () => {
+			await client.preferences.user.sensitiveData.set({
+				value: "super-secret",
+				fetchOptions: { headers: user.headers },
+			});
+			const { data, error } = await client.preferences.user.sensitiveData.get({
+				fetchOptions: { headers: user.headers },
+			});
+			expect(error).toBeNull();
+			expect(data).toBe("super-secret");
+		});
+
+		it("should return BAD_REQUEST for unknown scope", async () => {
+			const res = await client.preferences.getPreference({
+				query: { scope: "unknown" as any, key: "x" },
+				fetchOptions: { headers: user.headers },
+			});
+			expect(res.error?.statusText).toBe("BAD_REQUEST");
+		});
+
+		it("should return BAD_REQUEST for unknown key", async () => {
+			const res = await client.preferences.getPreference({
+				query: { scope: "user", key: "unknown" as any },
+				fetchOptions: { headers: user.headers },
+			});
+			expect(res.error?.statusText).toBe("BAD_REQUEST");
+		});
 	});
 });
