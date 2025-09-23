@@ -11,6 +11,7 @@ import Link from "next/link";
 import { Marketplace } from "./client";
 import { createMetadata } from "@/lib/metadata";
 import { owner, repo } from "@/lib/github";
+import { Suspense } from "react";
 
 // TODO: Update description
 export const metadata = createMetadata({
@@ -38,7 +39,9 @@ export default function MarketplacePage() {
 								Better Auth.
 							</p>
 						</div>
-						<Marketplace />
+						<Suspense>
+							<Marketplace />
+						</Suspense>
 					</div>
 					<Card>
 						<CardHeader className="flex flex-col md:flex-row justify-between md:items-center gap-6">

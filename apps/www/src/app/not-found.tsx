@@ -72,7 +72,7 @@ export default function NotFound() {
 						opacity={0.8}
 						mouseInteractive={true}
 						mouseInteractionMultiplier={0.35}
-						mouseTarget={document.body || document.documentElement}
+						mouseTarget="window"
 					/>
 				</div>
 			</div>
