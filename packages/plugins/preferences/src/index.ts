@@ -274,7 +274,7 @@ export const preferences = <
 				? Object.entries(scope.groups).flatMap(([key, config]) => {
 						const endpoints: Record<string, AuthEndpoint> = {};
 						const groupKey = transformPath(key);
-						const groupPath = `$${transformClientPath(key)}`;
+						const groupPath = `${encodeURIComponent("$")}${transformClientPath(key)}`;
 
 						const enabledPreferences = Object.entries(config.preferences)
 							.filter(([_, value]) => !!value)
@@ -285,7 +285,7 @@ export const preferences = <
 						) {
 							endpoints[`get${scopeKey}${groupKey}Preferences`] =
 								createAuthEndpoint(
-									`/preferences/${scopeKey}/${groupPath}/get`,
+									`/preferences/${scopePath}/${groupPath}/get`,
 									{
 										method: "GET",
 										query: z.object({
@@ -328,7 +328,7 @@ export const preferences = <
 						) {
 							endpoints[`set${scopeKey}${groupKey}Preferences`] =
 								createAuthEndpoint(
-									`/preferences/${scopeKey}/${groupPath}/set`,
+									`/preferences/${scopePath}/${groupPath}/set`,
 									{
 										method: "POST",
 										body: z.object({

@@ -41,6 +41,22 @@ describe("Preferences", async () => {
 								sensitive: true,
 							},
 						},
+						groups: {
+							testGroupRead: {
+								preferences: {
+									theme: true,
+									notifications: true,
+								},
+								operations: "read",
+							},
+							testGroupWrite: {
+								preferences: {
+									theme: true,
+									notifications: true,
+								},
+								operations: "write",
+							},
+						},
 						defaultValues: {
 							theme: "system",
 							notifications: () => ({
@@ -351,6 +367,82 @@ describe("Preferences", async () => {
 				fetchOptions: { headers: user.headers },
 			});
 			expect(res.error?.statusText).toBe("BAD_REQUEST");
+		});
+	});
+
+	describe("groups", () => {
+		it("should require auth for group read when user binding enabled", async () => {
+			const { data, error } = await client.preferences.user.$testGroupRead.get(
+				{},
+			);
+			console.log({ data, error });
+			expect(error?.statusText).toBe("UNAUTHORIZED");
+		});
+
+		it("should return merged defaults for read group when no values set", async () => {
+			const { data, error } = await client.preferences.user.$testGroupRead.get({
+				query: {},
+				fetchOptions: { headers: user.headers },
+			});
+			expect(error).toBeNull();
+			expect(data).toEqual({
+				theme: "system",
+				notifications: { email: true, push: false, sms: false },
+			});
+		});
+
+		it("should set multiple values via write group", async () => {
+			const newNotifications = { email: false, push: true, sms: true };
+			const { error } = await client.preferences.user.$testGroupWrite.set({
+				values: { theme: "dark", notifications: newNotifications },
+				fetchOptions: { headers: user.headers },
+			});
+			expect(error).toBeNull();
+
+			const savedTheme = await db.findOne<{ value: string }>({
+				model: "preference",
+				where: [
+					{ field: "scope", value: "user" },
+					{ field: "key", value: "theme" },
+					{ field: "userId", value: user.user.id },
+				],
+				select: ["value"],
+			});
+			expect(savedTheme).not.toBeNull();
+			expect(JSON.parse(savedTheme!.value)).toBe("dark");
+
+			const savedNotifications = await db.findOne<{ value: string }>({
+				model: "preference",
+				where: [
+					{ field: "scope", value: "user" },
+					{ field: "key", value: "notifications" },
+					{ field: "userId", value: user.user.id },
+				],
+				select: ["value"],
+			});
+			expect(savedNotifications).not.toBeNull();
+			expect(JSON.parse(savedNotifications!.value)).toEqual(newNotifications);
+		});
+
+		it("should delete entry when setting default via group write", async () => {
+			await client.preferences.user.$testGroupWrite.set({
+				values: {
+					theme: "system",
+					notifications: { email: false, push: true, sms: true },
+				},
+				fetchOptions: { headers: user.headers },
+			});
+
+			const saved = await db.findOne<{ value: string }>({
+				model: "preference",
+				where: [
+					{ field: "scope", value: "user" },
+					{ field: "key", value: "theme" },
+					{ field: "userId", value: user.user.id },
+				],
+				select: ["value"],
+			});
+			expect(saved).toBeNull();
 		});
 	});
 });

@@ -4,7 +4,6 @@ import type {
 	PreferenceScopeAttributes,
 	PreferencesOptions,
 } from "./index";
-import { toPath } from "./utils";
 
 export const preferencesClient = <
 	Scopes extends {
