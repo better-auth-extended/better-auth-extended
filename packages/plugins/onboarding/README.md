@@ -10,7 +10,7 @@
         <a href="https://bundlephobia.com/package/@better-auth-extended/onboarding">
           <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/onboarding?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
-        <a href="https://github.com/better-auth-extended/better-auth-extended/blob/feat/onboarding/packages/plugins/onboarding/LICENSE.md">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/blob/main/packages/plugins/onboarding/LICENSE.md">
           <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/onboarding?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
     </div>

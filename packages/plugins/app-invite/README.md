@@ -10,13 +10,18 @@
         <a href="https://bundlephobia.com/package/@better-auth-extended/app-invite">
           <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/app-invite?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
-        <a href="https://github.com/better-auth-extended/better-auth-extended/blob/feat/onboarding/packages/plugins/app-invite/LICENSE.md">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/blob/main/packages/plugins/app-invite/LICENSE.md">
           <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/app-invite?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
     </div>
 </h1>
 
 The App Invite plugin enables you to invite users to your application through email invitations. It supports two types of invitations:
+
+- **Personal Invitations**: Targeted to specific email addresses, ensuring only the intended recipient can use the invitation
+- **Public Invitations**: Can be used by multiple users, making it ideal for open sign-up scenarios
+
+This plugin is particularly useful for invite-only applications
 
 [Learn more »](https://better-auth-extended.jsolano.de/docs/plugins/app-invite)
 
