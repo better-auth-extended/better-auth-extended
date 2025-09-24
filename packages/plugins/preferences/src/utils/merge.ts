@@ -28,12 +28,16 @@ export const merge = <T>(
 		) as T;
 	}
 
-	const result: any = { ...defaults };
+	const result: any = isObject(defaults)
+		? { ...defaults }
+		: isArray(defaults)
+			? [...(defaults as any)]
+			: (defaults ?? {});
 
-	for (const key in target) {
+	for (const key of Object.keys(target as any)) {
 		if (target && typeof target === "object" && key in target) {
-			const targetValue: any = target[key];
-			const defaultValue: any = defaults[key];
+			const targetValue: any = (target as any)[key];
+			const defaultValue: any = (defaults as any)[key];
 
 			if (isObject(targetValue) && isObject(defaultValue)) {
 				result[key] = merge(targetValue, defaultValue, strategy);

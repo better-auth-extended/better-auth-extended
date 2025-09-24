@@ -21,7 +21,7 @@ export const checkScope = (
 	}
 	if (!data.scopeId && scope.requireScopeId) {
 		throw ctx.error("BAD_REQUEST", {
-			message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_ID_IS_REQURIED,
+			message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_ID_IS_REQUIRED,
 		});
 	}
 

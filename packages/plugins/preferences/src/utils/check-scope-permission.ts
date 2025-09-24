@@ -83,7 +83,7 @@ const checkPermission = async (
 	if (!adminPlugin) {
 		ctx.context.logger.error("Admin plugin is not set-up.");
 		throw ctx.error("FAILED_DEPENDENCY", {
-			message: PREFERENCES_ERROR_CODES.PREFERENCE_MISSING_PERMISSION,
+			message: PREFERENCES_ERROR_CODES.PREFERENCES_ADMIN_PLUGIN_NOT_SETUP,
 		});
 	}
 

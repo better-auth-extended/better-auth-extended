@@ -55,7 +55,7 @@ export type PreferenceScopeAttributes<
 					key: string[];
 					scope: string;
 					scopeId?: string;
-					values: Record<string, z.util.JSONType>;
+					values: Record<string, JSONType>;
 				},
 				ctx: GenericEndpointContext,
 		  ) => Promise<boolean> | boolean | Promise<Permission> | Permission)
@@ -76,3 +76,5 @@ export type PreferencesOptions<
 > = {
 	scopes: Scopes;
 };
+
+export type JSONType = z.infer<ReturnType<typeof z.json>>;

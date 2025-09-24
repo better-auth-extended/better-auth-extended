@@ -10,7 +10,7 @@
         <a href="#">
           <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/preferences?style=flat-square">
         </a>
-        <a href="https://github.com/jslno/better-auth-extended/blob/feat/onboarding/packages/plugins/preferences/LICENSE.md">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/blob/feat/onboarding/packages/plugins/preferences/LICENSE.md">
           <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/preferences?style=flat-square">
         </a>
     </div>

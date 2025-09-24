@@ -7,7 +7,10 @@ export * from "./merge";
 export * from "./path";
 export * from "./transform";
 
-const deriveKey = async (secretKey: string): Promise<CryptoKey> => {
+const deriveKey = async (
+	secretKey: string,
+	salt: string,
+): Promise<CryptoKey> => {
 	const enc = new TextEncoder();
 	const subtle = getWebcryptoSubtle();
 	const keyMaterial = await subtle.importKey(
@@ -21,7 +24,7 @@ const deriveKey = async (secretKey: string): Promise<CryptoKey> => {
 	return subtle.deriveKey(
 		{
 			name: "PBKDF2",
-			salt: enc.encode("encryption_salt"),
+			salt: enc.encode(salt),
 			iterations: 100_000,
 			hash: "SHA-256",
 		},
@@ -38,8 +41,11 @@ export const encrypt = async (
 ): Promise<{
 	encryptedValue: string;
 	iv: string;
+	salt: string;
 }> => {
-	const key = await deriveKey(secretKey); // Derive a 32-byte key from the provided secret
+	const salt = crypto.getRandomValues(new Uint8Array(16));
+	const saltBase64 = base64.encode(salt);
+	const key = await deriveKey(secretKey, saltBase64); // Derive a 32-byte key from the provided secret
 	const iv = crypto.getRandomValues(new Uint8Array(12)); // 12-byte IV for AES-GCM
 
 	const enc = new TextEncoder();
@@ -58,6 +64,7 @@ export const encrypt = async (
 	return {
 		encryptedValue,
 		iv: ivBase64,
+		salt: saltBase64,
 	};
 };
 
@@ -65,11 +72,12 @@ export const decrypt = async (
 	encrypted: {
 		encryptedValue: string;
 		iv: string;
+		salt: string;
 	},
 	secretKey: string,
 ): Promise<string> => {
-	const key = await deriveKey(secretKey);
-	const { encryptedValue, iv } = encrypted;
+	const { encryptedValue, iv, salt } = encrypted;
+	const key = await deriveKey(secretKey, salt);
 
 	const ivBuffer = base64.decode(iv);
 	const ciphertext = base64.decode(encryptedValue);

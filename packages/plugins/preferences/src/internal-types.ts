@@ -42,8 +42,8 @@ type InferPreferenceOutput<
 > = StandardSchemaV1.InferOutput<P["type"]> | S["defaultValues"] extends {
 	[key in Preference]: infer V;
 }
-	? V extends () => Awaited<infer R>
-		? R
+	? V extends () => infer R
+		? Awaited<R>
 		: V extends undefined
 			? null
 			: V
@@ -122,7 +122,7 @@ type GroupEndpointPair<
 	G extends PreferenceScopeGroupAttributes<S["preferences"]>,
 > = {
 	set: G["operations"] extends
-		| never
+		| undefined
 		| "write"
 		| ["write", "read"]
 		| ["read", "write"]
@@ -142,7 +142,7 @@ type GroupEndpointPair<
 			>
 		: never;
 	get: G["operations"] extends
-		| never
+		| undefined
 		| "read"
 		| ["write", "read"]
 		| ["read", "write"]

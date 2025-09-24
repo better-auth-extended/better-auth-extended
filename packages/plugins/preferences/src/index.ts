@@ -203,7 +203,7 @@ export const preferences = <
 		});
 
 		let value = preference?.value ? JSON.parse(preference.value) : undefined;
-		if (scope.sensitive || config.sensitive) {
+		if ((scope.sensitive || config.sensitive) && value !== undefined) {
 			const secretKey = config.secret ?? scope.secret ?? ctx.context.secret;
 			value = JSON.parse(await decrypt(value, secretKey));
 		}
