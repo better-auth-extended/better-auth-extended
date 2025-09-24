@@ -2,16 +2,16 @@
     @better-auth-extended/{{name}}
     <div style="display:flex;align-items:center;gap:0.5rem;margin-top:1rem;margin-bottom:0.5rem" aria-hidden="true">
         <a href="https://www.npmjs.com/package/@better-auth-extended/{{name}}">
-          <img alt="NPM Version" src="https://img.shields.io/npm/v/@better-auth-extended/{{name}}?style=flat-square">
+          <img alt="NPM Version" src="https://img.shields.io/npm/v/@better-auth-extended/{{name}}?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
         <a href="https://www.npmjs.com/package/@better-auth-extended/{{name}}">
-          <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@better-auth-extended/{{name}}?style=flat-square">
+          <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/@better-auth-extended/{{name}}?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
-        <a href="#">
-          <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/{{name}}?style=flat-square">
+        <a href="https://bundlephobia.com/package/@better-auth-extended/{{name}}">
+          <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/@better-auth-extended/{{name}}?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
-        <a href="https://github.com/better-auth-extended/better-auth-extended/blob/feat/onboarding/packages/plugins/{{name}}/LICENSE.md">
-          <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/{{name}}?style=flat-square">
+        <a href="https://github.com/better-auth-extended/better-auth-extended/blob/main/packages/plugins/{{name}}/LICENSE.md">
+          <img alt="NPM License" src="https://img.shields.io/npm/l/@better-auth-extended/{{name}}?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
         </a>
     </div>
 </h1>
@@ -20,52 +20,7 @@
 {{description}}
 
 {{/if}}
-## Installation
-
-### 1. Install the plugin
-
-```bash
-npm install @better-auth-extended/{{name}}
-```
-
-### 2. Add the plugin to your auth config
-
-To use the {{titleCase name}} plugin, add it to your auth config.
-
-```ts
-import { betterAuth } from "better-auth";
-import { {{camelCase name}} } from "@better-auth-extended/{{name}}";
-
-export const auth = betterAuth({
-    // ... other configuration options
-    plugins: [{{camelCase name}}()],
-});
-```
-
-### 3. Add the client plugin
-
-Include the {{titleCase name}} client plugin in your authentication client instance.
-
-```ts
-import { createAuthClient } from "better-auth/client";
-import { {{camelCase name}}Client } from "@better-auth-extended/{{name}}/client";
-
-const authClient = createAuthClient({
-    plugins: [{{camelCase name}}Client()],
-});
-```
-
-### 4. Run migrations
-
-```bash
-npx @better-auth/cli migrate
-```
-
-or generate
-
-```bash
-npx @better-auth/cli generate
-```
+[Learn more »](https://better-auth-extended.jsolano.de/docs/plugins/{{name}})
 
 ## License
 
