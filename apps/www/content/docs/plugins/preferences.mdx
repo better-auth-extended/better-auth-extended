@@ -1,6 +1,312 @@
 ---
 title: Preferences
-description: Define and manage preferences, with support for scoped settings.
+description: Define and manage preferences with scoped settings.
+packageName: "@better-auth-extended/preferences"
 ---
 
-WIP (GH-29)
+The Preferences plugin allows you to define, read, and write preferences across multiple scopes (e.g., user, project, organization). It supports scoped preferences with optional `scopeId`, group operations, default values, and encryption for sensitive values.
+
+## Installation
+
+<Steps>
+    <Step>
+    ### Install the plugin
+
+    ```package-install
+    npm install @better-auth-extended/preferences
+    ```
+
+    </Step>
+
+    <Step>
+    ### Add the plugin to your auth config
+
+    To use the Preferences plugin, add it to your auth config.
+    
+    ```ts title="auth.ts"
+    import { betterAuth } from "better-auth";
+    import { preferences, createPreferenceScope } from "@better-auth-extended/preferences";
+    import { z } from "zod";
+
+    export const auth = betterAuth({
+        // ... other config options
+        plugins: [
+            preferences({
+                scopes: {
+                    user: createPreferenceScope({
+                        preferences: {
+                            theme: { type: z.enum(["light", "dark", "system"]) },
+                            notifications: { type: z.boolean() },
+                        },
+                        defaultValues: {
+                            theme: "system",
+                            notifications: false,
+                        },
+                    }),
+                    project: createPreferenceScope({
+                        preferences: {
+                            buildChannel: { type: z.enum(["stable", "beta"]) },
+                            envSecrets: { type: z.record(z.string(), z.string()), sensitive: true },
+                        },
+                        requireScopeId: true,
+                        groups: {
+                            ui: {
+                                preferences: {
+                                    buildChannel: true,
+                                    envSecrets: true
+                                },
+                                operations: ["read", "write"],
+                            },
+                        },
+                    }),
+                },
+            }),
+        ],
+    });
+    ```
+    </Step>
+
+    <Step>
+    ### Add the client plugin
+
+    Include the client plugin in your auth client instance.
+
+    ```ts
+    import { createAuthClient } from "better-auth/client";
+    import { preferencesClient } from "@better-auth-extended/preferences/client";
+
+    const authClient = createAuthClient({
+        plugins: [preferencesClient()],
+    });
+    ```
+    </Step>
+
+    <Step>
+    ### Run migrations
+
+    This plugin adds an additional table to the database. [Click here to see the schema](#schema)
+    
+    ```package-install
+    npx @better-auth/cli migrate
+    ```
+
+    or generate
+
+    ```package-install
+    npx @better-auth/cli generate
+    ```
+    </Step>
+</Steps>
+
+## Basic Usage
+
+The Preferences plugin provides several endpoints to manage preferences. You can get and set individual preferences or work with groups of preferences.
+
+### Get Preference
+
+Retrieve a single preference value by scope and key.
+
+<APIMethod path="/preferences/user/theme/get" displayPath="/preferences/{scope}/{preference}/get" method="GET">
+```ts
+type getUserThemePreference = {
+    /**
+     * The scope ID if the scope requires it
+    */
+    scopeId?: string
+}
+```
+</APIMethod>
+
+or
+
+<APIMethod path="/preferences/get-preference" method="GET" note="Types won't be inferred correctly for this endpoint.">
+```ts
+type getPreference = {
+    /**
+     * The scope of the preference
+     */
+    scope: string
+    /**
+     * The key of the preference
+     */
+    key: string
+    /**
+     * The scope ID if the scope requires it
+    */
+    scopeId?: string
+}
+```
+</APIMethod>
+
+### Set Preference
+
+Set or update a single preference value.
+
+<APIMethod path="/preferences/user/theme/set" displayPath="/preferences/{scope}/{preference}/set" method="POST">
+```ts
+type setUserThemePreference = {
+    /**
+     * The scope ID if the scope requires it
+    */
+    scopeId?: string
+    /**
+     * The value to set
+     */
+    value: "light" | "dark" | "system"
+}
+```
+</APIMethod>
+
+or
+
+<APIMethod path="/preferences/set-preference" method="POST" note="Types won't be inferred correctly for this endpoint.">
+```ts
+type setPreference = {
+    /**
+     * The scope of the preference
+     */
+    scope: string
+    /**
+     * The key of the preference
+     */
+    key: string
+    /**
+     * The value to set
+     */
+    value: unknown
+    /**
+     * The scope ID if the scope requires it
+    */
+    scopeId?: string
+}
+```
+</APIMethod>
+
+### Get Group
+
+Retrieve multiple preferences at once using a defined group.
+
+<APIMethod path="/preferences/project/$ui/get" displayPath="/preferences/{scope}/${group}/get" method="GET">
+```ts
+type getProjectUiPreferences = {
+    /**
+     * The scope ID if the scope requires it
+    */
+    scopeId?: string
+}
+```
+</APIMethod>
+
+### Set Group
+
+Set multiple preferences at once using a defined group.
+
+<APIMethod path="/preferences/project/$ui/set" displayPath="/preferences/{scope}/${group}/set" method="POST">
+```ts
+type setProjectUiPreferences = {
+    /**
+     * The scope ID if the scope requires it
+    */
+    scopeId?: string
+    /**
+     * The values to set
+     */
+    values: Record<string, unknown>
+}
+```
+</APIMethod>
+
+## Creating Scopes
+
+Define your scopes with their preferences, validation types, defaults, optional groups, and access rules. Each scope and preference automatically generates the corresponding endpoints above.
+
+```ts title="auth.ts"
+import { preferences, createPreferenceScope } from "@better-auth-extended/preferences";
+import { z } from "zod";
+
+preferences({
+    scopes: {
+        user: createPreferenceScope({
+            preferences: {
+                theme: { type: z.enum(["light", "dark", "system"]) },
+                notifications: { type: z.boolean() },
+            },
+            defaultValues: {
+                theme: "system",
+                notifications: false,
+            },
+        }),
+        project: preferences.createScope({
+            preferences: {
+                buildChannel: { type: z.enum(["stable", "beta"]) },
+                envSecrets: { type: z.record(z.string(), z.string()), sensitive: true },
+            },
+            requireScopeId: true,
+            groups: {
+                ui: {
+                    preferences: {
+                        buildChannel: true,
+                        envSecrets: true
+                    },
+                    operations: ["read", "write"],
+                },
+            },
+        }),
+    },
+});
+```
+
+### Options
+
+**preferences**: `Record<string, { type: StandardSchemaV1; sensitive?: boolean; secret?: string; }>` - Object mapping preference keys to their type definitions.
+
+**groups**: `Record<string, { preferences: Partial<Record<keyof preferences, boolean>>; operations?: "read" | "write" | ("read" | "write")[]; }>` - Optional groups for batch operations.
+
+**defaultValues**: `Partial<Record<keyof preferences, any | (() => any)>>` - Default values for preferences. Can be static values or functions.
+
+**canRead**: `boolean | Permission` | `(data, ctx) => boolean | Permission | Promise<boolean | Permission>` - Permission check for reading preferences.
+
+**canWrite**: `boolean | Permission` | `(data, ctx) => boolean | Permission | Promise<boolean | Permission>` - Permission check for writing preferences.
+
+<Callout>
+Returning `Permission` requires the [admin plugin](https://www.better-auth.com/docs/plugins/admin) to be configured. If it's not set up, the request will fail.
+
+Example:
+
+```ts title="auth.ts"
+canWrite: {
+    statement: "preferences",
+    permissions: ["write"],
+};
+```
+</Callout>
+
+**requireScopeId**: `boolean` - Whether the scope requires a `scopeId` for all operations.
+
+**disableUserBinding**: `boolean` - Whether to disable binding preferences to users.
+
+**mergeStrategy**: `"deep"` | `"replace"` - How to merge default values with stored values.
+
+**sensitive**: `boolean` - Whether to encrypt values at rest for the entire scope.
+
+**secret**: `string` - Custom secret for encryption/decryption.
+
+## Schema
+
+Table Name: `preference`
+
+<DatabaseTable
+    fields={[
+        { name: "id", type: "string", description: "Unique identifier", isPrimaryKey: true },
+        { name: "userId", type: "string", description: "User owner (nullable when unbound)", isOptional: true, isForeignKey: true },
+        { name: "scopeId", type: "string", description: "Resource identifier (e.g., project)", isOptional: true },
+        { name: "scope", type: "string", description: "Scope key (e.g., user, project)" },
+        { name: "key", type: "string", description: "Preference key" },
+        { name: "value", type: "string", description: "JSON-encoded value (may be encrypted)", isSortable: true },
+        { name: "updatedAt", type: "Date", description: "Last update timestamp" },
+    ]}
+/>
+
+## Options
+
+**scopes**: `Record<string, PreferenceScopeAttributes>` - Object mapping scope names to their configuration.

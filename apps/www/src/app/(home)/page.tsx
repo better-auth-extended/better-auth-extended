@@ -148,10 +148,10 @@ export default function HomePage() {
 							<PreferencesOffer />
 						</div>
 						<BentoGridItemTitle icon={Settings2Icon}>
-							Preferences <Badge variant="outline">Soon</Badge>
+							Preferences
 						</BentoGridItemTitle>
 						<BentoGridItemDescription>
-							Define and manage preferences, with support for scoped settings.
+							Define and manage preferences with scoped settings.
 						</BentoGridItemDescription>
 					</BentoGridItem>
 				</BentoGrid>
