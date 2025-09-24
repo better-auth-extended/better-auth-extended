@@ -129,7 +129,6 @@ export const contents: Content[] = [
 				title: "Preferences",
 				href: "/docs/plugins/preferences",
 				icon: () => <Settings2Icon className="size-4" />,
-				isDisabled: true,
 			},
 			{
 				title: "Help Desk",

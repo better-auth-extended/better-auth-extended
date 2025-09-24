@@ -48,6 +48,7 @@ const placeholderProperty: Property = {
 
 export const APIMethod = ({
 	path,
+	displayPath = path,
 	isServerOnly,
 	isClientOnly,
 	method,
@@ -65,6 +66,10 @@ export const APIMethod = ({
 	 * Endpoint path
 	 */
 	path: string;
+	/**
+	 * The path to display in the API method.
+	 */
+	displayPath?: string;
 	/**
 	 *  If enabled, we will add `headers` to the fetch options, indicating the given API method requires auth headers.
 	 *
@@ -222,7 +227,7 @@ export const APIMethod = ({
 					{isServerOnly ? null : (
 						<Endpoint
 							method={method || "GET"}
-							path={path}
+							path={displayPath}
 							isServerOnly={isServerOnly ?? false}
 						/>
 					)}
@@ -264,7 +269,7 @@ export const APIMethod = ({
 					{isClientOnly ? null : (
 						<Endpoint
 							method={method || "GET"}
-							path={path}
+							path={displayPath}
 							isServerOnly={isServerOnly ?? false}
 							className=""
 						/>

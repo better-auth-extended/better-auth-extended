@@ -16,54 +16,9 @@
     </div>
 </h1>
 
-TODO
+The Preferences plugin allows you to define, read, and write preferences across multiple scopes (e.g., user, project, organization). It supports scoped preferences with optional `scopeId`, group operations, default values, and encryption for sensitive values.
 
-## Installation
-
-### 1. Install the plugin
-
-```bash
-npm install @better-auth-extended/preferences
-```
-
-### 2. Add the plugin to your auth config
-
-To use the Preferences plugin, add it to your auth config.
-
-```ts
-import { betterAuth } from "better-auth";
-import { preferences } from "@better-auth-extended/preferences";
-
-export const auth = betterAuth({
-    // ... other configuration options
-    plugins: [preferences()],
-});
-```
-
-### 3. Add the client plugin
-
-Include the Preferences client plugin in your authentication client instance.
-
-```ts
-import { createAuthClient } from "better-auth/client";
-import { preferencesClient } from "@better-auth-extended/preferences/client";
-
-const authClient = createAuthClient({
-    plugins: [preferencesClient()],
-});
-```
-
-### 4. Run migrations
-
-```bash
-npx @better-auth/cli migrate
-```
-
-or generate
-
-```bash
-npx @better-auth/cli generate
-```
+[Learn more »](https://better-auth-extended.jsolano.de/docs/plugins/preferences)
 
 ## License
 
