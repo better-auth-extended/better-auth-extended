@@ -16,23 +16,13 @@
         <a href="https://discord.gg/HV2ex6DuES">Discord</a>
         ·
         <a href="https://better-auth-extended.jsolano.de">Website</a>
-        ·
-        <a href="https://github.com/better-auth-extended/better-auth-extended/issues">Issues</a>
     </p>
-    <p align="center">
-        <a href="https://github.com/better-auth-extended/better-auth-extended/issues">
-            <img alt="GitHub Issues" src="https://img.shields.io/github/issues/better-auth-extended/better-auth-extended?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
-        </a>
-        <a href="https://github.com/better-auth-extended/better-auth-extended/pulls">
-            <img alt="GitHub Pull Request" src="https://img.shields.io/github/issues-pr/better-auth-extended/better-auth-extended?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
-        </a>
-        <a href="https://github.com/better-auth-extended/better-auth-extended/stargazers">
-            <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/better-auth-extended/better-auth-extended?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
-        </a>
-        <a href="https://github.com/better-auth-extended/better-auth-extended/actions/workflows/ci.yml">
-            <img alt="GitHub Actions Workflow Status" src="https://img.shields.io/github/actions/workflow/status/better-auth-extended/better-auth-extended/ci.yml?branch=main&style=flat-square&labelColor=%233F3F3F&color=%230F0F0F">
-        </a>
-    </p>
+    
+[![GitHub Issues](https://img.shields.io/github/issues/better-auth-extended/better-auth-extended?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F)](https://github.com/better-auth-extended/better-auth-extended/issues)
+[![Github Pull Requests](https://img.shields.io/github/issues-pr/better-auth-extended/better-auth-extended?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F)](https://github.com/better-auth-extended/better-auth-extended/pulls)
+[![GitHub Repo Stars](https://img.shields.io/github/stars/better-auth-extended/better-auth-extended?style=flat-square&labelColor=%233F3F3F&color=%230F0F0F)](https://github.com/better-auth-extended/better-auth-extended/stargazers)
+[![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/better-auth-extended/better-auth-extended/ci.yml?branch=main&style=flat-square&labelColor=%233F3F3F&color=%230F0F0F)](https://github.com/better-auth-extended/better-auth-extended/actions/workflows/ci.yml)
+
 </p>
 
 ## Contributing
