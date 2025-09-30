@@ -18,8 +18,8 @@ export const createMetadata = (override: Metadata): Metadata => {
 		openGraph: {
 			title: override.title ?? undefined,
 			description: override.description ?? undefined,
-			url: baseUrl,
-			images: `${baseUrl}og.png`,
+			url: "https://better-auth-extended.jsolano.de",
+			images: "https://better-auth-extended.jsolano.de/og.png",
 			siteName: "better-auth-extended",
 			...override.openGraph,
 		},
@@ -28,7 +28,7 @@ export const createMetadata = (override: Metadata): Metadata => {
 			creator: "@j_slno",
 			title: override.title ?? undefined,
 			description: override.description ?? undefined,
-			images: `${baseUrl}og.png`,
+			images: "https://better-auth-extended.jsolano.de/og.png",
 			...override.twitter,
 		},
 	};
