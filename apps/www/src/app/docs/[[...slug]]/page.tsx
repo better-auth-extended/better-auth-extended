@@ -15,6 +15,7 @@ import path from "node:path";
 import { LLMCopyButton, ViewOptions } from "@/components/page-actions";
 import { DocsFooter } from "./_components/footer";
 import { owner, repo } from "@/lib/github";
+import type { Metadata } from "next";
 
 const removeExt = (fullPath: string) => {
 	const parsed = path.parse(fullPath);
@@ -93,7 +94,7 @@ export async function generateMetadata({
 	const { slug } = await params;
 	const page = source.getPage(slug);
 	if (page == null) notFound();
-	const url = new URL(`${baseUrl}api/og`);
+	const url = new URL(`https://better-auth-extended.jsolano.de/api/og`);
 	const { title, description, packageName } = page.data;
 	const pageSlug = page.path;
 	url.searchParams.set("type", "Documentation");
@@ -114,7 +115,7 @@ export async function generateMetadata({
 			title,
 			description,
 			type: "website",
-			url: `${baseUrl}docs/${removeExt(pageSlug)}`,
+			url: `https://better-auth-extended.jsolano.de/docs/${removeExt(pageSlug)}`,
 			images: [
 				{
 					url: url.toString(),
@@ -130,5 +131,5 @@ export async function generateMetadata({
 			description,
 			images: [url.toString()],
 		},
-	};
+	} satisfies Metadata;
 }
