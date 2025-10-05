@@ -1,11 +1,8 @@
 <p align="center">
     <picture>
-        <source srcset="https://raw.githubusercontent.com/better-auth-extended/.github/main/banner-dark.png
-" media="(prefers-color-scheme: dark)">
-        <source srcset="https://raw.githubusercontent.com/better-auth-extended/.github/main/banner.png
-" media="(prefers-color-scheme: light)">
-        <img src="https://raw.githubusercontent.com/better-auth-extended/.github/main/banner.png
-" alt="better-auth-extended Logo">
+        <source srcset="https://raw.githubusercontent.com/better-auth-extended/.github/main/banner-dark.png" media="(prefers-color-scheme: dark)">
+        <source srcset="https://raw.githubusercontent.com/better-auth-extended/.github/main/banner.png" media="(prefers-color-scheme: light)">
+        <img src="https://raw.githubusercontent.com/better-auth-extended/.github/main/banner.png" alt="better-auth-extended Logo">
     </picture>
     <h2 align="center">
         better-auth-extended
