@@ -1,11 +1,11 @@
-import { baseUrl } from "@/lib/metadata";
 import { source } from "@/lib/source";
 import { MetadataRoute } from "next";
 
 export const revalidate = false;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-	const url = (path: string): string => new URL(path, baseUrl).toString();
+	const url = (path: string): string =>
+		new URL(path, "https://better-auth-extended.jsolano.de").toString();
 
 	return [
 		{

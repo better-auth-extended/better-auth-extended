@@ -7,7 +7,6 @@ import {
 	DocsPage,
 	DocsTitle,
 } from "@/components/docs/page";
-import { baseUrl } from "@/lib/metadata";
 import { StatusBadges } from "@/components/status-badges";
 import { GithubButton } from "@/components/github-button";
 import { NpmButton } from "@/components/npm-button";
