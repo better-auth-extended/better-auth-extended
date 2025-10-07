@@ -7,6 +7,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Table,
 	TableBody,
@@ -15,6 +16,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { useMounted } from "@/hooks/use-mounted";
 import {
 	flexRender,
 	Row as TanstackRow,
@@ -42,6 +44,12 @@ const getPinningStyles = (column: Column<Resource>): CSSProperties => {
 };
 
 export const TableView = ({ table }: { table: TanstackTable<Resource> }) => {
+	const mounted = useMounted();
+
+	if (!mounted) {
+		return <Skeleton className="min-h-76 w-full" />;
+	}
+
 	return (
 		<div className="rounded-lg overflow-hidden border">
 			<Table

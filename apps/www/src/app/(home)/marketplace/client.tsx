@@ -29,12 +29,25 @@ import { categories } from "~/categories";
 import { Sort } from "./_components/sort";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { BookmarkIcon, Grid2x2Icon, ListIcon, Table2Icon } from "lucide-react";
+import {
+	BookmarkIcon,
+	Grid2x2Icon,
+	Inbox,
+	ListIcon,
+	Table2Icon,
+} from "lucide-react";
 import { GridView } from "./_components/grid-view";
 import { ListView } from "./_components/list-view";
 import { TableView } from "./_components/table-view";
 import { Pagination } from "@/components/data-table/pagination";
 import { BulkActions } from "@/components/data-table/bulk-actions";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+	Card,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
 
 export const Marketplace = () => {
 	const id = useId();
@@ -165,71 +178,85 @@ export const Marketplace = () => {
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
 
-	if (!mounted) {
-		return null;
-	}
-
 	return (
 		<>
-			<Toolbar
-				table={table}
-				filters={[
-					{
-						columnId: "category",
-						title: "Category",
-						options: Object.entries(categories).map(([id, config]) => {
-							return {
-								label: config.name,
-								value: id,
-								icon: "icon" in config ? config.icon : undefined,
-							};
-						}),
-					},
-					<Sort key={`${id}-sorting`} table={table} />,
-				]}
-			>
-				<div className="hidden md:flex items-center *:size-8 *:not-first:rounded-l-none *:not-first:border-l-0 *:not-last:rounded-r-none">
-					<Button
-						variant="outline"
-						size="icon"
-						className={cn(
-							"overflow-clip relative",
-							tab === "table" &&
-								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
-						)}
-						onClick={() => setTab("table")}
-					>
-						<Table2Icon />
-						<span className="sr-only">View as table</span>
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className={cn(
-							"overflow-clip relative",
-							tab === "grid" &&
-								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
-						)}
-						onClick={() => setTab("grid")}
-					>
-						<Grid2x2Icon />
-						<span className="sr-only">View as grid</span>
-					</Button>
-					<Button
-						variant="outline"
-						size="icon"
-						className={cn(
-							"overflow-clip relative",
-							tab === "list" &&
-								"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
-						)}
-						onClick={() => setTab("list")}
-					>
-						<ListIcon />
-						<span className="sr-only">View as list</span>
-					</Button>
+			{mounted ? (
+				<Toolbar
+					table={table}
+					filters={[
+						{
+							columnId: "category",
+							title: "Category",
+							options: Object.entries(categories).map(([id, config]) => {
+								return {
+									label: config.name,
+									value: id,
+									icon: "icon" in config ? config.icon : undefined,
+								};
+							}),
+						},
+						<Sort key={`${id}-sorting`} table={table} />,
+					]}
+				>
+					<div className="hidden md:flex items-center *:size-8 *:not-first:rounded-l-none *:not-first:border-l-0 *:not-last:rounded-r-none">
+						<Button
+							variant="outline"
+							size="icon"
+							className={cn(
+								"overflow-clip relative",
+								tab === "table" &&
+									"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
+							)}
+							onClick={() => setTab("table")}
+						>
+							<Table2Icon />
+							<span className="sr-only">View as table</span>
+						</Button>
+						<Button
+							variant="outline"
+							size="icon"
+							className={cn(
+								"overflow-clip relative",
+								tab === "grid" &&
+									"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
+							)}
+							onClick={() => setTab("grid")}
+						>
+							<Grid2x2Icon />
+							<span className="sr-only">View as grid</span>
+						</Button>
+						<Button
+							variant="outline"
+							size="icon"
+							className={cn(
+								"overflow-clip relative",
+								tab === "list" &&
+									"after:absolute after:bottom-0 after:inset-x-0 after:border-b-2 after:border-b-primary after:rounded",
+							)}
+							onClick={() => setTab("list")}
+						>
+							<ListIcon />
+							<span className="sr-only">View as list</span>
+						</Button>
+					</div>
+				</Toolbar>
+			) : (
+				<div className="flex items-start flex-wrap-reverse gap-2">
+					<div className="flex flex-1 flex-wrap-reverse items-start gap-y-2 space-x-2">
+						<div className="relative">
+							<Skeleton className="h-8 w-full min-w-[200px] lg:w-[250px]" />
+						</div>
+						<div className="flex gap-x-2">
+							<Skeleton className="h-8 min-w-[100px]" />
+							<Skeleton className="h-8 min-w-[210px]" />
+						</div>
+					</div>
+					<div className="ms-auto flex items-center gap-2">
+						<Skeleton className="hidden lg:block h-8 min-w-[76px]" />
+						<Skeleton className="h-8 min-w-[96px]" />
+					</div>
 				</div>
-			</Toolbar>
+			)}
 			{table.getRowModel().rows.length > 0 ? (
 				<>
 					{tab === "grid" && <GridView table={table} />}
@@ -237,7 +264,17 @@ export const Marketplace = () => {
 					{tab === "table" && <TableView table={table} />}
 				</>
 			) : (
-				<p>No results.</p>
+				<Card className="bg-surface border-dashed">
+					<CardHeader className="text-center py-6 flex flex-col items-center justify-center">
+						<div className="mb-4 flex items-center justify-center size-11 rounded-full border">
+							<Inbox className="size-5 text-muted-foreground" />
+						</div>
+						<CardTitle>No items found matching your criteria.</CardTitle>
+						<CardDescription>
+							Try adjusting your search or filter settings.
+						</CardDescription>
+					</CardHeader>
+				</Card>
 			)}
 			<Pagination table={table} />
 			<BulkActions table={table} entityName="item">

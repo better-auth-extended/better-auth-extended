@@ -47,7 +47,7 @@ export const Toolbar = <TData,>({
 
 	return (
 		<div className="flex items-start flex-wrap-reverse gap-2">
-			<div className="flex flex-1 flex-wrap-reverse items-start gap-y-2 tems-center space-x-2">
+			<div className="flex flex-1 flex-wrap-reverse items-start gap-y-2 space-x-2">
 				<div className="relative">
 					{searchKey ? (
 						<Input
