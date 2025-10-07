@@ -7,7 +7,6 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
 	Table,
 	TableBody,
@@ -16,7 +15,6 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { useMounted } from "@/hooks/use-mounted";
 import {
 	flexRender,
 	Row as TanstackRow,
@@ -29,6 +27,7 @@ import {
 	EllipsisIcon,
 	PinOffIcon,
 } from "lucide-react";
+import { motion, useReducedMotion, Variants } from "motion/react";
 import { CSSProperties } from "react";
 import type { Resource } from "~/resources";
 
@@ -44,14 +43,37 @@ const getPinningStyles = (column: Column<Resource>): CSSProperties => {
 };
 
 export const TableView = ({ table }: { table: TanstackTable<Resource> }) => {
-	const mounted = useMounted();
+	const shouldReduceMotion = useReducedMotion();
 
-	if (!mounted) {
-		return <Skeleton className="min-h-76 w-full" />;
-	}
+	const variants = {
+		hidden: {
+			opacity: 0,
+			y: 10,
+		},
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				type: "spring",
+				stiffness: 260,
+				damping: 28,
+				duration: 0.2,
+			},
+		},
+	} satisfies Variants;
 
 	return (
-		<div className="rounded-lg overflow-hidden border">
+		<motion.div
+			initial="hidden"
+			whileInView="visible"
+			exit="hidden"
+			viewport={{ once: true, amount: 0.2 }}
+			variants={!shouldReduceMotion ? variants : undefined}
+			transition={{
+				duration: 0.15,
+			}}
+			className="will-change-transform rounded-lg overflow-hidden border"
+		>
 			<Table
 				className="min-w-full [&_td]:border-border [&_th]:border-border table-fixed border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b"
 				style={{
@@ -179,13 +201,21 @@ export const TableView = ({ table }: { table: TanstackTable<Resource> }) => {
 					))}
 				</TableBody>
 			</Table>
-		</div>
+		</motion.div>
 	);
 };
 
+const MotionRow = motion.create(TableRow);
+
 const Row = ({ row }: { row: TanstackRow<Resource> }) => {
+	const shouldReduceMotion = useReducedMotion();
+
 	return (
-		<TableRow
+		<MotionRow
+			layout={!shouldReduceMotion}
+			transition={{
+				duration: 0.15,
+			}}
 			data-state={row.getIsSelected() && "selected"}
 			className="cursor-pointer group/row"
 			onClick={(e) => {
@@ -222,6 +252,6 @@ const Row = ({ row }: { row: TanstackRow<Resource> }) => {
 					</TableCell>
 				);
 			})}
-		</TableRow>
+		</MotionRow>
 	);
 };

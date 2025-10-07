@@ -34,6 +34,7 @@ import {
 	Grid2x2Icon,
 	Inbox,
 	ListIcon,
+	Loader2Icon,
 	Table2Icon,
 } from "lucide-react";
 import { GridView } from "./_components/grid-view";
@@ -48,6 +49,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 export const Marketplace = () => {
 	const id = useId();
@@ -178,6 +180,8 @@ export const Marketplace = () => {
 		getFacetedUniqueValues: getFacetedUniqueValues(),
 	});
 
+	const shouldReduceMotion = useReducedMotion();
+
 	return (
 		<>
 			{mounted ? (
@@ -257,24 +261,56 @@ export const Marketplace = () => {
 					</div>
 				</div>
 			)}
-			{table.getRowModel().rows.length > 0 ? (
-				<>
-					{tab === "grid" && <GridView table={table} />}
-					{tab === "list" && <ListView table={table} />}
-					{tab === "table" && <TableView table={table} />}
-				</>
+			{mounted ? (
+				table.getRowModel().rows.length > 0 ? (
+					<>
+						{tab === "grid" && <GridView table={table} />}
+						{tab === "list" && <ListView table={table} />}
+						{tab === "table" && <TableView table={table} />}
+					</>
+				) : (
+					<motion.div
+						variants={
+							!shouldReduceMotion
+								? {
+										hidden: {
+											opacity: 0,
+											y: 10,
+										},
+										visible: {
+											y: 0,
+											opacity: 1,
+											transition: {
+												type: "spring",
+												stiffness: 260,
+												damping: 28,
+												duration: 0.2,
+											},
+										},
+									}
+								: undefined
+						}
+						initial="hidden"
+						animate="visible"
+						exit="hidden"
+					>
+						<Card className="border-dashed">
+							<CardHeader className="text-center py-6 flex flex-col items-center justify-center">
+								<div className="mb-4 bg-surface flex items-center justify-center size-11 rounded-full border">
+									<Inbox className="size-5 text-surface-foreground" />
+								</div>
+								<CardTitle>No items found matching your criteria.</CardTitle>
+								<CardDescription>
+									Try adjusting your search or filter settings.
+								</CardDescription>
+							</CardHeader>
+						</Card>
+					</motion.div>
+				)
 			) : (
-				<Card className="bg-surface border-dashed">
-					<CardHeader className="text-center py-6 flex flex-col items-center justify-center">
-						<div className="mb-4 flex items-center justify-center size-11 rounded-full border">
-							<Inbox className="size-5 text-muted-foreground" />
-						</div>
-						<CardTitle>No items found matching your criteria.</CardTitle>
-						<CardDescription>
-							Try adjusting your search or filter settings.
-						</CardDescription>
-					</CardHeader>
-				</Card>
+				<div className="min-h-96 grid place-items-center">
+					<Loader2Icon className="size-5 text-muted-foreground animate-spin repeat-infinite" />
+				</div>
 			)}
 			<Pagination table={table} />
 			<BulkActions table={table} entityName="item">
