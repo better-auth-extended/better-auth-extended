@@ -23,6 +23,22 @@ import { OnboardingOffer } from "./_components/offers/onboarding";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
+import { motion, stagger, type Variants } from "motion/react";
+
+const MotionLogo = motion.create(Logo);
+const MotionLink = motion.create(Link);
+const MotionBentoGrid = motion.create(BentoGrid);
+const MotionBentoGridItem = motion.create(BentoGridItem);
+const bentoGridItemVariants = {
+	hidden: {
+		opacity: 0,
+		y: 20
+	},
+	visible: {
+		opacity: 1,
+		y: 0,
+	},
+} satisfies Variants;
 
 export default function HomePage() {
 	const router = useRouter();
@@ -31,13 +47,77 @@ export default function HomePage() {
 		<div className="flex-1">
 			<div className="z-[2] -mt-(--fd-nav-height) h-[calc(80dvh+var(--fd-nav-height))] relative">
 				<div className="h-full grid place-items-center max-w-7xl mx-auto">
-					<div className="flex flex-col items-center gap-4 max-w-sm text-center">
-						<Logo className="size-16" />
-						<h1 className="text-4xl font-semibold">better-auth-extended</h1>
-						<p className="text-xl font-medium text-muted-foreground">
+					<motion.div
+						variants={{
+							hidden: {},
+							visible: {
+								transition: {
+									delayChildren: stagger(0.03),
+								},
+							},
+						}}
+						viewport={{ once: true, amount: 0.4 }}
+						initial="hidden"
+						whileInView="visible"
+						exit="hidden"
+						className="flex flex-col items-center gap-4 max-w-sm text-center"
+					>
+						<MotionLogo
+							variants={{
+								hidden: {
+									opacity: 0,
+									scale: 0.9
+								},
+								visible: {
+									opacity: 1,
+									scale: 1,
+								}
+							}}
+							className="size-16 will-change-transform"
+						/>
+						<motion.h1
+							variants={{
+								hidden: {
+									opacity: 0,
+									y: 10
+								},
+								visible: {
+									opacity: 1,
+									y: 0,
+								}
+							}}
+							className="text-4xl font-semibold"
+						>
+							better-auth-extended
+						</motion.h1>
+						<motion.p
+							variants={{
+								hidden: {
+									opacity: 0,
+									y: 10
+								},
+								visible: {
+									opacity: 1,
+									y: 0,
+								}
+							}}
+							className="text-xl font-medium text-muted-foreground"
+						>
 							A curated set of plugins, tools, and libraries for Better-Auth.
-						</p>
-						<div className="grid grid-cols-2 mt-4 gap-2">
+						</motion.p>
+						<motion.div
+							variants={{
+								hidden: {
+									opacity: 0,
+									y: 10
+								},
+								visible: {
+									opacity: 1,
+									y: 0,
+								}
+							}} 
+							className="grid grid-cols-2 mt-4 gap-2"
+						>
 							<Link
 								href="/docs"
 								className={buttonVariants({
@@ -55,8 +135,8 @@ export default function HomePage() {
 							>
 								Visit Marketplace
 							</Link>
-						</div>
-					</div>
+						</motion.div>
+					</motion.div>
 				</div>
 				<div className="-z-[1] absolute inset-0 mask-t-from-92% mask-b-from-80%">
 					<Prism
@@ -68,16 +148,32 @@ export default function HomePage() {
 						hueShift={0}
 						colorFrequency={1}
 						noise={0.05}
-						glow={1}
+						glow={0.8}
 					/>
 				</div>
 			</div>
 			<div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-8">
-				<BentoGrid>
-					<BentoGridItem
+				<MotionBentoGrid
+					variants={{
+						hidden: {},
+						visible: {
+							transition: {
+								delayChildren: stagger(0.15, {
+									startDelay: 0.15,
+								}),
+							},
+						},
+					}}
+					initial="hidden"
+					viewport={{ once: true, amount: 0.2 }}
+					whileInView="visible"
+					exit="hidden"
+				>
+					<MotionBentoGridItem
 						onClick={() => {
 							router.push("/docs/plugins/app-invite");
 						}}
+						variants={bentoGridItemVariants}
 					>
 						<div className="h-full group-hover/bento:mask-t-from-80% transition-all">
 							<div className="h-full mask-b-from-80% group-hover/bento:mask-none transition-all">
@@ -90,12 +186,13 @@ export default function HomePage() {
 						<BentoGridItemDescription>
 							Invite users to your application and allow them to sign up.
 						</BentoGridItemDescription>
-					</BentoGridItem>
-					<BentoGridItem
+					</MotionBentoGridItem>
+					<MotionBentoGridItem
 						className="md:col-span-2"
 						onClick={() => {
 							router.push("/docs/plugins/onboarding");
 						}}
+						variants={bentoGridItemVariants}
 					>
 						<div className="h-full mask-b-from-80% transition-all">
 							<OnboardingOffer />
@@ -106,11 +203,12 @@ export default function HomePage() {
 						<BentoGridItemDescription>
 							Easily add onboarding to your authentication flow.
 						</BentoGridItemDescription>
-					</BentoGridItem>
-					<BentoGridItem
+					</MotionBentoGridItem>
+					<MotionBentoGridItem
 						onClick={() => {
 							router.push("/docs/plugins/waitlist");
 						}}
+						variants={bentoGridItemVariants}
 					>
 						<div className="h-full mask-r-from-80% mask-b-from-80%">
 							<WaitlistOffer />
@@ -122,11 +220,12 @@ export default function HomePage() {
 							Manage and prioritize user sign-ups with a customizable waitlist
 							system.
 						</BentoGridItemDescription>
-					</BentoGridItem>
-					<BentoGridItem
+					</MotionBentoGridItem>
+					<MotionBentoGridItem
 						onClick={() => {
 							router.push("/docs/plugins/legal-consent");
 						}}
+						variants={bentoGridItemVariants}
 					>
 						<div className="h-full group-hover/bento:mask-t-from-80% transition-all">
 							<LegalConsentOffer />
@@ -138,11 +237,12 @@ export default function HomePage() {
 							Collect and manage user legal consents efficiently for compliance
 							purposes.
 						</BentoGridItemDescription>
-					</BentoGridItem>
-					<BentoGridItem
+					</MotionBentoGridItem>
+					<MotionBentoGridItem
 						onClick={() => {
 							router.push("/docs/plugins/preferences");
 						}}
+						variants={bentoGridItemVariants}
 					>
 						<div className="h-full mask-b-from-60% transition-all">
 							<PreferencesOffer />
@@ -153,8 +253,8 @@ export default function HomePage() {
 						<BentoGridItemDescription>
 							Define and manage preferences with scoped settings.
 						</BentoGridItemDescription>
-					</BentoGridItem>
-				</BentoGrid>
+					</MotionBentoGridItem>
+				</MotionBentoGrid>
 			</div>
 		</div>
 	);
