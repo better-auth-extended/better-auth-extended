@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table } from "@tanstack/react-table";
 import { CircleXIcon, ListFilterIcon, XIcon } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { ViewOptions } from "./view-options";
+import useDebouncedCallback from "@/hooks/use-debounce-callback";
 
 export type ToolbarProps<TData> = {
 	table: Table<TData>;
@@ -39,37 +40,42 @@ export const Toolbar = <TData,>({
 		table.getState().columnFilters.length > 0 || table.getState().globalFilter;
 
 	const handleClearInput = () => {
+		setValue("");
 		searchKey
 			? table.getColumn(searchKey)?.setFilterValue("")
 			: table.setGlobalFilter("");
 		inputRef.current?.focus();
 	};
+	const [value, setValue] = useState(
+		searchKey
+			? table.getColumn(searchKey)?.getFilterValue()
+			: table.getState().globalFilter,
+	);
+	const handleValueChange = useDebouncedCallback(
+		(event?: React.ChangeEvent<HTMLInputElement>) => {
+			if (searchKey) {
+				table.getColumn(searchKey)?.setFilterValue(event?.target.value);
+			} else {
+				table.setGlobalFilter(event?.target.value);
+			}
+		},
+		300,
+	);
 
 	return (
 		<div className="flex items-start flex-wrap-reverse gap-2">
-			<div className="flex flex-1 flex-wrap-reverse items-start gap-y-2 tems-center space-x-2">
+			<div className="flex flex-1 flex-wrap-reverse items-start gap-y-2 space-x-2">
 				<div className="relative">
-					{searchKey ? (
-						<Input
-							ref={inputRef}
-							placeholder={searchPlaceholder}
-							value={
-								(table.getColumn(searchKey)?.getFilterValue() as string) ?? ""
-							}
-							onChange={(event) =>
-								table.getColumn(searchKey)?.setFilterValue(event.target.value)
-							}
-							className="peer ps-9 pe-9 h-8 w-full min-w-[200px] lg:w-[250px]"
-						/>
-					) : (
-						<Input
-							ref={inputRef}
-							placeholder={searchPlaceholder}
-							value={table.getState().globalFilter ?? ""}
-							onChange={(event) => table.setGlobalFilter(event.target.value)}
-							className="peer ps-9 pe-9 h-8 w-full min-w-[200px] lg:w-[250px]"
-						/>
-					)}
+					<Input
+						ref={inputRef}
+						placeholder={searchPlaceholder}
+						value={value}
+						onChange={(event) => {
+							setValue(event.target.value);
+							handleValueChange(event);
+						}}
+						className="peer ps-9 pe-9 h-8 w-full min-w-[200px] lg:w-[250px]"
+					/>
 					<div className="text-muted-foreground/80 pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 peer-disabled:opacity-50">
 						<ListFilterIcon className="size-4" />
 					</div>
