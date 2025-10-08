@@ -10,7 +10,7 @@ import {
 	useQueryState,
 	useQueryStates,
 } from "nuqs";
-import { useId, useMemo } from "react";
+import { Suspense, useId, useMemo } from "react";
 import { z } from "zod";
 import { addBookmarks, useBookmarks } from "./_components/utils";
 import {
@@ -27,10 +27,12 @@ import { columns, multiColumnFilterFn } from "./_components/columns";
 import { Toolbar } from "@/components/data-table/toolbar";
 import { categories } from "~/categories";
 import { Sort } from "./_components/sort";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import {
+	ArrowRightIcon,
 	BookmarkIcon,
+	GitPullRequestCreateArrow,
 	Grid2x2Icon,
 	Inbox,
 	ListIcon,
@@ -49,9 +51,12 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { motion, stagger, useReducedMotion } from "motion/react";
+import Link from "next/link";
+import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { owner, repo } from "@/lib/github";
 
-export const Marketplace = () => {
+const MainView = () => {
 	const id = useId();
 	const [tab, setTab] = useQueryState(
 		"tab",
@@ -332,6 +337,140 @@ export const Marketplace = () => {
 					</Button>
 				</div>
 			</BulkActions>
+		</>
+	);
+};
+MainView.displayName = "MainView";
+
+const MotionCard = motion.create(Card);
+
+export const Marketplace = () => {
+	const mounted = useMounted();
+	const shouldReduceMotion = useReducedMotion();
+
+	return (
+		<>
+			<div className="flex-1 font-sans p-8 pb-16 md:p-16 lg:pb-20 lg:p-20">
+				<div className="flex flex-col gap-16 mx-auto max-w-7xl @container/content">
+					<div className="flex flex-col gap-6">
+						<motion.div
+							className="space-y-2"
+							variants={{
+								hidden: {},
+								visible: {
+									transition: {
+										delayChildren: stagger(0.05, {
+											startDelay: 0.05,
+										}),
+									},
+								},
+							}}
+							initial="hidden"
+							animate="visible"
+							exit="hidden"
+						>
+							{/* <div className="mb-0.5 size-8 rounded-full border grid place-items-center">
+								<BoxesIcon className="size-4 text-muted-foreground" />
+							</div> */}
+							<motion.h1
+								className="text-3xl font-medium"
+								variants={
+									!shouldReduceMotion
+										? {
+												hidden: {
+													opacity: 0,
+													y: 20,
+												},
+												visible: {
+													opacity: 1,
+													y: 0,
+												},
+											}
+										: undefined
+								}
+							>
+								Marketplace
+							</motion.h1>
+							<motion.p
+								className="text-muted-foreground"
+								variants={
+									!shouldReduceMotion
+										? {
+												hidden: {
+													opacity: 0,
+													y: 20,
+												},
+												visible: {
+													opacity: 1,
+													y: 0,
+												},
+											}
+										: undefined
+								}
+							>
+								Discover and share free open-source resources and plugins for
+								Better Auth.
+							</motion.p>
+						</motion.div>
+						<Suspense>
+							<MainView />
+						</Suspense>
+					</div>
+					{mounted && (
+						<MotionCard
+							variants={
+								!shouldReduceMotion
+									? {
+											hidden: {
+												opacity: 0,
+												y: 20,
+											},
+											visible: {
+												opacity: 1,
+												y: 0,
+											},
+										}
+									: undefined
+							}
+							viewport={{ once: true, amount: 0.4 }}
+							initial="hidden"
+							whileInView="visible"
+							exit="hidden"
+						>
+							<CardHeader className="flex flex-col md:flex-row justify-between md:items-center gap-6">
+								<div className="space-y-2">
+									<div
+										className="rounded-full size-9 border bg-surface flex items-center justify-center"
+										aria-hidden="true"
+									>
+										<GitPullRequestCreateArrow className="size-3.5 text-surface-foreground" />
+									</div>
+									<CardTitle className="text-2xl">
+										Contribute to the Marketplace
+									</CardTitle>
+									<CardDescription className="text-base max-w-3xl">
+										Got a free open-source project or resource related to Better
+										Auth? Share it with the community! Open a PR and help expand
+										this curated collection of tools, plugins, and resources.
+									</CardDescription>
+								</div>
+								<Link
+									href={`https://github.com/${owner}/${repo}/compare/main...my-branch?template=marketplace.md`}
+									className={buttonVariants({
+										className: "md:ms-auto",
+									})}
+									rel="noreferrer noopener"
+									target="_blank"
+								>
+									<GitHubLogoIcon />
+									Open a PR
+									<ArrowRightIcon className="-mr-1" />
+								</Link>
+							</CardHeader>
+						</MotionCard>
+					)}
+				</div>
+			</div>
 		</>
 	);
 };
