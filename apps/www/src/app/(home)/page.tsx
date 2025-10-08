@@ -23,7 +23,7 @@ import { OnboardingOffer } from "./_components/offers/onboarding";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
-import { motion, stagger, type Variants } from "motion/react";
+import { motion, stagger, useReducedMotion, type Variants } from "motion/react";
 
 const MotionLogo = motion.create(Logo);
 const MotionLink = motion.create(Link);
@@ -42,6 +42,7 @@ const bentoGridItemVariants = {
 
 export default function HomePage() {
 	const router = useRouter();
+	const shouldReduceMotion = useReducedMotion();
 
 	return (
 		<div className="flex-1">
@@ -63,7 +64,7 @@ export default function HomePage() {
 						className="flex flex-col items-center gap-4 max-w-sm text-center"
 					>
 						<MotionLogo
-							variants={{
+							variants={!shouldReduceMotion ? {
 								hidden: {
 									opacity: 0,
 									scale: 0.9,
@@ -72,11 +73,11 @@ export default function HomePage() {
 									opacity: 1,
 									scale: 1,
 								},
-							}}
+							} : undefined}
 							className="size-16 will-change-transform"
 						/>
 						<motion.h1
-							variants={{
+							variants={!shouldReduceMotion ? {
 								hidden: {
 									opacity: 0,
 									y: 10,
@@ -85,13 +86,13 @@ export default function HomePage() {
 									opacity: 1,
 									y: 0,
 								},
-							}}
+							} : undefined}
 							className="text-4xl font-semibold"
 						>
 							better-auth-extended
 						</motion.h1>
 						<motion.p
-							variants={{
+							variants={!shouldReduceMotion ? {
 								hidden: {
 									opacity: 0,
 									y: 10,
@@ -100,13 +101,13 @@ export default function HomePage() {
 									opacity: 1,
 									y: 0,
 								},
-							}}
+							} : undefined}
 							className="text-xl font-medium text-muted-foreground"
 						>
 							A curated set of plugins, tools, and libraries for Better-Auth.
 						</motion.p>
 						<motion.div
-							variants={{
+							variants={!shouldReduceMotion ? {
 								hidden: {
 									opacity: 0,
 									y: 10,
@@ -115,7 +116,7 @@ export default function HomePage() {
 									opacity: 1,
 									y: 0,
 								},
-							}}
+							} : undefined}
 							className="grid grid-cols-2 mt-4 gap-2"
 						>
 							<Link
@@ -173,7 +174,7 @@ export default function HomePage() {
 						onClick={() => {
 							router.push("/docs/plugins/app-invite");
 						}}
-						variants={bentoGridItemVariants}
+						variants={!shouldReduceMotion ? bentoGridItemVariants : undefined}
 					>
 						<div className="h-full group-hover/bento:mask-t-from-80% transition-all">
 							<div className="h-full mask-b-from-80% group-hover/bento:mask-none transition-all">
@@ -192,7 +193,7 @@ export default function HomePage() {
 						onClick={() => {
 							router.push("/docs/plugins/onboarding");
 						}}
-						variants={bentoGridItemVariants}
+						variants={!shouldReduceMotion ? bentoGridItemVariants : undefined}
 					>
 						<div className="h-full mask-b-from-80% transition-all">
 							<OnboardingOffer />
@@ -208,7 +209,7 @@ export default function HomePage() {
 						onClick={() => {
 							router.push("/docs/plugins/waitlist");
 						}}
-						variants={bentoGridItemVariants}
+						variants={!shouldReduceMotion ? bentoGridItemVariants : undefined}
 					>
 						<div className="h-full mask-r-from-80% mask-b-from-80%">
 							<WaitlistOffer />
@@ -225,7 +226,7 @@ export default function HomePage() {
 						onClick={() => {
 							router.push("/docs/plugins/legal-consent");
 						}}
-						variants={bentoGridItemVariants}
+						variants={!shouldReduceMotion ? bentoGridItemVariants : undefined}
 					>
 						<div className="h-full group-hover/bento:mask-t-from-80% transition-all">
 							<LegalConsentOffer />
@@ -242,7 +243,7 @@ export default function HomePage() {
 						onClick={() => {
 							router.push("/docs/plugins/preferences");
 						}}
-						variants={bentoGridItemVariants}
+						variants={!shouldReduceMotion ? bentoGridItemVariants : undefined}
 					>
 						<div className="h-full mask-b-from-60% transition-all">
 							<PreferencesOffer />
