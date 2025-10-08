@@ -353,22 +353,7 @@ export const Marketplace = () => {
 			<div className="flex-1 font-sans p-8 pb-16 md:p-16 lg:pb-20 lg:p-20">
 				<div className="flex flex-col gap-16 mx-auto max-w-7xl @container/content">
 					<div className="flex flex-col gap-6">
-						<motion.div
-							className="space-y-2"
-							variants={{
-								hidden: {},
-								visible: {
-									transition: {
-										delayChildren: stagger(0.05, {
-											startDelay: 0.05,
-										}),
-									},
-								},
-							}}
-							initial="hidden"
-							animate="visible"
-							exit="hidden"
-						>
+						<div className="space-y-2">
 							{/* <div className="mb-0.5 size-8 rounded-full border grid place-items-center">
 								<BoxesIcon className="size-4 text-muted-foreground" />
 							</div> */}
@@ -388,6 +373,9 @@ export const Marketplace = () => {
 											}
 										: undefined
 								}
+								initial="hidden"
+								animate="visible"
+								exit="hidden"
 							>
 								Marketplace
 							</motion.h1>
@@ -407,11 +395,14 @@ export const Marketplace = () => {
 											}
 										: undefined
 								}
+								initial="hidden"
+								animate="visible"
+								exit="hidden"
 							>
 								Discover and share free open-source resources and plugins for
 								Better Auth.
 							</motion.p>
-						</motion.div>
+						</div>
 						<Suspense>
 							<MainView />
 						</Suspense>
