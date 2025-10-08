@@ -20,7 +20,7 @@ import { Badge } from "@/components/ui/badge";
 
 export type TResource = Resource & {
 	isNew: boolean;
-}
+};
 
 const bookmarkSortingWrapper = (
 	inner: SortingFn<TResource>,

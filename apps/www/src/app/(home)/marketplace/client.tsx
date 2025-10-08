@@ -128,26 +128,24 @@ const MainView = () => {
 
 	const bookmarks = useBookmarks();
 
-	const data = useMemo(
-		() => {
-			const THRESHOLD_DAYS = 14;
-			const now = Date.now();
+	const data = useMemo(() => {
+		const THRESHOLD_DAYS = 14;
+		const now = Date.now();
 
-			return [
-				...resources.filter(({ name }) => bookmarks.includes(name)),
-				...resources.filter(({ name }) => !bookmarks.includes(name)),
-			].map((item) => {
-				const date = item.dateAdded ? new Date(item.dateAdded) : null;
-				const isNew = !date || ((now - date.getTime()) <= (THRESHOLD_DAYS * 24 * 60 * 60 * 1000));
+		return [
+			...resources.filter(({ name }) => bookmarks.includes(name)),
+			...resources.filter(({ name }) => !bookmarks.includes(name)),
+		].map((item) => {
+			const date = item.dateAdded ? new Date(item.dateAdded) : null;
+			const isNew =
+				!date || now - date.getTime() <= THRESHOLD_DAYS * 24 * 60 * 60 * 1000;
 
-				return {
-					...item,
-					isNew,
-				}
-			})
-		},
-		[bookmarks],
-	);
+			return {
+				...item,
+				isNew,
+			};
+		});
+	}, [bookmarks]);
 
 	const table = useReactTable({
 		data,

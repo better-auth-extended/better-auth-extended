@@ -32,7 +32,7 @@ const MotionBentoGridItem = motion.create(BentoGridItem);
 const bentoGridItemVariants = {
 	hidden: {
 		opacity: 0,
-		y: 20
+		y: 20,
 	},
 	visible: {
 		opacity: 1,
@@ -66,12 +66,12 @@ export default function HomePage() {
 							variants={{
 								hidden: {
 									opacity: 0,
-									scale: 0.9
+									scale: 0.9,
 								},
 								visible: {
 									opacity: 1,
 									scale: 1,
-								}
+								},
 							}}
 							className="size-16 will-change-transform"
 						/>
@@ -79,12 +79,12 @@ export default function HomePage() {
 							variants={{
 								hidden: {
 									opacity: 0,
-									y: 10
+									y: 10,
 								},
 								visible: {
 									opacity: 1,
 									y: 0,
-								}
+								},
 							}}
 							className="text-4xl font-semibold"
 						>
@@ -94,12 +94,12 @@ export default function HomePage() {
 							variants={{
 								hidden: {
 									opacity: 0,
-									y: 10
+									y: 10,
 								},
 								visible: {
 									opacity: 1,
 									y: 0,
-								}
+								},
 							}}
 							className="text-xl font-medium text-muted-foreground"
 						>
@@ -109,13 +109,13 @@ export default function HomePage() {
 							variants={{
 								hidden: {
 									opacity: 0,
-									y: 10
+									y: 10,
 								},
 								visible: {
 									opacity: 1,
 									y: 0,
-								}
-							}} 
+								},
+							}}
 							className="grid grid-cols-2 mt-4 gap-2"
 						>
 							<Link
