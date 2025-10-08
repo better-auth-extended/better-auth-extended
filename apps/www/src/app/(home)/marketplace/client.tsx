@@ -51,7 +51,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { motion, stagger, useReducedMotion } from "motion/react";
+import { motion, useReducedMotion } from "motion/react";
 import Link from "next/link";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { owner, repo } from "@/lib/github";
