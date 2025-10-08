@@ -8,17 +8,17 @@ import {
 } from "@/components/ui/card";
 import { Row } from "@tanstack/react-table";
 import { BookmarkIcon, CalendarIcon, ExternalLinkIcon } from "lucide-react";
-import { Resource } from "~/resources";
 import { CategoryBadge } from "./category-badge";
 import { GithubUser } from "@/components/github-user";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { addBookmarks, isHidden } from "./utils";
 import { motion, useReducedMotion, Variants } from "motion/react";
+import type { TResource } from "./columns";
 
 const MotionCard = motion.create(Card);
 
-export const ListItem = ({ row }: { row: Row<Resource> }) => {
+export const ListItem = ({ row }: { row: Row<TResource> }) => {
 	const data = row.original;
 
 	const shouldReduceMotion = useReducedMotion();

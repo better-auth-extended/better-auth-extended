@@ -18,9 +18,13 @@ import { $bookmarks } from "./atoms";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 
+export type TResource = Resource & {
+	isNew: boolean;
+}
+
 const bookmarkSortingWrapper = (
-	inner: SortingFn<Resource>,
-): SortingFn<Resource> => {
+	inner: SortingFn<TResource>,
+): SortingFn<TResource> => {
 	return (rowA, rowB, columnId) => {
 		const bookmarks = getBookmarks();
 		const aBookmarked = bookmarks.includes(rowA.original.name);
@@ -33,11 +37,11 @@ const bookmarkSortingWrapper = (
 	};
 };
 
-const stringSortingFn: SortingFn<Resource> = (rowA, rowB, columnId) => {
+const stringSortingFn: SortingFn<TResource> = (rowA, rowB, columnId) => {
 	return sortingFns.alphanumeric(rowA, rowB, columnId);
 };
 
-const dateSortingFn: SortingFn<Resource> = (rowA, rowB, columnId) => {
+const dateSortingFn: SortingFn<TResource> = (rowA, rowB, columnId) => {
 	const a = rowA.getValue<Date>(columnId);
 	const b = rowB.getValue<Date>(columnId);
 	const aTime = a instanceof Date ? a.getTime() : new Date(a as any).getTime();
@@ -46,7 +50,7 @@ const dateSortingFn: SortingFn<Resource> = (rowA, rowB, columnId) => {
 	return aTime < bTime ? -1 : 1;
 };
 
-export const multiColumnFilterFn: FilterFn<Resource> = (
+export const multiColumnFilterFn: FilterFn<TResource> = (
 	row,
 	_columnId,
 	filterValue: string,
@@ -66,7 +70,7 @@ export const multiColumnFilterFn: FilterFn<Resource> = (
 	);
 };
 
-export const columns: ColumnDef<Resource>[] = [
+export const columns: ColumnDef<TResource>[] = [
 	{
 		id: "_bookmarkRank",
 		accessorFn: (row) => (getBookmarks().includes(row.name) ? 1 : 0),

@@ -14,11 +14,11 @@ import {
 	SortDescIcon,
 	TextIcon,
 } from "lucide-react";
-import { Resource } from "~/resources";
 import { cn } from "@/lib/utils";
+import { TResource } from "./columns";
 
 export type SortProps = {
-	table: Table<Resource>;
+	table: Table<TResource>;
 };
 
 export const Sort = ({ table }: SortProps) => {

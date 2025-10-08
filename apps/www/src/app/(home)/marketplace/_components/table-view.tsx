@@ -29,9 +29,9 @@ import {
 } from "lucide-react";
 import { motion, useReducedMotion, Variants } from "motion/react";
 import { CSSProperties } from "react";
-import type { Resource } from "~/resources";
+import type { TResource } from "./columns";
 
-const getPinningStyles = (column: Column<Resource>): CSSProperties => {
+const getPinningStyles = (column: Column<TResource>): CSSProperties => {
 	const isPinned = column.getIsPinned();
 	return {
 		left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
@@ -42,7 +42,7 @@ const getPinningStyles = (column: Column<Resource>): CSSProperties => {
 	};
 };
 
-export const TableView = ({ table }: { table: TanstackTable<Resource> }) => {
+export const TableView = ({ table }: { table: TanstackTable<TResource> }) => {
 	const shouldReduceMotion = useReducedMotion();
 
 	const variants = {
@@ -207,7 +207,7 @@ export const TableView = ({ table }: { table: TanstackTable<Resource> }) => {
 
 const MotionRow = motion.create(TableRow);
 
-const Row = ({ row }: { row: TanstackRow<Resource> }) => {
+const Row = ({ row }: { row: TanstackRow<TResource> }) => {
 	const shouldReduceMotion = useReducedMotion();
 
 	return (
