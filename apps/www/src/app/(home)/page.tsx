@@ -64,59 +64,75 @@ export default function HomePage() {
 						className="flex flex-col items-center gap-4 max-w-sm text-center"
 					>
 						<MotionLogo
-							variants={!shouldReduceMotion ? {
-								hidden: {
-									opacity: 0,
-									scale: 0.9,
-								},
-								visible: {
-									opacity: 1,
-									scale: 1,
-								},
-							} : undefined}
+							variants={
+								!shouldReduceMotion
+									? {
+											hidden: {
+												opacity: 0,
+												scale: 0.9,
+											},
+											visible: {
+												opacity: 1,
+												scale: 1,
+											},
+										}
+									: undefined
+							}
 							className="size-16 will-change-transform"
 						/>
 						<motion.h1
-							variants={!shouldReduceMotion ? {
-								hidden: {
-									opacity: 0,
-									y: 10,
-								},
-								visible: {
-									opacity: 1,
-									y: 0,
-								},
-							} : undefined}
+							variants={
+								!shouldReduceMotion
+									? {
+											hidden: {
+												opacity: 0,
+												y: 10,
+											},
+											visible: {
+												opacity: 1,
+												y: 0,
+											},
+										}
+									: undefined
+							}
 							className="text-4xl font-semibold"
 						>
 							better-auth-extended
 						</motion.h1>
 						<motion.p
-							variants={!shouldReduceMotion ? {
-								hidden: {
-									opacity: 0,
-									y: 10,
-								},
-								visible: {
-									opacity: 1,
-									y: 0,
-								},
-							} : undefined}
+							variants={
+								!shouldReduceMotion
+									? {
+											hidden: {
+												opacity: 0,
+												y: 10,
+											},
+											visible: {
+												opacity: 1,
+												y: 0,
+											},
+										}
+									: undefined
+							}
 							className="text-xl font-medium text-muted-foreground"
 						>
 							A curated set of plugins, tools, and libraries for Better-Auth.
 						</motion.p>
 						<motion.div
-							variants={!shouldReduceMotion ? {
-								hidden: {
-									opacity: 0,
-									y: 10,
-								},
-								visible: {
-									opacity: 1,
-									y: 0,
-								},
-							} : undefined}
+							variants={
+								!shouldReduceMotion
+									? {
+											hidden: {
+												opacity: 0,
+												y: 10,
+											},
+											visible: {
+												opacity: 1,
+												y: 0,
+											},
+										}
+									: undefined
+							}
 							className="grid grid-cols-2 mt-4 gap-2"
 						>
 							<Link
