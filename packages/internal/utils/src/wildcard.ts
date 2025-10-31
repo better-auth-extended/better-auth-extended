@@ -33,7 +33,7 @@ function escapeRegExpChar(char: string) {
 function escapeRegExpString(str: string) {
 	let result = "";
 	for (let i = 0; i < str.length; i++) {
-		result += escapeRegExpChar(str[i]);
+		result += escapeRegExpChar(str[i]!);
 	}
 	return result;
 }
@@ -94,7 +94,7 @@ function transform(
 	let result = "";
 
 	for (let s = 0; s < segments.length; s++) {
-		const segment = segments[s];
+		const segment = segments[s]!;
 		const nextSegment = segments[s + 1];
 		let currentSeparator = "";
 
@@ -121,11 +121,11 @@ function transform(
 		}
 
 		for (let c = 0; c < segment.length; c++) {
-			const char = segment[c];
+			const char = segment[c]!;
 
 			if (char === "\\") {
 				if (c < segment.length - 1) {
-					result += escapeRegExpChar(segment[c + 1]);
+					result += escapeRegExpChar(segment[c + 1]!);
 					c++;
 				}
 			} else if (char === "?") {

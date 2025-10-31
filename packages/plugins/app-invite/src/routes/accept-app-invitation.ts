@@ -224,7 +224,7 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 			}
 
 			if (invitationType === "public") {
-				const [_lP, domain] = userData.email.split("@");
+				const [_lP, domain] = userData.email.split("@") as [string, string];
 
 				const domainWhitelist = invitation.domainWhitelist?.split(",");
 

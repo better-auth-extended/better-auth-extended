@@ -5,6 +5,7 @@ import { ONBOARDING_ERROR_CODES } from "./error-codes";
 import { getTestInstance } from "@better-auth-extended/test-utils";
 import database from "better-sqlite3";
 import { z } from "zod";
+import { betterAuth } from "better-auth";
 
 const mockOnboardingRedirect = vi.fn();
 describe("Onboarding", () => {
@@ -332,32 +333,33 @@ describe("Onboarding", () => {
 	});
 
 	describe("(required steps)", async () => {
+		const auth = betterAuth({
+			database: database(":memory:"),
+			emailAndPassword: {
+				enabled: true,
+				autoSignIn: true,
+			},
+			plugins: [
+				onboarding({
+					steps: {
+						profile: {
+							handler: async () => true,
+							required: true,
+						},
+						newPassword: {
+							handler: async () => true,
+						},
+					},
+					completionStep: "newPassword",
+				}),
+			],
+		});
 		const { resetDatabase, client, signUpWithTestUser, db, testUser } =
 			await getTestInstance({
-				options: {
-					database: database(":memory:"),
-					emailAndPassword: {
-						enabled: true,
-						autoSignIn: true,
-					},
-					plugins: [
-						onboarding({
-							steps: {
-								profile: {
-									handler: async () => true,
-									required: true,
-								},
-								newPassword: {
-									handler: async () => true,
-								},
-							},
-							completionStep: "newPassword",
-						}),
-					],
-				},
+				auth,
 				clientOptions: {
 					plugins: [
-						onboardingClient({
+						onboardingClient<typeof auth>({
 							onOnboardingRedirect: () => Promise.resolve(),
 						}),
 					],
@@ -412,32 +414,33 @@ describe("Onboarding", () => {
 	});
 
 	describe("(skip completion step)", async () => {
+		const auth = betterAuth({
+			database: database(":memory:"),
+			emailAndPassword: {
+				enabled: true,
+				autoSignIn: true,
+			},
+			plugins: [
+				onboarding({
+					steps: {
+						profile: {
+							handler: async () => true,
+							required: true,
+						},
+						preferences: {
+							handler: async () => true,
+						},
+					},
+					completionStep: "preferences",
+				}),
+			],
+		});
 		const { resetDatabase, client, signUpWithTestUser, db, testUser } =
 			await getTestInstance({
-				options: {
-					database: database(":memory:"),
-					emailAndPassword: {
-						enabled: true,
-						autoSignIn: true,
-					},
-					plugins: [
-						onboarding({
-							steps: {
-								profile: {
-									handler: async () => true,
-									required: true,
-								},
-								preferences: {
-									handler: async () => true,
-								},
-							},
-							completionStep: "preferences",
-						}),
-					],
-				},
+				auth,
 				clientOptions: {
 					plugins: [
-						onboardingClient({
+						onboardingClient<typeof auth>({
 							onOnboardingRedirect: () => Promise.resolve(),
 						}),
 					],

@@ -1,23 +1,24 @@
 import type {
-	AuthPluginSchema,
 	BetterAuthOptions,
 	BetterAuthPlugin,
 	LiteralString,
 } from "better-auth";
 import {
 	toZodSchema,
+	type BetterAuthDbSchema,
 	type FieldAttribute,
 	type InferAdditionalFieldsFromPluginOptions,
 } from "better-auth/db";
 
-export type WithAdditionalFields<PluginSchema extends AuthPluginSchema = any> =
-	PluginSchema & {
-		[table in string]: {
-			additionalFields?: {
-				[field in string]: FieldAttribute;
-			};
+export type WithAdditionalFields<
+	PluginSchema extends BetterAuthDbSchema = any,
+> = PluginSchema & {
+	[table in string]: {
+		additionalFields?: {
+			[field in string]: FieldAttribute;
 		};
 	};
+};
 
 export const getAdditionalPluginFields =
 	<T extends LiteralString>(table: T) =>

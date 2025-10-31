@@ -3,6 +3,7 @@
   "description": "Test utilities to assist you in writing code to test your Better-Auth plugins.",
   "version": "0.1.1",
   "type": "module",
+  "homepage": "https://better-auth-extended.jsolano.de/docs/libraries/test-utils",
   "repository": {
     "type": "git",
     "url": "https://github.com/better-auth-extended/better-auth-extended.git",
@@ -14,18 +15,17 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild --clean",
-    "dev": "unbuild --watch",
-    "stub": "unbuild --stub",
-    "_test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "build": "tsdown",
+    "dev": "tsdown --watch",
+    "typecheck": "tsc --project tsconfig.json"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "exports": {
     ".": {
+      "better-auth-extended-dev-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
   },
@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "unbuild": "catalog:",
+    "tsdown": "catalog:",
     "vitest": "catalog:",
     "better-auth": "catalog:better-auth"
   },
