@@ -1,8 +1,9 @@
 {
   "name": "@better-auth-extended/preferences",
-  "description": "TODO",
+  "description": "Define and manage preferences with scoped settings.",
   "version": "0.1.0",
   "type": "module",
+  "homepage": "https://better-auth-extended.jsolano.de/docs/plugins/preferences",
   "repository": {
     "type": "git",
     "url": "https://github.com/jslno/better-auth-extended.git",
@@ -14,21 +15,22 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild --clean",
-    "dev": "unbuild --watch",
-    "stub": "unbuild --stub",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --project tsconfig.json"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "exports": {
     ".": {
+      "better-auth-extended-dev-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
     "./client": {
+      "better-auth-extended-dev-source": "./src/client.ts",
       "types": "./dist/client.d.ts",
       "import": "./dist/client.mjs",
       "require": "./dist/client.cjs"
@@ -46,7 +48,7 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "unbuild": "catalog:",
+    "tsdown": "catalog:",
     "@better-auth-extended/test-utils": "workspace:*",
     "vitest": "catalog:",
     "better-auth": "catalog:better-auth",

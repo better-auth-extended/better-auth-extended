@@ -14,16 +14,16 @@
     "access": "public"
   },
   "scripts": {
-    "build": "unbuild --clean",
-    "dev": "unbuild --watch",
-    "stub": "unbuild --stub",
+    "build": "tsdown",
+    "dev": "tsdown --watch",
     "test": "vitest",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --project tsconfig.json"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "exports": {
     ".": {
+      "better-auth-extended-dev-source": "./src/index.ts",
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "typescript": "catalog:",
-    "unbuild": "catalog:",
+    "tsdown": "catalog:",
     "vitest": "catalog:",
     "better-auth": "catalog:better-auth"
   },
