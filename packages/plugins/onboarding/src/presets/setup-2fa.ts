@@ -1,6 +1,7 @@
 import { APIError } from "better-auth";
 import { createOnboardingStep } from "..";
 import { z } from "zod";
+import type { twoFactor } from "better-auth/plugins";
 
 export type Setup2FAOptions = {
 	/**
@@ -18,7 +19,7 @@ export const setup2FAStep = <O extends Setup2FAOptions>(options?: O) => {
 		async handler(ctx) {
 			const plugin = ctx.context.options.plugins?.find(
 				(p) => p.id === "two-factor",
-			);
+			) as ReturnType<typeof twoFactor> | undefined;
 
 			if (!plugin?.endpoints) {
 				throw new APIError("FAILED_DEPENDENCY", {
