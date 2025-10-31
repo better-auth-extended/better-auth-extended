@@ -6,7 +6,6 @@ import { getTestInstance } from "@better-auth-extended/test-utils";
 import database from "better-sqlite3";
 import { z } from "zod";
 import { betterAuth } from "better-auth";
-import { createAuthClient } from "better-auth/client";
 
 const mockOnboardingRedirect = vi.fn();
 describe("Onboarding", () => {
@@ -354,7 +353,7 @@ describe("Onboarding", () => {
 					completionStep: "newPassword",
 				}),
 			],
-		})
+		});
 		const { resetDatabase, client, signUpWithTestUser, db, testUser } =
 			await getTestInstance({
 				auth,
@@ -435,7 +434,7 @@ describe("Onboarding", () => {
 					completionStep: "preferences",
 				}),
 			],
-		})
+		});
 		const { resetDatabase, client, signUpWithTestUser, db, testUser } =
 			await getTestInstance({
 				auth,

@@ -11,7 +11,6 @@ import {
 	type SuccessContext,
 } from "better-auth/client";
 import { bearer } from "better-auth/plugins/bearer";
-// TODO: import { bearerClient } from "better-auth/client/plugins";
 import { getMigrations, getAuthTables } from "better-auth/db";
 import { parseSetCookieHeader, setCookieToHeader } from "better-auth/cookies";
 import { getBaseURL } from "@better-auth-extended/internal-utils";
