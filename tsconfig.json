@@ -25,6 +25,6 @@
     },
     {
       "path": "./packages/plugins/preferences/tsconfig.json"
-    },
+    }
   ]
 }

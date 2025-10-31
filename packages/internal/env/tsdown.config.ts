@@ -4,5 +4,10 @@ export default defineConfig({
 	dts: { build: true, incremental: true },
 	format: ["esm", "cjs"],
 	entry: ["./src/index.ts"],
-	external: ["better-auth", "@better-auth/utils", "better-call", "@better-fetch/fetch"],
+	external: [
+		"better-auth",
+		"@better-auth/utils",
+		"better-call",
+		"@better-fetch/fetch",
+	],
 });

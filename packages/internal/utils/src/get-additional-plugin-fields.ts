@@ -10,14 +10,15 @@ import {
 	type InferAdditionalFieldsFromPluginOptions,
 } from "better-auth/db";
 
-export type WithAdditionalFields<PluginSchema extends BetterAuthPluginDBSchema = any> =
-	PluginSchema & {
-		[table in string]: {
-			additionalFields?: {
-				[field in string]: DBFieldAttribute;
-			};
+export type WithAdditionalFields<
+	PluginSchema extends BetterAuthPluginDBSchema = any,
+> = PluginSchema & {
+	[table in string]: {
+		additionalFields?: {
+			[field in string]: DBFieldAttribute;
 		};
 	};
+};
 
 export const getAdditionalPluginFields =
 	<T extends LiteralString>(table: T) =>
