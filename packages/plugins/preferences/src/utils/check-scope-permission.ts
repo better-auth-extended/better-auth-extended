@@ -1,10 +1,10 @@
-import type { GenericEndpointContext } from "better-auth/types";
 import type { PreferenceScopeAttributes } from "../types";
 import type { admin } from "better-auth/plugins";
 import { getPlugin, tryCatch } from "@better-auth-extended/internal-utils";
 import type { z } from "zod";
 import { PREFERENCES_ERROR_CODES } from "../error-codes";
 import type { Permission } from "../internal-types";
+import type { GenericEndpointContext } from "better-auth";
 
 export const checkScopePermission = async (
 	data:

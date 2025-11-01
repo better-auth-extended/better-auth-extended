@@ -260,6 +260,7 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 			const additionalData = parseUserInput(
 				ctx.context.options,
 				ctx.body.additionalFields,
+				"create",
 			);
 			const hash = await ctx.context.password.hash(ctx.body.password);
 			let createdUser: User;

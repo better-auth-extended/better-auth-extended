@@ -1,4 +1,4 @@
-import type { GenericEndpointContext } from "better-auth/types";
+import type { GenericEndpointContext } from "better-auth";
 import type { PreferencesOptions } from "../types";
 import { PREFERENCES_ERROR_CODES } from "../error-codes";
 

@@ -5,17 +5,17 @@ import type {
 } from "better-auth";
 import {
 	toZodSchema,
-	type BetterAuthDbSchema,
-	type FieldAttribute,
+	type BetterAuthPluginDBSchema,
+	type DBFieldAttribute,
 	type InferAdditionalFieldsFromPluginOptions,
 } from "better-auth/db";
 
 export type WithAdditionalFields<
-	PluginSchema extends BetterAuthDbSchema = any,
+	PluginSchema extends BetterAuthPluginDBSchema = any,
 > = PluginSchema & {
 	[table in string]: {
 		additionalFields?: {
-			[field in string]: FieldAttribute;
+			[field in string]: DBFieldAttribute;
 		};
 	};
 };

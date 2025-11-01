@@ -1,4 +1,4 @@
-import type { AuthPluginSchema } from "better-auth";
+import type { BetterAuthPluginDBSchema } from "better-auth/db";
 
 export const schema = {
 	user: {
@@ -14,4 +14,4 @@ export const schema = {
 			},
 		},
 	},
-} satisfies AuthPluginSchema;
+} satisfies BetterAuthPluginDBSchema;

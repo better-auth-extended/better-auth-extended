@@ -1,19 +1,111 @@
 import {
 	betterAuth,
 	type Auth,
+	type AuthContext,
 	type BetterAuthOptions,
 	type Session,
 	type User,
 } from "better-auth";
 import {
 	createAuthClient,
-	type ClientOptions,
+	type BetterAuthClientOptions,
+	type FetchEsque,
 	type SuccessContext,
 } from "better-auth/client";
 import { bearer } from "better-auth/plugins/bearer";
 import { getMigrations, getAuthTables } from "better-auth/db";
 import { parseSetCookieHeader, setCookieToHeader } from "better-auth/cookies";
 import { getBaseURL } from "@better-auth-extended/internal-utils";
+import type { DBAdapter } from "better-auth/adapters";
+
+const defaultOptions = {
+	secret: "better-auth.secret",
+	emailAndPassword: {
+		enabled: true,
+	},
+	rateLimit: {
+		enabled: false,
+	},
+	advanced: {
+		cookies: {},
+	},
+	logger: {
+		level: "debug",
+	},
+} as const satisfies BetterAuthOptions;
+
+type InferOptions<
+	O extends
+		| {
+				options?: BetterAuthOptions;
+				auth?: never;
+		  }
+		| {
+				auth?: { api: any; options: BetterAuthOptions };
+				options?: never;
+		  },
+> = O extends {
+	options: infer T extends BetterAuthOptions;
+}
+	? T
+	: never;
+
+export type TestInstance<
+	O extends
+		| {
+				options?: BetterAuthOptions;
+				auth?: never;
+		  }
+		| {
+				auth?: { api: any; options: BetterAuthOptions };
+				options?: never;
+		  },
+	C extends BetterAuthClientOptions,
+> = {
+	auth: ReturnType<
+		typeof betterAuth<
+			InferOptions<O> extends undefined
+				? typeof defaultOptions
+				: InferOptions<O> & typeof defaultOptions
+		>
+	>;
+	client: ReturnType<typeof createAuthClient<C>>;
+	testUser: User & Record<string, any>;
+	cookieSetter: typeof setCookieToHeader;
+	customFetchImpl: FetchEsque;
+	sessionSetter: (headers: Headers) => (context: SuccessContext) => void;
+	context: AuthContext<
+		InferOptions<O> extends undefined
+			? typeof defaultOptions
+			: InferOptions<O> & typeof defaultOptions
+	>;
+	db: DBAdapter;
+	signUpWithTestUser: () => Promise<{
+		token: string | null;
+		session: Session & Record<string, any>;
+		user: User & Record<string, any>;
+		headers: Headers;
+		setCookie: (name: string, value: string) => void;
+	}>;
+	signInWithTestUser: () => Promise<{
+		token: string | null;
+		session: Session & Record<string, any>;
+		user: User & Record<string, any>;
+		headers: Headers;
+		setCookie: (name: string, value: string) => void;
+	}>;
+	signInWithUser: (
+		email: string,
+		password: string,
+	) => Promise<{
+		token: string | null;
+		session: Session & Record<string, any>;
+		user: User & Record<string, any>;
+		headers: Headers;
+		setCookie: (name: string, value: string) => void;
+	}>;
+	resetDatabase: (tables?: string[]) => Promise<void>;
+};
 
 export const getTestInstance = async <
 	O extends
@@ -25,7 +117,7 @@ export const getTestInstance = async <
 				auth?: { api: any; options: BetterAuthOptions };
 				options?: never;
 		  },
-	C extends ClientOptions,
+	C extends BetterAuthClientOptions,
 >(
 	config?: O & {
 		clientOptions?: C;
@@ -34,31 +126,7 @@ export const getTestInstance = async <
 		testUser?: Partial<User>;
 		shouldRunMigrations?: boolean;
 	},
-) => {
-	type Options = O extends {
-		auth: { api: any; options: infer T extends BetterAuthOptions };
-	}
-		? T
-		: O extends { options: infer T extends BetterAuthOptions }
-			? T
-			: never;
-
-	const opts = {
-		secret: "better-auth.secret",
-		emailAndPassword: {
-			enabled: true,
-		},
-		rateLimit: {
-			enabled: false,
-		},
-		advanced: {
-			cookies: {},
-		},
-		logger: {
-			level: "debug",
-		},
-	} satisfies BetterAuthOptions;
-
+): Promise<TestInstance<O, C>> => {
 	const auth = (
 		config?.auth
 			? config.auth
@@ -66,7 +134,7 @@ export const getTestInstance = async <
 					baseURL:
 						config?.options?.baseURL ||
 						"http://localhost:" + (config?.port || 3000),
-					...opts,
+					...defaultOptions,
 					...config?.options,
 					advanced: {
 						disableCSRFCheck: true,
@@ -116,7 +184,7 @@ export const getTestInstance = async <
 		password: "test123456",
 		name: "test user",
 		...config?.testUser,
-	};
+	} as User & Record<string, any>;
 
 	if (config?.shouldRunMigrations) {
 		const { runMigrations } = await getMigrations(auth.options);
@@ -162,7 +230,7 @@ export const getTestInstance = async <
 		}
 		return {
 			token: (data.token ?? null) as string | null,
-			session: (data.session ?? null) as (Session & Record<string, any>) | null,
+			session: data.session as Session & Record<string, any>,
 			user: data.user as User & Record<string, any>,
 			headers,
 			setCookie,
@@ -246,12 +314,14 @@ export const getTestInstance = async <
 		console.log("Database successfully reset.");
 	}
 
-	const context = await auth.$context;
+	const context: any = await auth.$context;
 
 	return {
 		auth: auth as unknown as ReturnType<
 			typeof betterAuth<
-				Options extends undefined ? typeof opts : Options & typeof opts
+				InferOptions<O> extends undefined
+					? typeof defaultOptions
+					: InferOptions<O> & typeof defaultOptions
 			>
 		>,
 		client: client as unknown as ReturnType<typeof createAuthClient<C>>,

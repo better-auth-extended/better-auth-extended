@@ -4,9 +4,9 @@ import {
 	tryCatch,
 } from "@better-auth-extended/internal-utils";
 import type { admin } from "better-auth/plugins";
-import type { GenericEndpointContext } from "better-auth/types";
 import { APP_INVITE_ERROR_CODES } from "./error-codes";
 import type { AppInviteOptions } from "./types";
+import type { GenericEndpointContext } from "better-auth";
 
 export const getAdditionalFields = <O extends AppInviteOptions>(
 	options: O,

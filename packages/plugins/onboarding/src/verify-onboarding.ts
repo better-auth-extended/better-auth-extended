@@ -1,8 +1,8 @@
 import { APIError, getSessionFromCtx } from "better-auth/api";
-import type { GenericEndpointContext } from "better-auth/types";
 import { ONBOARDING_ERROR_CODES } from "./error-codes";
 import type { OnboardingOptions } from "./types";
 import { getOnboardingAdapter } from "./adapter";
+import type { GenericEndpointContext } from "better-auth";
 
 export async function verifyOnboarding(
 	ctx: GenericEndpointContext,

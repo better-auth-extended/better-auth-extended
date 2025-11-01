@@ -1,4 +1,5 @@
-import type { AuthContext, BetterAuthPlugin } from "better-auth/types";
+import type { AuthContext } from "better-auth";
+import type { BetterAuthPlugin } from "better-auth/types";
 
 export const getPlugin = <P extends BetterAuthPlugin = BetterAuthPlugin>(
 	id: string,
