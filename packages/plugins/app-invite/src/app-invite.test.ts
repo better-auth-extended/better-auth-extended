@@ -512,7 +512,9 @@ describe("App Invite", async () => {
 		vi.spyOn(adapter, "getAppInviteAdapter").mockImplementation(
 			(context, opts) => {
 				const real = getAppInviteAdapter(context, opts as any);
-				deleteInvitations = vi.fn(async (ids: string[]) => real.deleteInvitations(ids));
+				deleteInvitations = vi.fn(async (ids: string[]) =>
+					real.deleteInvitations(ids),
+				);
 				return {
 					...real,
 					deleteInvitations,
@@ -542,19 +544,18 @@ describe("App Invite", async () => {
 				plugins: [appInviteClient()],
 			},
 		});
-		
+
 		const _user = await signUpWithTestUser();
 		await _client.inviteUser({
 			type: "public",
 			domainWhitelist: "test.com",
 			fetchOptions: {
-				headers: _user.headers 
-			}
-		})
+				headers: _user.headers,
+			},
+		});
 
 		const count = await _db.count({ model: "appInvitation" });
 		expect(count).toBe(1);
-
 
 		const res = await _client.listInvitations({
 			query: {},
