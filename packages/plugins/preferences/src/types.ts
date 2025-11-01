@@ -1,4 +1,4 @@
-import type { GenericEndpointContext } from "better-auth/types";
+import type { GenericEndpointContext } from "better-auth";
 import type { StandardSchemaV1 } from "better-call";
 import type { z } from "zod";
 import type { Permission } from "./internal-types";

@@ -1,6 +1,6 @@
 import type { GenericEndpointContext, User } from "better-auth";
 import type { AppInvitation } from "./schema";
-import type { FieldAttribute } from "better-auth/db";
+import type { DBFieldAttribute } from "better-auth/db";
 
 export type AppInvitationType = "personal" | "public";
 
@@ -197,7 +197,7 @@ export type AppInviteOptions = {
 			 * Add extra invitation columns.
 			 */
 			additionalFields?: {
-				[key in string]: FieldAttribute;
+				[key in string]: DBFieldAttribute;
 			};
 		};
 		user?: {
@@ -208,7 +208,7 @@ export type AppInviteOptions = {
 			 * assuming they're already defined in `BetterAuthOptions`)
 			 */
 			additionalFields?: {
-				[key in string]: FieldAttribute;
+				[key in string]: DBFieldAttribute;
 			};
 		};
 	};

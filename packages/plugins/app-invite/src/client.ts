@@ -5,7 +5,7 @@ import type {
 	BetterAuthPlugin,
 } from "better-auth";
 import type { AppInvitation } from "./schema";
-import type { FieldAttribute } from "better-auth/db";
+import type { DBFieldAttribute } from "better-auth/db";
 import type { AppInviteOptions } from "./types";
 
 export const appInviteClient = <
@@ -13,12 +13,12 @@ export const appInviteClient = <
 		schema?: {
 			appInvitation?: {
 				additionalFields?: {
-					[key in string]: FieldAttribute;
+					[key in string]: DBFieldAttribute;
 				};
 			};
 			user?: {
 				additionalFields?: {
-					[key in string]: FieldAttribute;
+					[key in string]: DBFieldAttribute;
 				};
 			};
 		};

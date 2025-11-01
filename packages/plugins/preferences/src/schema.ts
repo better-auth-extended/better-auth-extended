@@ -1,4 +1,5 @@
-import { generateId, type AuthPluginSchema } from "better-auth";
+import { generateId } from "better-auth";
+import type { BetterAuthPluginDBSchema } from "better-auth/db";
 import { z } from "zod";
 
 export const preferenceSchema = z.object({
@@ -47,4 +48,4 @@ export const schema = {
 			},
 		},
 	},
-} satisfies AuthPluginSchema;
+} satisfies BetterAuthPluginDBSchema;
