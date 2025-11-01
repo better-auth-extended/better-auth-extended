@@ -172,20 +172,22 @@ export const listAppInvitations = <O extends AppInviteOptions>(
 					({ expiresAt }) => !!expiresAt && expiresAt < new Date(),
 				);
 				const expiredIds = new Set(expiredInvitations.map(({ id }) => id));
-				if (options.cleanupExpiredInvitations) {
-					await adapter.deleteInvitations([...expiredIds]);
-
-					invitations = invitations.filter(({ id }) => !expiredIds.has(id));
-				} else if (expiredIds.size > 0) {
-					invitations = invitations.map((i) => {
-						if (!expiredIds.has(i.id)) {
-							return i;
-						}
-						return {
-							...i,
-							status: "expired",
-						};
-					});
+				if (expiredIds.size > 0) {
+					if (options.cleanupExpiredInvitations) {
+						await adapter.deleteInvitations([...expiredIds]);
+	
+						invitations = invitations.filter(({ id }) => !expiredIds.has(id));
+					} else {
+						invitations = invitations.map((i) => {
+							if (!expiredIds.has(i.id)) {
+								return i;
+							}
+							return {
+								...i,
+								status: "expired",
+							};
+						});
+					}
 				}
 
 				return ctx.json({
