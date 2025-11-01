@@ -175,7 +175,7 @@ export const listAppInvitations = <O extends AppInviteOptions>(
 				if (expiredIds.size > 0) {
 					if (options.cleanupExpiredInvitations) {
 						await adapter.deleteInvitations([...expiredIds]);
-	
+
 						invitations = invitations.filter(({ id }) => !expiredIds.has(id));
 					} else {
 						invitations = invitations.map((i) => {
