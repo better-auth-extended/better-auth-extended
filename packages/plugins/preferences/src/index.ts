@@ -24,6 +24,7 @@ import {
 import { createAuthEndpoint, type AuthEndpoint } from "better-auth/api";
 import { schema, type PreferenceInput } from "./schema";
 import { preferencesMiddleware } from "./call";
+import { mergeSchema } from "better-auth/db";
 
 export const preferences = <
 	S extends Record<string, PreferenceScopeAttributes>,
@@ -403,7 +404,7 @@ export const preferences = <
 			...endpoints,
 		},
 		options,
-		schema,
+		schema: mergeSchema(schema, options.schema),
 		$ERROR_CODES: PREFERENCES_ERROR_CODES,
 		$Infer: {
 			PreferenceScopes: {} as Extract<keyof S, string>,

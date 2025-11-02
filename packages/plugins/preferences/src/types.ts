@@ -1,7 +1,8 @@
-import type { GenericEndpointContext } from "better-auth";
+import type { GenericEndpointContext, InferOptionSchema } from "better-auth";
 import type { StandardSchemaV1 } from "better-call";
 import type { z } from "zod";
 import type { Permission } from "./internal-types";
+import type { schema } from "./schema";
 
 export type PreferenceSchemaAttribute<S = any> = {
 	type: StandardSchemaV1<unknown, S>;
@@ -75,6 +76,7 @@ export type PreferencesOptions<
 	>,
 > = {
 	scopes: Scopes;
+	schema?: InferOptionSchema<typeof schema>;
 };
 
 export type JSONType = z.infer<ReturnType<typeof z.json>>;
