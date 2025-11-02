@@ -1,7 +1,7 @@
 {
   "name": "@better-auth-extended/app-invite",
   "description": "Invite users to your application and allow them to sign up.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "type": "module",
   "homepage": "https://better-auth-extended.jsolano.de/docs/plugins/app-invite",
   "repository": {

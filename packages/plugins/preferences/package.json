@@ -1,7 +1,7 @@
 {
   "name": "@better-auth-extended/preferences",
   "description": "Define and manage preferences with scoped settings.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "homepage": "https://better-auth-extended.jsolano.de/docs/plugins/preferences",
   "repository": {

@@ -1,7 +1,7 @@
 {
   "name": "@better-auth-extended/test-utils",
   "description": "Test utilities to assist you in writing code to test your Better-Auth plugins.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "homepage": "https://better-auth-extended.jsolano.de/docs/libraries/test-utils",
   "repository": {
