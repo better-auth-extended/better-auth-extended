@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { getTestInstance } from "@better-auth-extended/test-utils";
 import { appInvite } from "./index";
+import * as adapter from "./adapter";
 import { appInviteClient } from "./client";
 import { createAuthClient } from "better-auth/client";
 import { inferAdditionalFields } from "better-auth/client/plugins";
@@ -503,6 +504,71 @@ describe("App Invite", async () => {
 		expect(
 			res.data?.invitations.find((inv) => inv.id === invitation.id),
 		).toBeUndefined();
+	});
+
+	it("should not call deleteInvitations when there are no expired invitations", async () => {
+		const getAppInviteAdapter = adapter.getAppInviteAdapter;
+		let deleteInvitations: ReturnType<typeof vi.fn> | undefined;
+		vi.spyOn(adapter, "getAppInviteAdapter").mockImplementation(
+			(context, opts) => {
+				const real = getAppInviteAdapter(context, opts as any);
+				deleteInvitations = vi.fn(async (ids: string[]) =>
+					real.deleteInvitations(ids),
+				);
+				return {
+					...real,
+					deleteInvitations,
+				};
+			},
+		);
+
+		const {
+			auth: _auth,
+			client: _client,
+			signUpWithTestUser,
+			db: _db,
+		} = await getTestInstance({
+			options: {
+				emailAndPassword: {
+					enabled: true,
+					autoSignIn: true,
+				},
+				plugins: [
+					appInvite({
+						cleanupExpiredInvitations: true,
+						sendInvitationEmail: async () => {},
+					}),
+				],
+			},
+			clientOptions: {
+				plugins: [appInviteClient()],
+			},
+		});
+
+		const _user = await signUpWithTestUser();
+		await _client.inviteUser({
+			type: "public",
+			domainWhitelist: "test.com",
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		const count = await _db.count({ model: "appInvitation" });
+		expect(count).toBe(1);
+
+		const res = await _client.listInvitations({
+			query: {},
+			fetchOptions: {
+				headers: _user.headers,
+			},
+		});
+
+		expect(res.data).toBeDefined();
+		expect(deleteInvitations).toBeDefined();
+		expect(deleteInvitations).not.toHaveBeenCalled();
+
+		vi.restoreAllMocks();
 	});
 
 	it("should keep expired invitations when cleanupExpiredInvitations is false", async () => {
