@@ -47,6 +47,7 @@ body:
       options:
         - app-invite
         - onboarding
+        - preferences
         - test-utils
         - internal-utils
         - internal-env

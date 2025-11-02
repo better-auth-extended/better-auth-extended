@@ -11,6 +11,86 @@ on:
     merge_group: {}
 
 jobs:
+    lint:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+          with:
+            fetch-depth: 0
+        
+        - name: Cache turbo build setup
+          uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+          with:
+            path: .turbo
+            key: ${{ runner.os }}-turbo-${{ github.sha }}
+            restore-keys: |
+              ${{ runner.os }}-turbo-
+        
+        - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+        - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+          with:
+            node-version: 24.x
+            registry-url: 'https://registry.npmjs.org'
+            cache: pnpm
+        
+        - name: Install
+          run: pnpm install
+
+        - name: Build
+          env:
+            TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
+            TURBO_CACHE: remote:rw
+          run: pnpm build
+
+        - name: Lint
+          env:
+            TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+            TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
+            TURBO_CACHE: remote:rw
+          run: pnpm lint
+
+    typecheck:
+        runs-on: ubuntu-latest
+        steps:
+          - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+            with:
+              fetch-depth: 0
+          
+          - name: Cache turbo build setup
+            uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+            with:
+              path: .turbo
+              key: ${{ runner.os }}-turbo-${{ github.sha }}
+              restore-keys: |
+                ${{ runner.os }}-turbo-
+          
+          - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
+
+          - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+            with:
+              node-version: 24.x
+              registry-url: 'https://registry.npmjs.org'
+              cache: pnpm
+
+          - name: Install
+            run: pnpm install
+          
+          - name: Build
+            env:
+              TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+              TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
+              TURBO_CACHE: remote:rw
+            run: pnpm build
+          
+          - name: Typecheck
+            env:
+              TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+              TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
+              TURBO_CACHE: remote:rw
+            run: pnpm typecheck
+
     test:
         runs-on: ubuntu-latest
         strategy:
@@ -24,7 +104,7 @@ jobs:
                 fetch-depth: 0
 
             - name: Cache turbo build setup
-              uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809 # v4.2.4
+              uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
               with:
                 path: .turbo
                 key: ${{ runner.os }}-turbo-${{ github.sha }}
@@ -33,7 +113,7 @@ jobs:
                 
             - uses: pnpm/action-setup@a7487c7e89a18df4991f7f222e4898a00d66ddda # v4.1.0
 
-            - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5.0.0
+            - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
               with:
                 node-version: ${{ matrix.node-version }}
                 registry-url: 'https://registry.npmjs.org'
@@ -46,22 +126,11 @@ jobs:
               env:
                 TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
                 TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
+                TURBO_CACHE: remote:rw
               run: pnpm build
-            
-            - name: Lint
-              env:
-                TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-                TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
-              run: pnpm lint
 
             - name: Test
               env:
                 TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
                 TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
               run: pnpm test
-
-            - name: Typecheck
-              env:
-                TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-                TURBO_TEAM: ${{ vars.TURBO_TEAM || github.repository_owner }}
-              run: pnpm typecheck
