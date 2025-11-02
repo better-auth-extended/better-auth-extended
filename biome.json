@@ -5,6 +5,11 @@
     "enabled": true,
     "indentStyle": "tab"
   },
+  "css": {
+    "parser": {
+      "tailwindDirectives": true
+    }
+  },
   "assist": { "actions": { "source": { "organizeImports": "off" } } },
   "linter": {
     "enabled": true,
