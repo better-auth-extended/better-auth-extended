@@ -4,6 +4,7 @@ on:
     push:
         tags:
             - '@better-auth-extended/*@*'
+    workflow_dispatch:
 
 permissions:
     contents: write
