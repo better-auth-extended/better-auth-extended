@@ -28,7 +28,7 @@
     "turbo": "^2.6.0",
     "typescript": "catalog:",
     "@biomejs/js-api": "^3.0.0",
-    "@biomejs/wasm-nodejs": "^2.3.2",
+    "@biomejs/wasm-nodejs": "^2.3.3",
     "ts-morph": "^26.0.0"
   }
 }
