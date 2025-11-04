@@ -10,18 +10,52 @@ import {
 } from "@/components/ui/card";
 import type { Row } from "@tanstack/react-table";
 import { BookmarkIcon, CalendarIcon, ExternalLinkIcon } from "lucide-react";
-import { Resource } from "~/resources";
 import { CategoryBadge } from "./category-badge";
 import { GithubUser } from "@/components/github-user";
 import Link from "next/link";
 import { addBookmarks, isHidden } from "./utils";
 import { Badge } from "@/components/ui/badge";
+import { motion, useReducedMotion, Variants } from "motion/react";
+import { TResource } from "./columns";
 
-export const GridItem = ({ row }: { row: Row<Resource> }) => {
+const MotionCard = motion.create(Card);
+
+export const GridItem = ({ row }: { row: Row<TResource> }) => {
 	const data = row.original;
 
+	const shouldReduceMotion = useReducedMotion();
+
+	const variants = {
+		hidden: {
+			opacity: 0,
+			y: 10,
+		},
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				type: "spring",
+				stiffness: 260,
+				damping: 28,
+				duration: 0.2,
+			},
+		},
+	} satisfies Variants;
+
 	return (
-		<Card>
+		<MotionCard
+			key={row.id}
+			layout={!shouldReduceMotion}
+			initial="hidden"
+			whileInView="visible"
+			exit="hidden"
+			viewport={{ once: true, amount: 0.2 }}
+			variants={!shouldReduceMotion ? variants : undefined}
+			transition={{
+				duration: 0.15,
+			}}
+			className="will-change-transform"
+		>
 			<CardHeader className="space-y-2">
 				<div className="flex items-center">
 					<CardTitle>
@@ -95,7 +129,7 @@ export const GridItem = ({ row }: { row: Row<Resource> }) => {
 					</div>
 				</div>
 			</CardFooter>
-		</Card>
+		</MotionCard>
 	);
 };
 GridItem.displayName = "GridItem";
