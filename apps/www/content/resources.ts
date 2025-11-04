@@ -36,6 +36,13 @@ export const resources: Resource[] = [
 		category: "libraries",
 		url: "/docs/libraries/test-utils",
 	},
+	{
+		name: "dashboard",
+		description: "A Better-Auth powered admin dashboard.",
+		author: owner,
+		category: "libraries",
+		url: "https://github.com/better-auth-extended/dashboard",
+	},
 ];
 
 export type Resource = {
