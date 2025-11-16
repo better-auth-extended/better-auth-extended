@@ -9,7 +9,7 @@ catalog:
   better-sqlite3: ^12.4.1
   "@types/better-sqlite3": ^7.6.13
   typescript: ^5.9.3
-  tsdown: ^0.15.12
+  tsdown: ^0.16.4
   vitest: ^3.2.4
   zod: ^4.1.12
 
