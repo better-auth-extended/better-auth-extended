@@ -349,8 +349,8 @@ describe("App Invite", async () => {
 						expect(res.data?.user.email).toBe(invitee.email);
 					}
 					if (action === "accept-invitation-expect-error") {
-						expect(res.error?.message).toBe(
-							APP_INVITE_ERROR_CODES.EMAIL_DOMAIN_IS_NOT_IN_WHITELIST,
+						expect(res.error?.code).toBe(
+							APP_INVITE_ERROR_CODES.EMAIL_DOMAIN_IS_NOT_IN_WHITELIST.code,
 						);
 					}
 					break;

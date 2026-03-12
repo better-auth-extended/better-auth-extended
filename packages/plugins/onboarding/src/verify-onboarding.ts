@@ -25,9 +25,7 @@ export async function verifyOnboarding(
 		shouldOnboard = await adapter.getShouldOnboard(session.user.id);
 	}
 	if (!shouldOnboard) {
-		throw new APIError("FORBIDDEN", {
-			message: ONBOARDING_ERROR_CODES.ALREADY_ONBOARDED,
-		});
+		throw APIError.from("FORBIDDEN", ONBOARDING_ERROR_CODES.ALREADY_ONBOARDED);
 	}
 
 	return {

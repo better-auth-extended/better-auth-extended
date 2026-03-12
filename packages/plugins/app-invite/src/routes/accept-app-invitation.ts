@@ -1,8 +1,8 @@
-import { createAuthEndpoint } from "better-auth/plugins";
+import { createAuthEndpoint } from "better-auth/api";
 import type { AppInviteOptions } from "../types";
 import { z } from "zod";
 import {
-	type InferFieldsInput,
+	type InferDBFieldsInput,
 	parseUserInput,
 	toZodSchema,
 } from "better-auth/db";
@@ -32,7 +32,7 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 			additionalFields: infer Field;
 		};
 	}
-		? InferFieldsInput<Field>
+		? InferDBFieldsInput<Field>
 		: {};
 
 	type ReturnAdditionalFields =
@@ -176,9 +176,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 						await adapter.updateInvitation(invitation.id, "expired");
 					}
 				}
-				throw new APIError("BAD_REQUEST", {
-					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
-				});
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
+				);
 			}
 
 			const invitationType = invitation.email ? "personal" : "public";
@@ -187,10 +188,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 				invitation.inviterId,
 			);
 			if (!inviter) {
-				throw new APIError("BAD_REQUEST", {
-					message:
-						APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION,
-				});
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION,
+				);
 			}
 
 			let userData = {
@@ -206,9 +207,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 				ctx.context.logger.info(
 					`Sign-up attempt for existing email: ${userData.email}`,
 				);
-				throw new APIError("UNPROCESSABLE_ENTITY", {
-					message: BASE_ERROR_CODES.USER_ALREADY_EXISTS,
-				});
+				throw APIError.from(
+					"UNPROCESSABLE_ENTITY",
+					BASE_ERROR_CODES.USER_ALREADY_EXISTS,
+				);
 			}
 
 			const before = await options.hooks?.accept?.before?.(ctx, userData);
@@ -218,9 +220,7 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 			const isValidEmail = z.email().safeParse(userData.email);
 
 			if (!isValidEmail.success) {
-				throw new APIError("BAD_REQUEST", {
-					message: BASE_ERROR_CODES.INVALID_EMAIL,
-				});
+				throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.INVALID_EMAIL);
 			}
 
 			if (invitationType === "public") {
@@ -236,25 +236,22 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 						isMatch(wDomain.trim().toLowerCase()),
 					)
 				) {
-					throw new APIError("FORBIDDEN", {
-						message: APP_INVITE_ERROR_CODES.EMAIL_DOMAIN_IS_NOT_IN_WHITELIST,
-					});
+					throw APIError.from(
+						"FORBIDDEN",
+						APP_INVITE_ERROR_CODES.EMAIL_DOMAIN_IS_NOT_IN_WHITELIST,
+					);
 				}
 			}
 
 			const minPasswordLength = ctx.context.password.config.minPasswordLength;
 			if (ctx.body.password.length < minPasswordLength) {
 				ctx.context.logger.error("Password is too short");
-				throw new APIError("BAD_REQUEST", {
-					message: BASE_ERROR_CODES.PASSWORD_TOO_SHORT,
-				});
+				throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_SHORT);
 			}
 			const maxPasswordLength = ctx.context.password.config.maxPasswordLength;
 			if (ctx.body.password.length > maxPasswordLength) {
 				ctx.context.logger.error("Password is too long");
-				throw new APIError("BAD_REQUEST", {
-					message: BASE_ERROR_CODES.PASSWORD_TOO_LONG,
-				});
+				throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_LONG);
 			}
 
 			const additionalData = parseUserInput(
@@ -272,9 +269,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 					emailVerified: options.verifyEmailOnAccept,
 				});
 				if (!createdUser) {
-					throw new APIError("UNPROCESSABLE_ENTITY", {
-						message: BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
-					});
+					throw APIError.from(
+						"UNPROCESSABLE_ENTITY",
+						BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
+					);
 				}
 			} catch (e) {
 				if (isDevelopment) {
@@ -284,25 +282,23 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 					throw e;
 				}
 				throw new APIError("UNPROCESSABLE_ENTITY", {
-					message: BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
+					...BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
 					details: e,
 				});
 			}
 			if (!createdUser) {
-				throw new APIError("UNPROCESSABLE_ENTITY", {
-					message: BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
-				});
+				throw APIError.from(
+					"UNPROCESSABLE_ENTITY",
+					BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
+				);
 			}
 
-			await ctx.context.internalAdapter.linkAccount(
-				{
-					userId: createdUser.id,
-					providerId: "credential",
-					accountId: createdUser.id,
-					password: hash,
-				},
-				ctx,
-			);
+			await ctx.context.internalAdapter.linkAccount({
+				userId: createdUser.id,
+				providerId: "credential",
+				accountId: createdUser.id,
+				password: hash,
+			});
 
 			let acceptedI: AppInvitation | null = invitation;
 			if (invitationType === "personal" && invitation.email) {
@@ -416,12 +412,12 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 
 			const session = await ctx.context.internalAdapter.createSession(
 				createdUser.id,
-				ctx,
 			);
 			if (!session) {
-				throw new APIError("BAD_REQUEST", {
-					message: BASE_ERROR_CODES.FAILED_TO_CREATE_SESSION,
-				});
+				throw APIError.from(
+					"BAD_REQUEST",
+					BASE_ERROR_CODES.FAILED_TO_CREATE_SESSION,
+				);
 			}
 			await setSessionCookie(ctx, {
 				session,

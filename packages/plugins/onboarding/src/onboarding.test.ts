@@ -130,7 +130,7 @@ describe("Onboarding", () => {
 				},
 			});
 			expect(error?.status).toBe(403);
-			expect(error?.message).toBe(ONBOARDING_ERROR_CODES.ALREADY_ONBOARDED);
+			expect(error?.code).toBe(ONBOARDING_ERROR_CODES.ALREADY_ONBOARDED.code);
 		});
 
 		it("should fail shouldOnboard without session", async () => {
@@ -395,8 +395,9 @@ describe("Onboarding", () => {
 				fetchOptions: { headers },
 			});
 			expect(res.error?.status).toBe(403);
-			expect(res.error?.message).toBe(
-				ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING,
+			expect(res.error?.code).toBe(
+				ONBOARDING_ERROR_CODES
+					.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING.code,
 			);
 		});
 
@@ -491,8 +492,9 @@ describe("Onboarding", () => {
 			});
 
 			expect(res.error?.status).toBe(403);
-			expect(res.error?.message).toBe(
-				ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING,
+			expect(res.error?.code).toBe(
+				ONBOARDING_ERROR_CODES
+					.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING.code,
 			);
 		});
 

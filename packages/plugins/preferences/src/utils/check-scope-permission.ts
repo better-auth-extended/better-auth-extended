@@ -57,7 +57,7 @@ export const checkScopePermission = async (
 
 	if (!hasPerm) {
 		throw ctx.error("FORBIDDEN", {
-			message: PREFERENCES_ERROR_CODES.PREFERENCE_MISSING_PERMISSION,
+			...PREFERENCES_ERROR_CODES.PREFERENCE_MISSING_PERMISSION,
 		});
 	}
 };
@@ -83,7 +83,7 @@ const checkPermission = async (
 	if (!adminPlugin) {
 		ctx.context.logger.error("Admin plugin is not set-up.");
 		throw ctx.error("FAILED_DEPENDENCY", {
-			message: PREFERENCES_ERROR_CODES.PREFERENCES_ADMIN_PLUGIN_NOT_SETUP,
+			...PREFERENCES_ERROR_CODES.PREFERENCES_ADMIN_PLUGIN_NOT_SETUP,
 		});
 	}
 

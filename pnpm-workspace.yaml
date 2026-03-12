@@ -16,6 +16,6 @@ catalog:
 catalogs:
   better-auth:
     "@better-auth/utils": ^0.3.0
-    better-auth: ^1.3.34
+    better-auth: ^1.5.5
 
 neverBuiltDependencies: []

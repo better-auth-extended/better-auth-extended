@@ -10,18 +10,18 @@ export const checkScope = (
 	const scope = options.scopes[data.scope];
 	if (!scope) {
 		throw ctx.error("BAD_REQUEST", {
-			message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_NOT_FOUND,
+			...PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_NOT_FOUND,
 		});
 	}
 	const config = scope.preferences[data.key];
 	if (!config) {
 		throw ctx.error("BAD_REQUEST", {
-			message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_PREFERENCE_NOT_FOUND,
+			...PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_PREFERENCE_NOT_FOUND,
 		});
 	}
 	if (!data.scopeId && scope.requireScopeId) {
 		throw ctx.error("BAD_REQUEST", {
-			message: PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_ID_IS_REQUIRED,
+			...PREFERENCES_ERROR_CODES.PREFERENCE_SCOPE_ID_IS_REQUIRED,
 		});
 	}
 

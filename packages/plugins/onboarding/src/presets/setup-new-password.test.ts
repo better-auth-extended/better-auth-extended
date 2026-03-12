@@ -61,7 +61,7 @@ describe("setup-new-password preset", async () => {
 			fetchOptions: { headers },
 		});
 		expect(res.error?.status).toBe(400);
-		expect(res.error?.message).toContain("Invalid body parameters");
+		expect(res.error?.message).toContain("Passwords do not match");
 	});
 
 	it("should successfully update password when passwords match", async () => {

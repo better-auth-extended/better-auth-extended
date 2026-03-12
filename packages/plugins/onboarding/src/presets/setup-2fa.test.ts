@@ -88,8 +88,8 @@ describe("setup-2fa preset", async () => {
 			fetchOptions: { headers },
 		});
 		expect(res.error?.status).toBe(403);
-		expect(res.error?.message).toBe(
-			ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED,
+		expect(res.error?.code).toBe(
+			ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED.code,
 		);
 	});
 });

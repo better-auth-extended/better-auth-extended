@@ -1,4 +1,6 @@
-export const APP_INVITE_ERROR_CODES = {
+import { defineErrorCodes } from "better-auth";
+
+export const APP_INVITE_ERROR_CODES = defineErrorCodes({
 	USER_IS_ALREADY_A_MEMBER_OF_THIS_APPLICATION:
 		"User is already a member of this application",
 	USER_WAS_ALREADY_INVITED_TO_THIS_APPLICATION:
@@ -13,9 +15,9 @@ export const APP_INVITE_ERROR_CODES = {
 	THIS_APP_INVITATION_CANT_BE_REJECTED: "This app invitation can't be rejected",
 	EMAIL_DOMAIN_IS_NOT_IN_WHITELIST: "Email domain is not in whitelist",
 	ADMIN_PLUGIN_IS_NOT_SET_UP: "Admin plugin is not set-up.",
-} as const;
+});
 
-export const BASE_ERROR_CODES = {
+export const BASE_ERROR_CODES = defineErrorCodes({
 	USER_NOT_FOUND: "User not found",
 	FAILED_TO_CREATE_USER: "Failed to create user",
 	FAILED_TO_CREATE_SESSION: "Failed to create session",
@@ -41,4 +43,4 @@ export const BASE_ERROR_CODES = {
 	ACCOUNT_NOT_FOUND: "Account not found",
 	USER_ALREADY_HAS_PASSWORD:
 		"User already has a password. Provide that to delete the account.",
-};
+});

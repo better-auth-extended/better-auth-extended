@@ -21,7 +21,7 @@ import {
 	transformClientPath,
 	transformPath,
 } from "./utils";
-import { createAuthEndpoint, type AuthEndpoint } from "better-auth/api";
+import { createAuthEndpoint } from "better-auth/api";
 import { schema, type PreferenceInput } from "./schema";
 import { preferencesMiddleware } from "./call";
 import { mergeSchema } from "better-auth/db";
@@ -268,12 +268,12 @@ export const preferences = <
 							});
 						},
 					),
-				} as Record<string, AuthEndpoint>);
+				} as Record<string, any>);
 			});
 
 			const groupEndpoints = scope.groups
 				? Object.entries(scope.groups).flatMap(([key, config]) => {
-						const endpoints: Record<string, AuthEndpoint> = {};
+						const endpoints: Record<string, any> = {};
 						const groupKey = transformPath(key);
 						const groupPath = `${encodeURIComponent("$")}${transformClientPath(key)}`;
 

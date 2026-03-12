@@ -39,7 +39,7 @@ export const checkPermission = async (
 	if (!adminPlugin) {
 		ctx.context.logger.error("Admin plugin is not set-up.");
 		throw ctx.error("FAILED_DEPENDENCY", {
-			message: APP_INVITE_ERROR_CODES.ADMIN_PLUGIN_IS_NOT_SET_UP,
+			...APP_INVITE_ERROR_CODES.ADMIN_PLUGIN_IS_NOT_SET_UP,
 		});
 	}
 

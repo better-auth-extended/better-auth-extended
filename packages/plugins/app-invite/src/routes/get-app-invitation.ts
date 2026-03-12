@@ -1,4 +1,4 @@
-import { createAuthEndpoint } from "better-auth/plugins";
+import { createAuthEndpoint } from "better-auth/api";
 import type { AppInviteOptions } from "../types";
 import { z } from "zod";
 import { getAppInviteAdapter } from "../adapter";
@@ -94,19 +94,20 @@ export const getAppInvitation = <O extends AppInviteOptions>(
 						await adapter.updateInvitation(invitation.id, "expired");
 					}
 				}
-				throw new APIError("BAD_REQUEST", {
-					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
-				});
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
+				);
 			}
 
 			const inviter = await ctx.context.internalAdapter.findUserById(
 				invitation.inviterId,
 			);
 			if (!inviter) {
-				throw new APIError("BAD_REQUEST", {
-					message:
-						APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION,
-				});
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION,
+				);
 			}
 
 			const data = {
