@@ -105,10 +105,16 @@ export const rejectAppInvitation = <O extends AppInviteOptions>(
 						await adapter.updateInvitation(invitation.id, "expired");
 					}
 				}
-			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND);
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
+				);
 			}
 			if (type === "public") {
-			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.THIS_APP_INVITATION_CANT_BE_REJECTED);
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.THIS_APP_INVITATION_CANT_BE_REJECTED,
+				);
 			}
 
 			await options.hooks?.reject?.before?.(ctx, invitation);

@@ -176,7 +176,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 						await adapter.updateInvitation(invitation.id, "expired");
 					}
 				}
-			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND);
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
+				);
 			}
 
 			const invitationType = invitation.email ? "personal" : "public";
@@ -185,7 +188,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 				invitation.inviterId,
 			);
 			if (!inviter) {
-			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION);
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION,
+				);
 			}
 
 			let userData = {
@@ -201,7 +207,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 				ctx.context.logger.info(
 					`Sign-up attempt for existing email: ${userData.email}`,
 				);
-			throw APIError.from("UNPROCESSABLE_ENTITY", BASE_ERROR_CODES.USER_ALREADY_EXISTS);
+				throw APIError.from(
+					"UNPROCESSABLE_ENTITY",
+					BASE_ERROR_CODES.USER_ALREADY_EXISTS,
+				);
 			}
 
 			const before = await options.hooks?.accept?.before?.(ctx, userData);
@@ -211,7 +220,7 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 			const isValidEmail = z.email().safeParse(userData.email);
 
 			if (!isValidEmail.success) {
-			throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.INVALID_EMAIL);
+				throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.INVALID_EMAIL);
 			}
 
 			if (invitationType === "public") {
@@ -227,19 +236,22 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 						isMatch(wDomain.trim().toLowerCase()),
 					)
 				) {
-				throw APIError.from("FORBIDDEN", APP_INVITE_ERROR_CODES.EMAIL_DOMAIN_IS_NOT_IN_WHITELIST);
+					throw APIError.from(
+						"FORBIDDEN",
+						APP_INVITE_ERROR_CODES.EMAIL_DOMAIN_IS_NOT_IN_WHITELIST,
+					);
 				}
 			}
 
 			const minPasswordLength = ctx.context.password.config.minPasswordLength;
 			if (ctx.body.password.length < minPasswordLength) {
 				ctx.context.logger.error("Password is too short");
-			throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_SHORT);
+				throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_SHORT);
 			}
 			const maxPasswordLength = ctx.context.password.config.maxPasswordLength;
 			if (ctx.body.password.length > maxPasswordLength) {
 				ctx.context.logger.error("Password is too long");
-			throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_LONG);
+				throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.PASSWORD_TOO_LONG);
 			}
 
 			const additionalData = parseUserInput(
@@ -257,7 +269,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 					emailVerified: options.verifyEmailOnAccept,
 				});
 				if (!createdUser) {
-					throw APIError.from("UNPROCESSABLE_ENTITY", BASE_ERROR_CODES.FAILED_TO_CREATE_USER);
+					throw APIError.from(
+						"UNPROCESSABLE_ENTITY",
+						BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
+					);
 				}
 			} catch (e) {
 				if (isDevelopment) {
@@ -272,7 +287,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 				});
 			}
 			if (!createdUser) {
-				throw APIError.from("UNPROCESSABLE_ENTITY", BASE_ERROR_CODES.FAILED_TO_CREATE_USER);
+				throw APIError.from(
+					"UNPROCESSABLE_ENTITY",
+					BASE_ERROR_CODES.FAILED_TO_CREATE_USER,
+				);
 			}
 
 			await ctx.context.internalAdapter.linkAccount({
@@ -396,7 +414,10 @@ export const acceptAppInvitation = <O extends AppInviteOptions>(
 				createdUser.id,
 			);
 			if (!session) {
-			throw APIError.from("BAD_REQUEST", BASE_ERROR_CODES.FAILED_TO_CREATE_SESSION);
+				throw APIError.from(
+					"BAD_REQUEST",
+					BASE_ERROR_CODES.FAILED_TO_CREATE_SESSION,
+				);
 			}
 			await setSessionCookie(ctx, {
 				session,

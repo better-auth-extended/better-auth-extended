@@ -172,7 +172,8 @@ export const getTestInstance = async <
 			...((config?.clientOptions?.plugins as C["plugins"]) || []),
 		],
 		baseURL: getBaseURL(
-			(config?.options?.baseURL as string) || "http://localhost:" + (config?.port || 3000),
+			(config?.options?.baseURL as string) ||
+				"http://localhost:" + (config?.port || 3000),
 			config?.options?.basePath || "/api/auth",
 		),
 		fetchOptions: {

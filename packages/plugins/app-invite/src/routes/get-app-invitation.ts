@@ -94,14 +94,20 @@ export const getAppInvitation = <O extends AppInviteOptions>(
 						await adapter.updateInvitation(invitation.id, "expired");
 					}
 				}
-			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND);
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
+				);
 			}
 
 			const inviter = await ctx.context.internalAdapter.findUserById(
 				invitation.inviterId,
 			);
 			if (!inviter) {
-			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION);
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.INVITER_IS_NO_LONGER_A_MEMBER_OF_THIS_APPLICATION,
+				);
 			}
 
 			const data = {

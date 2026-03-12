@@ -101,7 +101,10 @@ export const createAppInvitation = <
 						: canCreate;
 			}
 			if (!hasAccess) {
-			throw APIError.from("FORBIDDEN", APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_APPLICATION);
+				throw APIError.from(
+					"FORBIDDEN",
+					APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_INVITE_USERS_TO_THIS_APPLICATION,
+				);
 			}
 
 			const adapter = getAppInviteAdapter(ctx.context, options);
@@ -115,7 +118,10 @@ export const createAppInvitation = <
 					ctx.body.email,
 				);
 				if (alreadyMember) {
-				throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.USER_IS_ALREADY_A_MEMBER_OF_THIS_APPLICATION);
+					throw APIError.from(
+						"BAD_REQUEST",
+						APP_INVITE_ERROR_CODES.USER_IS_ALREADY_A_MEMBER_OF_THIS_APPLICATION,
+					);
 				}
 				const alreadyInvited = await adapter.findInvitationByEmail(
 					ctx.body.email,
@@ -129,7 +135,10 @@ export const createAppInvitation = <
 					},
 				);
 				if (alreadyInvited && !ctx.body.resend) {
-				throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.USER_WAS_ALREADY_INVITED_TO_THIS_APPLICATION);
+					throw APIError.from(
+						"BAD_REQUEST",
+						APP_INVITE_ERROR_CODES.USER_WAS_ALREADY_INVITED_TO_THIS_APPLICATION,
+					);
 				}
 			}
 

@@ -396,7 +396,8 @@ describe("Onboarding", () => {
 			});
 			expect(res.error?.status).toBe(403);
 			expect(res.error?.code).toBe(
-				ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING.code,
+				ONBOARDING_ERROR_CODES
+					.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING.code,
 			);
 		});
 
@@ -492,7 +493,8 @@ describe("Onboarding", () => {
 
 			expect(res.error?.status).toBe(403);
 			expect(res.error?.code).toBe(
-				ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING.code,
+				ONBOARDING_ERROR_CODES
+					.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING.code,
 			);
 		});
 

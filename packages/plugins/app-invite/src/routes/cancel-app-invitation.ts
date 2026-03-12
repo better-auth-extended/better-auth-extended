@@ -71,7 +71,10 @@ export const cancelAppInvitation = <O extends AppInviteOptions>(
 				},
 			);
 			if (!invitation) {
-			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND);
+				throw APIError.from(
+					"BAD_REQUEST",
+					APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
+				);
 			}
 			let hasAccess: boolean = false;
 			if (options.allowUserToCancelInvitation) {
@@ -95,7 +98,10 @@ export const cancelAppInvitation = <O extends AppInviteOptions>(
 						: canCancel;
 			}
 			if (!hasAccess) {
-			throw APIError.from("FORBIDDEN", APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_APP_INVITATION);
+				throw APIError.from(
+					"FORBIDDEN",
+					APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_APP_INVITATION,
+				);
 			}
 
 			await options.hooks?.cancel?.before?.(ctx, invitation);

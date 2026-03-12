@@ -21,7 +21,7 @@ import {
 	transformClientPath,
 	transformPath,
 } from "./utils";
-import { createAuthEndpoint, type AuthEndpoint } from "better-auth/api";
+import { createAuthEndpoint } from "better-auth/api";
 import { schema, type PreferenceInput } from "./schema";
 import { preferencesMiddleware } from "./call";
 import { mergeSchema } from "better-auth/db";

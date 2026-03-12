@@ -7,7 +7,6 @@ import {
 	createAuthMiddleware,
 	APIError,
 	sessionMiddleware,
-	type AuthEndpoint,
 } from "better-auth/api";
 import type { OnboardingOptions, OnboardingStep } from "./types";
 import type {
@@ -65,7 +64,10 @@ export const onboarding = <
 						);
 
 						if (step.once && completedSteps.has(id)) {
-							throw APIError.from("FORBIDDEN", ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED);
+							throw APIError.from(
+								"FORBIDDEN",
+								ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED,
+							);
 						}
 
 						if (
@@ -74,7 +76,10 @@ export const onboarding = <
 								.filter(([key]) => key !== id)
 								.some(([key]) => !completedSteps.has(key))
 						) {
-							throw APIError.from("FORBIDDEN", ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING);
+							throw APIError.from(
+								"FORBIDDEN",
+								ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING,
+							);
 						}
 
 						const result = await step.handler(ctx);
@@ -118,7 +123,10 @@ export const onboarding = <
 							);
 
 							if (completedSteps?.has(id)) {
-								throw APIError.from("FORBIDDEN", ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED);
+								throw APIError.from(
+									"FORBIDDEN",
+									ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED,
+								);
 							}
 						}
 
@@ -146,14 +154,20 @@ export const onboarding = <
 						);
 
 						if (completedSteps.has(id)) {
-							throw APIError.from("FORBIDDEN", ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED);
+							throw APIError.from(
+								"FORBIDDEN",
+								ONBOARDING_ERROR_CODES.STEP_ALREADY_COMPLETED,
+							);
 						}
 						if (
 							requiredSteps
 								.filter(([key]) => key !== id)
 								.some(([key]) => !completedSteps.has(key))
 						) {
-							throw APIError.from("FORBIDDEN", ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING);
+							throw APIError.from(
+								"FORBIDDEN",
+								ONBOARDING_ERROR_CODES.COMPLETE_REQUIRED_STEPS_BEFORE_COMPLETING_ONBOARDING,
+							);
 						}
 
 						await adapter.updateOnboardingState(session.user.id, {
@@ -215,7 +229,8 @@ export const onboarding = <
 				{
 					matcher(context) {
 						return (
-							!!opts.autoEnableOnSignUp && !!context.path?.startsWith("/sign-up")
+							!!opts.autoEnableOnSignUp &&
+							!!context.path?.startsWith("/sign-up")
 						);
 					},
 					handler: createAuthMiddleware(async (ctx) => {
