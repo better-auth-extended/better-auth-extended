@@ -13,7 +13,8 @@ import {
 	type SuccessContext,
 } from "better-auth/client";
 import { bearer } from "better-auth/plugins/bearer";
-import { getMigrations, getAuthTables } from "better-auth/db";
+import { getAuthTables } from "better-auth/db";
+import { getMigrations } from "better-auth/db/migration";
 import { parseSetCookieHeader, setCookieToHeader } from "better-auth/cookies";
 import { getBaseURL } from "@better-auth-extended/internal-utils";
 import type { DBAdapter } from "better-auth/adapters";
@@ -171,7 +172,7 @@ export const getTestInstance = async <
 			...((config?.clientOptions?.plugins as C["plugins"]) || []),
 		],
 		baseURL: getBaseURL(
-			config?.options?.baseURL || "http://localhost:" + (config?.port || 3000),
+			(config?.options?.baseURL as string) || "http://localhost:" + (config?.port || 3000),
 			config?.options?.basePath || "/api/auth",
 		),
 		fetchOptions: {

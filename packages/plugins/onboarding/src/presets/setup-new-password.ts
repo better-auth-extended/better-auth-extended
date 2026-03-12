@@ -47,7 +47,6 @@ export const setupNewPasswordStep = <O extends SetupNewPasswordStepOptions>(
 			await ctx.context.internalAdapter.updatePassword(
 				session.user.id,
 				ctx.body.newPassword,
-				ctx,
 			);
 
 			return {

@@ -268,12 +268,12 @@ export const preferences = <
 							});
 						},
 					),
-				} as Record<string, AuthEndpoint>);
+				} as Record<string, any>);
 			});
 
 			const groupEndpoints = scope.groups
 				? Object.entries(scope.groups).flatMap(([key, config]) => {
-						const endpoints: Record<string, AuthEndpoint> = {};
+						const endpoints: Record<string, any> = {};
 						const groupKey = transformPath(key);
 						const groupPath = `${encodeURIComponent("$")}${transformClientPath(key)}`;
 

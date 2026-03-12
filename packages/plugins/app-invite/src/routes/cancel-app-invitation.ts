@@ -1,5 +1,5 @@
 import { APIError, sessionMiddleware } from "better-auth/api";
-import { createAuthEndpoint } from "better-auth/plugins";
+import { createAuthEndpoint } from "better-auth/api";
 import { z } from "zod";
 import type { AppInviteOptions } from "../types";
 import { getAppInviteAdapter } from "../adapter";
@@ -71,9 +71,7 @@ export const cancelAppInvitation = <O extends AppInviteOptions>(
 				},
 			);
 			if (!invitation) {
-				throw new APIError("BAD_REQUEST", {
-					message: APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND,
-				});
+			throw APIError.from("BAD_REQUEST", APP_INVITE_ERROR_CODES.APP_INVITATION_NOT_FOUND);
 			}
 			let hasAccess: boolean = false;
 			if (options.allowUserToCancelInvitation) {
@@ -97,10 +95,7 @@ export const cancelAppInvitation = <O extends AppInviteOptions>(
 						: canCancel;
 			}
 			if (!hasAccess) {
-				throw new APIError("FORBIDDEN", {
-					message:
-						APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_APP_INVITATION,
-				});
+			throw APIError.from("FORBIDDEN", APP_INVITE_ERROR_CODES.YOU_ARE_NOT_ALLOWED_TO_CANCEL_THIS_APP_INVITATION);
 			}
 
 			await options.hooks?.cancel?.before?.(ctx, invitation);
