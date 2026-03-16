@@ -45,5 +45,4 @@ export type Resource = {
 	author?: string | string[];
 	category: Categories;
 	url: string;
-	isNew?: boolean;
 };

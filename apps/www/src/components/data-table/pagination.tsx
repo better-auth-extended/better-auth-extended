@@ -16,6 +16,8 @@ import {
 	ChevronsLeftIcon,
 	ChevronsRightIcon,
 } from "lucide-react";
+import { useMounted } from "@/hooks/use-mounted";
+import { Skeleton } from "../ui/skeleton";
 
 export type PaginationProps<TData> = {
 	table: Table<TData>;
@@ -25,11 +27,45 @@ export const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
 	const currentPage = table.getState().pagination.pageIndex + 1;
 	const totalPages = table.getPageCount();
 	const pageNumbers = getPageNumbers(currentPage, totalPages);
+	const mounted = useMounted();
+
+	if (!mounted) {
+		return (
+			<div
+				className={cn(
+					"flex items-center justify-between overflow-clip",
+					"@max-2xl/container:flex-col-reverse @max-2xl/container:gap-4",
+				)}
+				style={{ overflowClipMargin: 1 }}
+			>
+				<div className="flex w-full items-center">
+					<Skeleton className="h-4 w-[74px] mr-4 @3xl/content:hidden" />
+					<div className="flex items-center gap-2 @max-2xl/container:flex-row-reverse">
+						<Skeleton className="h-8 w-[70px]" />
+						<Skeleton className="h-3 w-[100px] hidden sm:block" />
+					</div>
+				</div>
+
+				<div className="flex items-center sm:space-x-6 lg:space-x-8">
+					<Skeleton className="h-3 w-[100px] @max-3xl/content:hidden" />
+					<div className="flex items-center space-x-2">
+						<Skeleton className="size-8 @max-md/content:hidden" />
+						<Skeleton className="size-8" />
+
+						<Skeleton className="size-8" />
+
+						<Skeleton className="size-8" />
+						<Skeleton className="size-8 @max-md/content:hidden" />
+					</div>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div
 			className={cn(
-				"flex items-center justify-between overflow-clip px-2",
+				"flex items-center justify-between",
 				"@max-2xl/container:flex-col-reverse @max-2xl/container:gap-4",
 			)}
 			style={{ overflowClipMargin: 1 }}

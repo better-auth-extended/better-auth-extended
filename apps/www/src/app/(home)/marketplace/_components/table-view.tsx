@@ -27,10 +27,11 @@ import {
 	EllipsisIcon,
 	PinOffIcon,
 } from "lucide-react";
+import { motion, useReducedMotion, Variants } from "motion/react";
 import { CSSProperties } from "react";
-import type { Resource } from "~/resources";
+import type { TResource } from "./columns";
 
-const getPinningStyles = (column: Column<Resource>): CSSProperties => {
+const getPinningStyles = (column: Column<TResource>): CSSProperties => {
 	const isPinned = column.getIsPinned();
 	return {
 		left: isPinned === "left" ? `${column.getStart("left")}px` : undefined,
@@ -41,9 +42,38 @@ const getPinningStyles = (column: Column<Resource>): CSSProperties => {
 	};
 };
 
-export const TableView = ({ table }: { table: TanstackTable<Resource> }) => {
+export const TableView = ({ table }: { table: TanstackTable<TResource> }) => {
+	const shouldReduceMotion = useReducedMotion();
+
+	const variants = {
+		hidden: {
+			opacity: 0,
+			y: 10,
+		},
+		visible: {
+			opacity: 1,
+			y: 0,
+			transition: {
+				type: "spring",
+				stiffness: 260,
+				damping: 28,
+				duration: 0.2,
+			},
+		},
+	} satisfies Variants;
+
 	return (
-		<div className="rounded-lg overflow-hidden border">
+		<motion.div
+			initial="hidden"
+			whileInView="visible"
+			exit="hidden"
+			viewport={{ once: true, amount: 0.2 }}
+			variants={!shouldReduceMotion ? variants : undefined}
+			transition={{
+				duration: 0.15,
+			}}
+			className="will-change-transform rounded-lg overflow-hidden border"
+		>
 			<Table
 				className="min-w-full [&_td]:border-border [&_th]:border-border table-fixed border-separate border-spacing-0 [&_tfoot_td]:border-t [&_th]:border-b [&_tr]:border-none [&_tr:not(:last-child)_td]:border-b"
 				style={{
@@ -171,13 +201,21 @@ export const TableView = ({ table }: { table: TanstackTable<Resource> }) => {
 					))}
 				</TableBody>
 			</Table>
-		</div>
+		</motion.div>
 	);
 };
 
-const Row = ({ row }: { row: TanstackRow<Resource> }) => {
+const MotionRow = motion.create(TableRow);
+
+const Row = ({ row }: { row: TanstackRow<TResource> }) => {
+	const shouldReduceMotion = useReducedMotion();
+
 	return (
-		<TableRow
+		<MotionRow
+			layout={!shouldReduceMotion}
+			transition={{
+				duration: 0.15,
+			}}
 			data-state={row.getIsSelected() && "selected"}
 			className="cursor-pointer group/row"
 			onClick={(e) => {
@@ -214,6 +252,6 @@ const Row = ({ row }: { row: TanstackRow<Resource> }) => {
 					</TableCell>
 				);
 			})}
-		</TableRow>
+		</MotionRow>
 	);
 };
